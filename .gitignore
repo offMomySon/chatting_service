@@ -1,0 +1,9 @@
+
+# gradle 설치파일.
+.gradle
+
+build
+
+out
+
+.idea
