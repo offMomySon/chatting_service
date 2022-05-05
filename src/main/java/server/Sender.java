@@ -6,34 +6,35 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
 import lombok.NonNull;
 import repository.IpOutputStreamRepository;
+import server.cmd.Cmd;
+import server.cmd.factory.CompositeCmdFactory;
+import server.cmd.factory.GeneralCmdFactory;
+import server.cmd.factory.NoticeCmdFactory;
 import static util.IoUtil.createWriter;
 
 class Sender implements Runnable {
-    private final BufferedWriter out;
     private final IpOutputStreamRepository ipRepository;
 
-    private Sender(@NonNull BufferedWriter out, @NonNull IpOutputStreamRepository ipRepository) {
-        this.out = out;
+    public Sender(@NonNull IpOutputStreamRepository ipRepository) {
         this.ipRepository = ipRepository;
     }
 
-    public static Sender create(@NonNull OutputStream outputStream, @NonNull IpOutputStreamRepository ipRepository) {
-        return new Sender(createWriter(outputStream), ipRepository);
-    }
-
     public void run() {
+        CompositeCmdFactory cmdFactory = new CompositeCmdFactory(List.of(new GeneralCmdFactory(), new NoticeCmdFactory()));
+
         Scanner scanner = new Scanner(System.in);
         String msg;
         while( (msg = scanner.nextLine()) != null ){
             System.out.println("console write : " + msg);
 
-//                out.write("[server]" + line);
-//                out.flush();
+            Cmd cmd = cmdFactory.create(msg);
+
             sendToAll(msg);
         }
     }
