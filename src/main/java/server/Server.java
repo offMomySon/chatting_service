@@ -25,6 +25,7 @@ public class Server {
 
     public void start() {
         Socket socket;
+        Thread sender = new Thread(new Sender(ipRepository));
 
         try( ServerSocket serverSocket = new ServerSocket(port) ) {
             System.out.println("서버가 시작되었습니다.");
@@ -37,7 +38,6 @@ public class Server {
                 System.out.println("현재 서버접속자 수는 "+ ipRepository.getSize()+"입니다.");
 
                 Thread receiver = new Thread(Receiver.create(socket, ipRepository));
-                Thread sender = new Thread(Sender.create(socket.getOutputStream(), ipRepository));
 
                 receiver.start();
                 sender.start();
