@@ -38,7 +38,7 @@ public enum NoticeType {
 
     public static NoticeType find(String noticeType){
         return Arrays.stream(values())
-            .filter(nt -> nt.equals(noticeType))
+            .filter(nt -> nt.name.equals(noticeType))
             .findAny()
             .orElseThrow(()->new RuntimeException("일치하는 타입이 없습니다."));
     }

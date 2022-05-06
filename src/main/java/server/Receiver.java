@@ -11,6 +11,9 @@ import lombok.NonNull;
 import repository.IpOutputStreamRepository;
 import static util.IoUtil.createReader;
 
+/**
+ * client 로 부터 메세지를 수신하는 역할.
+ */
 public class Receiver implements Runnable{
     public static final char[] cMsg  = new char[20];
 
@@ -50,7 +53,7 @@ public class Receiver implements Runnable{
             throw new RuntimeException("msg 수신에 실패했습니다.", e);
         } finally {
             System.out.println("# ["+inetAddress+ ":" +port+"]"+" 님이 나가셨습니다.");
-            ipRepository.remove(inetAddress);
+            ipRepository.remove(inetAddress.getHostAddress());
             System.out.println("현재 서버접속자 수는 "+ ipRepository.getSize()+"입니다.");
         }
     }

@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import lombok.NonNull;
 
+/**
+ * 모든 ip 수신 가능 여부를 알려주는 역할
+ */
 public class IpAddresses {
     private static final List<String> allUserSymbol = List.of("*","all");
 
