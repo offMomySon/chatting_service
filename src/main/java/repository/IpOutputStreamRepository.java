@@ -13,18 +13,22 @@ import java.util.Map;
  * ip address 별 outputstream 을 관리하는 역할.
  */
 public class IpOutputStreamRepository {
-    private final Map<InetAddress, BufferedWriter> value = Collections.synchronizedMap(new HashMap<>());
+    private final Map<String, BufferedWriter> value = Collections.synchronizedMap(new HashMap<>());
 
-    public void remove(InetAddress inetAddress){
-        value.remove(inetAddress);
+    public void remove(String hostAddress){
+        value.remove(hostAddress);
     }
 
-    public void put(InetAddress inetAddress, BufferedWriter out){
-        value.put(inetAddress, out);
+    public void put(String hostAddress, BufferedWriter out){
+        value.put(hostAddress, out);
     }
 
-    public BufferedWriter get(InetAddress inetAddress){
-        return value.get(inetAddress);
+    public BufferedWriter get(String hostAddress){
+        return value.get(hostAddress);
+    }
+
+    public boolean contain(String hostAddress) {
+        return value.containsKey(hostAddress);
     }
 
     public Collection<BufferedWriter> values(){

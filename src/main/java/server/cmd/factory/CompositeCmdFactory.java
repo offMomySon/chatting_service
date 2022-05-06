@@ -5,6 +5,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import server.cmd.Cmd;
 
+/**
+ * sCmd 를 입력 받고 factories 를 통해 적절한 cmd 객체를 생성하는 역할.
+ */
 public class CompositeCmdFactory implements Factory{
     private final List<Factory> factories;
 

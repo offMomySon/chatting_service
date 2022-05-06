@@ -2,36 +2,36 @@ package server;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.InetAddress;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Scanner;
+import java.util.function.BiConsumer;
 import lombok.NonNull;
 import org.jetbrains.annotations.NotNull;
 import repository.IpOutputStreamRepository;
+import server.actor.CmdConsumer;
 import server.cmd.Cmd;
-import server.cmd.GeneralCmd;
 import server.cmd.NoticeCmd;
 import server.cmd.factory.CompositeCmdFactory;
 import server.cmd.factory.GeneralCmdFactory;
 import server.cmd.factory.NoticeCmdFactory;
-import static util.IoUtil.createWriter;
 
+/**
+ * server 에서 입력 받은 cmd 를 client 에 뿌리는 역할.
+ */
 class Sender implements Runnable {
-    private final IpOutputStreamRepository ipRepository;
+    private final CompositeCmdFactory cmdFactory = new CompositeCmdFactory(List.of(new GeneralCmdFactory(), new NoticeCmdFactory()));
+    private final Scanner scanner = new Scanner(System.in);
+    private final CmdConsumer msgSender;
 
-    public Sender(@NonNull IpOutputStreamRepository ipRepository) {
-        this.ipRepository = ipRepository;
+    private Sender(@NonNull CmdConsumer msgSender) {
+        this.msgSender = msgSender;
+    }
+
+    public static Sender from(@NonNull IpOutputStreamRepository ipRepository){
+        return new Sender(new CmdConsumer(ipRepository, cmdWriter));
     }
 
     public void run() {
-        CompositeCmdFactory cmdFactory = new CompositeCmdFactory(List.of(new GeneralCmdFactory(), new NoticeCmdFactory()));
-
-        Scanner scanner = new Scanner(System.in);
         String sCmd;
         while( (sCmd = scanner.nextLine()) != null ){
             System.out.println("console write : " + sCmd);
@@ -39,7 +39,7 @@ class Sender implements Runnable {
             Cmd cmd = cmdFactory.create(sCmd);
             IpAddresses ipAddresses = getIpAddresses(sCmd, cmd);
 
-            sendMsg(ipAddresses,cmd);
+            msgSender.appect(ipAddresses, cmd);
         }
     }
 
@@ -54,22 +54,12 @@ class Sender implements Runnable {
         return IpAddresses.from(cmds[1].split(","));
     }
 
-    private void sendMsg(IpAddresses ipAddresses, Cmd cmd){
-        if(ipAddresses.isAllUser()){
-            sendToAll(cmd);
+    private static BiConsumer<BufferedWriter, Cmd> cmdWriter = (out, cmd)->{
+        try {
+            out.write(cmd.createSMF());
+            out.flush();
+        } catch (IOException e) {
+            throw new RuntimeException("메세지 전송에 실패했습니다. ", e);
         }
-    }
-
-    private void sendToAll(Cmd cmd) {
-        Collection<BufferedWriter> values = ipRepository.values();
-
-        values.stream().forEach(out -> {
-            try {
-                out.write(cmd.createSMF());
-                out.flush();
-            } catch (IOException e) {
-                throw new RuntimeException("메세지 전송에 실패했습니다. ", e);
-            }
-        });
-    }
+    };
 }
