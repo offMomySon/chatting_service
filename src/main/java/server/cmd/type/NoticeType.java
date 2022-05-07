@@ -40,7 +40,7 @@ public enum NoticeType {
         return Arrays.stream(values())
             .filter(nt -> nt.name.equals(noticeType))
             .findAny()
-            .orElseThrow(()->new RuntimeException("일치하는 타입이 없습니다."));
+            .orElseThrow(()->new RuntimeException("Not exist matched notice type."));
     }
 
     public String getTag() {

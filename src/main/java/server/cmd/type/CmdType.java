@@ -28,7 +28,7 @@ public enum CmdType {
         return Arrays.stream(values())
             .filter(ct -> ct.equals(cmdType))
             .findAny()
-            .orElseThrow(()->new RuntimeException("일치하는 타입이 없습니다."));
+            .orElseThrow(()->new RuntimeException("Not exist cmd type."));
     }
 
     public int getValue() {

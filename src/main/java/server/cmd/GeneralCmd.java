@@ -16,7 +16,7 @@ public class GeneralCmd extends Cmd{
     @Override
     public String createSMF() {
         StringBuilder sb = new StringBuilder();
-        sb.append(type.getValue()).append(smfDelimiter).append(msg);
+        sb.append(type.getValue()).append(SMF_DELIMITER).append(msg);
 
         return sb.toString();
     }

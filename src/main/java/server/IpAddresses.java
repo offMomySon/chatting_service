@@ -9,7 +9,7 @@ import lombok.NonNull;
  * 모든 ip 수신 가능 여부를 알려주는 역할
  */
 public class IpAddresses {
-    private static final List<String> allUserSymbol = List.of("*","all");
+    private static final List<String> ALL_USER_SYMBOL = List.of("*", "all");
 
     private final List<String> ips;
     private final boolean isAllUser;
@@ -20,7 +20,7 @@ public class IpAddresses {
     }
 
     public static IpAddresses from(String ...ips){
-        boolean isAllUser = Arrays.stream(ips).anyMatch(allUserSymbol::contains);
+        boolean isAllUser = Arrays.stream(ips).anyMatch(ALL_USER_SYMBOL::contains);
 
         if(isAllUser){
             return new IpAddresses(Collections.emptyList(), true);

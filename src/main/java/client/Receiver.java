@@ -3,12 +3,14 @@ package client;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Objects;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import static util.IoUtil.createReader;
 
+@Slf4j
 class Receiver implements Runnable {
-    public static final char[] cMsg  = new char[20];
+    private static final int END_CONNECTION = -1;
+    public static final char[] BUFFER = new char[20];
 
     private final BufferedReader in;
 
@@ -21,15 +23,16 @@ class Receiver implements Runnable {
     }
 
     public void run() {
-        while(in !=null) {
-            try {
-                int count = in.read(cMsg);
-                String msg = String.valueOf(cMsg,0, count);
 
-                System.out.println(msg);
-            } catch(IOException e) {
-                throw new RuntimeException("메세지 수신에 실패했습니다.");
+        int readCount = END_CONNECTION;
+        try{
+            while( (readCount = in.read(BUFFER)) != END_CONNECTION ){
+                String msg = String.valueOf(BUFFER, 0, readCount);
+
+                log.info("From server : {}", msg);
             }
+        } catch(IOException e) {
+            throw new RuntimeException("Fail to receive msg.",e);
         }
     }
 }

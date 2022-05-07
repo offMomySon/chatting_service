@@ -1,21 +1,21 @@
 package server;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.Map;
-import java.util.Objects;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import repository.IpOutputStreamRepository;
 import static util.IoUtil.createReader;
 
 /**
  * client 로 부터 메세지를 수신하는 역할.
  */
-public class Receiver implements Runnable{
-    public static final char[] cMsg  = new char[20];
+@Slf4j
+public class Receiver {
+    private static final int END_CONNECTION = -1;
+    public static final char[] BUFFER = new char[20];
 
     private final IpOutputStreamRepository ipRepository;
     private final InetAddress inetAddress;
@@ -24,9 +24,16 @@ public class Receiver implements Runnable{
 
     private Receiver(@NonNull BufferedReader in, @NonNull InetAddress inetAddress, int port, @NonNull IpOutputStreamRepository ipRepository) {
         this.inetAddress = inetAddress;
-        this.port = port;
+        this.port = validate(port);
         this.in = in;
         this.ipRepository = ipRepository;
+    }
+
+    private static int validate(int port){
+        if(port <= 0){
+            throw new RuntimeException("Abnormal port number.");
+        }
+        return port;
     }
 
     public static Receiver create(@NonNull Socket socket, @NonNull IpOutputStreamRepository ipRepository){
@@ -34,7 +41,7 @@ public class Receiver implements Runnable{
         try {
             reader = createReader(socket.getInputStream());
         } catch (IOException e) {
-            throw new RuntimeException("BufferedReader 변환에 실패했습니다.", e);
+            throw new RuntimeException("Fail get inputStream, from socket.", e);
         }
 
         return new Receiver(reader, socket.getInetAddress(), socket.getPort(), ipRepository);
@@ -42,19 +49,19 @@ public class Receiver implements Runnable{
 
     public void run() {
         try {
-            int readCount;
+            int readCount = END_CONNECTION;
+            while( (readCount = in.read(BUFFER)) != END_CONNECTION ){
+                String msg = String.valueOf(BUFFER, 0, readCount);
 
-            while( (readCount = in.read(cMsg)) != -1 ){
-                String msg = String.valueOf(cMsg,0, readCount);
-                System.out.println("client 로 부터 받은 메세지 : " + msg);
+                log.info("From client : {}", msg);
             }
-
         } catch(IOException e) {
-            throw new RuntimeException("msg 수신에 실패했습니다.", e);
+            throw new RuntimeException("Fail to receive msg.",e);
         } finally {
-            System.out.println("# ["+inetAddress+ ":" +port+"]"+" 님이 나가셨습니다.");
+            log.info("[System Alert] [() : ()] is out.", inetAddress, port);
             ipRepository.remove(inetAddress.getHostAddress());
-            System.out.println("현재 서버접속자 수는 "+ ipRepository.getSize()+"입니다.");
+
+            log.info("Current user count : {}", ipRepository.getSize());
         }
     }
 }

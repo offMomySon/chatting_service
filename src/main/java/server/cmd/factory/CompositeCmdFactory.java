@@ -15,15 +15,15 @@ public class CompositeCmdFactory implements Factory{
         this.factories = validate(factories);
     }
 
-    private List<Factory> validate(List<Factory> factories){
+    private static List<Factory> validate(List<Factory> factories){
         if(Objects.isNull(factories)){
-            throw new RuntimeException("factory 가 null 입니다.");
+            throw new RuntimeException("Factory is null.");
         }
 
         List<Factory> newFactories = factories.stream().filter(Objects::nonNull).collect(Collectors.toList());
 
         if(newFactories.isEmpty()){
-            throw new RuntimeException("factory 가 empty 입니다.");
+            throw new RuntimeException("Factory is empty.");
         }
         return newFactories;
     }
@@ -39,6 +39,6 @@ public class CompositeCmdFactory implements Factory{
             .filter(f->f.isCreatable(cmd))
             .findFirst()
             .map(f->f.create(cmd))
-            .orElseThrow(()->new RuntimeException("생성가능한 cmd 가 없습니다."));
+            .orElseThrow(()->new RuntimeException("Not exist matched cmd."));
     }
 }
