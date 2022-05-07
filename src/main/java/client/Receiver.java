@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import static util.IoUtil.createReader;
 
 @Slf4j
-class Receiver implements Runnable {
+class Receiver {
     private static final int END_CONNECTION = -1;
     public static final char[] BUFFER = new char[20];
 
@@ -22,8 +22,7 @@ class Receiver implements Runnable {
         return new Receiver(createReader(inputStream));
     }
 
-    public void run() {
-
+    public void waitAndThenGetMsg() {
         int readCount = END_CONNECTION;
         try{
             while( (readCount = in.read(BUFFER)) != END_CONNECTION ){

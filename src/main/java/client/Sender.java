@@ -10,7 +10,7 @@ import util.IoUtil;
 import static util.IoUtil.createWriter;
 
 @Slf4j
-class Sender implements Runnable {
+class Sender {
     private final BufferedReader reader = IoUtil.createReader(System.in);
     private final BufferedWriter out;
 
@@ -22,7 +22,7 @@ class Sender implements Runnable {
         return new Sender(createWriter(outputStream));
     }
 
-    public void run() {
+    public void waitAndThenSendMsg() {
         String line;
         try {
             while((line = reader.readLine()) != null){

@@ -47,7 +47,7 @@ public class Receiver {
         return new Receiver(reader, socket.getInetAddress(), socket.getPort(), ipRepository);
     }
 
-    public void run() {
+    public void waitAndThenGetMsg() {
         try {
             int readCount = END_CONNECTION;
             while( (readCount = in.read(BUFFER)) != END_CONNECTION ){

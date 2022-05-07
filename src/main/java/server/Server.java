@@ -26,7 +26,10 @@ public class Server {
 
     public void start() {
         Socket socket;
-        Thread sender = new Thread(() -> Sender.from(ipRepository).run() );
+        Thread sender = new Thread(
+            () -> Sender.from(ipRepository)
+                .waitAndThenSendMsg()
+        );
         sender.start();
 
         try( ServerSocket serverSocket = new ServerSocket(port) ) {
@@ -40,7 +43,10 @@ public class Server {
                 log.info("Current user count : {}", ipRepository.getSize());
 
                 Socket finalSocket = socket;
-                Thread receiver = new Thread(()-> Receiver.create(finalSocket, ipRepository));
+                Thread receiver = new Thread(
+                    ()-> Receiver.create(finalSocket, ipRepository)
+                        .waitAndThenGetMsg()
+                );
                 receiver.start();
             }
         } catch(IOException e) {
