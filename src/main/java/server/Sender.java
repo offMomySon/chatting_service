@@ -36,7 +36,7 @@ class Sender {
         return new Sender(new CmdConsumer(ipRepository, cmdWriter));
     }
 
-    public void run() {
+    public void waitAndThenSendMsg() {
         String sCmd;
         try{
             while( (sCmd = in.readLine()) != STOP_READ){

@@ -31,8 +31,22 @@ public class Client {
             Socket socket = new Socket(serverIp, port);
             log.info("Connected to server.");
 
-            Thread sender = new Thread(Sender.create(socket.getOutputStream()));
-            Thread receiver = new Thread(Receiver.create(socket.getInputStream()));
+            Thread sender = new Thread(()-> {
+                try {
+                    Sender.create(socket.getOutputStream())
+                        .waitAndThenSendMsg();
+                } catch (IOException e) {
+                    throw new RuntimeException("Fail get outputStream, from socket.", e);
+                }
+            });
+            Thread receiver = new Thread(()-> {
+                try {
+                    Receiver.create(socket.getInputStream())
+                        .waitAndThenGetMsg();
+                } catch (IOException e) {
+                    throw new RuntimeException("Fail get inputStream, from socket.", e);
+                }
+            });
 
             sender.start();
             receiver.start();
