@@ -1,14 +1,17 @@
 package client;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Objects;
-import java.util.Scanner;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
+import util.IoUtil;
 import static util.IoUtil.createWriter;
 
+@Slf4j
 class Sender implements Runnable {
+    private final BufferedReader reader = IoUtil.createReader(System.in);
     private final BufferedWriter out;
 
     private Sender(@NonNull BufferedWriter out) {
@@ -20,16 +23,16 @@ class Sender implements Runnable {
     }
 
     public void run() {
-        Scanner scanner = new Scanner(System.in);
+        String line;
         try {
-            while(out !=null) {
-                String line = scanner.nextLine();
-                System.out.println("enter msg = " + line);
+            while((line = reader.readLine()) != null){
+                log.info("console write : {}", line);
+
                 out.write(line);
                 out.flush();
             }
         } catch(IOException e) {
-            throw new RuntimeException("메세지 전송에 실패했습니다.");
+            throw new RuntimeException("Fail message send.", e);
         }
     }
 }

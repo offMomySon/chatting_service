@@ -4,46 +4,47 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import lombok.extern.slf4j.Slf4j;
 import repository.IpOutputStreamRepository;
 import static util.IoUtil.createWriter;
 
+@Slf4j
 public class Server {
     private final IpOutputStreamRepository ipRepository = new IpOutputStreamRepository();
-
     private final int port;
 
     public Server(int port) {
         this.port = validate(port);
     }
 
-    private int validate(int port){
+    private static int validate(int port){
         if(port <= 0){
-            throw new RuntimeException("정상적이지 않은 port 입니다.");
+            throw new RuntimeException("Abnormal port number.");
         }
         return port;
     }
 
     public void start() {
         Socket socket;
-        Thread sender = new Thread(Sender.from(ipRepository));
+        Thread sender = new Thread(() -> Sender.from(ipRepository).run() );
+        sender.start();
 
         try( ServerSocket serverSocket = new ServerSocket(port) ) {
-            System.out.println("서버가 시작되었습니다.");
+            log.info("Server start.");
 
             while(true) {
                 socket = serverSocket.accept();
-                System.out.println("["+socket.getInetAddress()+":"+socket.getPort()+"]"+"에서 접속하였습니다.");
+                log.info("[{} : {}] is connected.", socket.getInetAddress(), socket.getPort());
 
                 ipRepository.put(socket.getInetAddress().getHostAddress(), createWriter(socket.getOutputStream()));
-                System.out.println("현재 서버접속자 수는 "+ ipRepository.getSize()+"입니다.");
+                log.info("Current user count : {}", ipRepository.getSize());
 
-                Thread receiver = new Thread(Receiver.create(socket, ipRepository));
-
+                Socket finalSocket = socket;
+                Thread receiver = new Thread(()-> Receiver.create(finalSocket, ipRepository));
                 receiver.start();
-                sender.start();
             }
         } catch(IOException e) {
-            throw new RuntimeException("socket 생성에 실패 했습니다.", e);
+            throw new RuntimeException("Fail connection.", e);
         }
     }
 }

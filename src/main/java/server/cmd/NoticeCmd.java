@@ -9,7 +9,7 @@ import server.cmd.type.NoticeType;
  */
 public class NoticeCmd extends Cmd{
     private final NoticeType noticeType;
-    private static final String msgDelimiter = " ";
+    private static final String MSG_DELIMITER = " ";
 
     public NoticeCmd(CmdType type, @NonNull NoticeType noticeType, @NonNull String msg) {
         super(type, msg);
@@ -19,9 +19,9 @@ public class NoticeCmd extends Cmd{
     @Override
     public String createSMF() {
         StringBuilder sb = new StringBuilder();
-        sb.append(type.getValue()).append(smfDelimiter);
+        sb.append(type.getValue()).append(SMF_DELIMITER);
         sb.append(noticeType.getPrevEncoding()).append(noticeType.getTag()).append(noticeType.getPostEncoding());
-        sb.append(msgDelimiter);
+        sb.append(MSG_DELIMITER);
         sb.append(msg);
 
         return sb.toString();
