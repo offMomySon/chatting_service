@@ -1,21 +1,24 @@
 package server.cmd.type;
 
+import java.text.MessageFormat;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 
 public enum NoticeType {
-    INFO("info", "[INFO]", "\\u001B[33m", "\\u001B[33m"),
-    WARN("warn", "[WARN]", "\\u001B[0m", "\\u001B[33m");
+    INFO("info", "\\u001B[33m", "[INFO]", "\\u001B[33m"),
+    WARN("warn", "\\u001B[0m",  "[WARN]","\\u001B[33m");
+
+    private static final String MSG_DECORATOR= "{0}{1}{2} {3}";
 
     private final String name;
-    private final String tag;
     private final String prevEncoding;
+    private final String tag;
     private final String postEncoding;
 
-    NoticeType(String name, String tag, String prevEncoding, String postEncoding) {
+    NoticeType(String name, String prevEncoding, String tag, String postEncoding) {
         this.name = name;
-        this.tag = tag;
         this.prevEncoding = prevEncoding;
+        this.tag = tag;
         this.postEncoding = postEncoding;
     }
 
@@ -53,5 +56,9 @@ public enum NoticeType {
 
     public String getPostEncoding() {
         return postEncoding;
+    }
+
+    public String decorate(String msg){
+        return MessageFormat.format(MSG_DECORATOR, prevEncoding, tag, postEncoding, msg);
     }
 }
