@@ -38,4 +38,17 @@ public class IpAddress {
     public String getValue() {
         return value;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IpAddress ipAddress = (IpAddress) o;
+        return Objects.equals(value, ipAddress.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
+    }
 }

@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import lombok.NonNull;
 import repository.IpOutputStreamRepository;
-import server.IpAddresses;
+import server.domain.IpAddress;
+import server.domain.IpAddresses;
 import server.cmd.Cmd;
 
 /**
@@ -29,7 +30,7 @@ public class CmdConsumer {
         consumeSpecificIp(ipAddresses.getIps(), cmd);
     }
 
-    private void consumeSpecificIp(List<String> requestIp, Cmd cmd){
+    private void consumeSpecificIp(List<IpAddress> requestIp, Cmd cmd){
         requestIp.stream()
             .filter(ipRepository::contain)
             .map(ipRepository::get)

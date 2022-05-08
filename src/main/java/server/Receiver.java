@@ -7,6 +7,8 @@ import java.net.Socket;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import repository.IpOutputStreamRepository;
+import server.domain.IpAddress;
+import server.domain.IpAddresses;
 import static util.IoUtil.createReader;
 
 /**
@@ -59,7 +61,7 @@ public class Receiver {
             throw new RuntimeException("Fail to receive msg.",e);
         } finally {
             log.info("[System Alert] [() : ()] is out.", inetAddress, port);
-            ipRepository.remove(inetAddress.getHostAddress());
+            ipRepository.remove(new IpAddress(inetAddress.getHostAddress()));
 
             log.info("Current user count : {}", ipRepository.getSize());
         }
