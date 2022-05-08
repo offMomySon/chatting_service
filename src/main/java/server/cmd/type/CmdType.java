@@ -1,19 +1,20 @@
 package server.cmd.type;
 
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Optional;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 
 public enum CmdType {
-    SEND(0,"send"), NOTICE(1, "notice");
+    SEND("send",0), NOTICE("notice", 1);
 
-    private final int value;
     private final String name;
+    private final int value;
 
-    CmdType(int value, String name) {
-        this.value = value;
+    CmdType(String name, int value) {
         this.name = name;
+        this.value = value;
     }
 
     public boolean isEqual(String cmdType){
