@@ -19,6 +19,10 @@ public class SimpleMessageFormat {
         this.message = message;
     }
 
+    public static SimpleMessageFormat create(@NonNull CmdType cmdType, @NonNull String message){
+        return new SimpleMessageFormat(cmdType, null, message);
+    }
+
     public String createMsg(){
         if(Objects.isNull(noticeType)){
             return createNotExistNoticeTypeMsg();
