@@ -1,5 +1,6 @@
 package server.cmd;
 
+import common.SimpleMessageFormat;
 import lombok.NonNull;
 import server.cmd.type.CmdType;
 import server.cmd.type.NoticeType;
@@ -7,23 +8,19 @@ import server.cmd.type.NoticeType;
 /**
  * cmd type, msg, noticeType 에 따라 적절한 SMF 포멧의 string 을 생성하는 역할.
  */
-public class NoticeCmd extends Cmd{
+public class NoticeCmd implements Cmd{
+    private final CmdType type;
     private final NoticeType noticeType;
-    private static final String MSG_DELIMITER = " ";
+    private final String msg;
 
-    public NoticeCmd(CmdType type, @NonNull NoticeType noticeType, @NonNull String msg) {
-        super(type, msg);
+    public NoticeCmd(@NonNull CmdType type, NoticeType noticeType, String msg) {
+        this.type = type;
         this.noticeType = noticeType;
+        this.msg = msg;
     }
 
     @Override
-    public String createSMF() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(type.getValue()).append(SMF_DELIMITER);
-        sb.append(noticeType.getPrevEncoding()).append(noticeType.getTag()).append(noticeType.getPostEncoding());
-        sb.append(MSG_DELIMITER);
-        sb.append(msg);
-
-        return sb.toString();
+    public SimpleMessageFormat createSMF() {
+        return new SimpleMessageFormat(type, noticeType, msg);
     }
 }

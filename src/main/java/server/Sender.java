@@ -1,5 +1,6 @@
 package server;
 
+import common.SimpleMessageFormat;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -76,8 +77,10 @@ class Sender {
     }
 
     private static BiConsumer<BufferedWriter, Cmd> cmdWriter = (out, cmd)->{
+        SimpleMessageFormat smf = cmd.createSMF();
+
         try {
-            out.write(cmd.createSMF());
+            out.write(smf.createMsg());
             out.flush();
         } catch (IOException e) {
             throw new RuntimeException("Fail message send.", e);
