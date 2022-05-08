@@ -3,8 +3,10 @@ package server;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -15,6 +17,8 @@ import server.cmd.NoticeCmd;
 import server.cmd.factory.CompositeCmdFactory;
 import server.cmd.factory.GeneralCmdFactory;
 import server.cmd.factory.NoticeCmdFactory;
+import server.domain.IpAddress;
+import server.domain.IpAddresses;
 import static util.IoUtil.*;
 
 /**
@@ -57,10 +61,18 @@ class Sender {
         String[] cmds = sCmd.split(" ");
 
         if(cmd instanceof NoticeCmd){
-            return IpAddresses.from(cmds[2].split(","));
+            List<IpAddress> ipAddresses = Arrays.stream(cmds[2].split(","))
+                .map(IpAddress::new)
+                .collect(Collectors.toList());
+
+            return new IpAddresses(ipAddresses,true);
         }
 
-        return IpAddresses.from(cmds[1].split(","));
+        List<IpAddress> ipAddresses = Arrays.stream(cmds[1].split(","))
+            .map(IpAddress::new)
+            .collect(Collectors.toList());
+
+        return new IpAddresses(ipAddresses,true);
     }
 
     private static BiConsumer<BufferedWriter, Cmd> cmdWriter = (out, cmd)->{

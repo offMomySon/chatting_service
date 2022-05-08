@@ -6,6 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import lombok.extern.slf4j.Slf4j;
 import repository.IpOutputStreamRepository;
+import server.domain.IpAddress;
 import static util.IoUtil.createWriter;
 
 @Slf4j
@@ -39,7 +40,7 @@ public class Server {
                 socket = serverSocket.accept();
                 log.info("[{} : {}] is connected.", socket.getInetAddress(), socket.getPort());
 
-                ipRepository.put(socket.getInetAddress().getHostAddress(), createWriter(socket.getOutputStream()));
+                ipRepository.put(new IpAddress(socket.getInetAddress().getHostAddress()), createWriter(socket.getOutputStream()));
                 log.info("Current user count : {}", ipRepository.getSize());
 
                 Socket finalSocket = socket;
