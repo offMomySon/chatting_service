@@ -20,7 +20,7 @@ public class GeneralCmdValidator extends CmdValidator{
             return CmdValidateResult.fail("Fail, Invalid general type.");
         }
 
-        if(inValidIps(cmds[2])){
+        if(inValidIps(cmds[1])){
             return CmdValidateResult.fail("Fail, Invalid ip.");
         }
 

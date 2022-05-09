@@ -1,9 +1,8 @@
 package server.validate;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,11 +10,15 @@ import org.jetbrains.annotations.NotNull;
  * cmd 를 validate 하는 역할.
  * validate 결과를 전달해준다.
  */
-public class CompositedCmdValidator extends CmdValidator {
+public class CompositeCmdValidator extends CmdValidator {
     private final List<CmdValidator> cmdValidators;
 
-    public CompositedCmdValidator(List<CmdValidator> cmdValidators) {
+    public CompositeCmdValidator(List<CmdValidator> cmdValidators) {
         this.cmdValidators = validateCmdValidators(cmdValidators);
+    }
+
+    public static CompositeCmdValidator from(CmdValidator ...cmdValidators){
+        return new CompositeCmdValidator(Arrays.asList(cmdValidators));
     }
 
     private static List<CmdValidator> validateCmdValidators(List<CmdValidator> cmdValidators){

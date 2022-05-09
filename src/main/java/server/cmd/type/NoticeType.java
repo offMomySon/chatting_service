@@ -10,20 +10,20 @@ public enum NoticeType {
 
     private static final String MSG_DECORATOR= "{0}{1}{2} {3}";
 
-    private final String name;
+    private final String cmd;
     private final String prevEncoding;
     private final String tag;
     private final String postEncoding;
 
-    NoticeType(String name, String prevEncoding, String tag, String postEncoding) {
-        this.name = name;
+    NoticeType(String cmd, String prevEncoding, String tag, String postEncoding) {
+        this.cmd = cmd;
         this.prevEncoding = prevEncoding;
         this.tag = tag;
         this.postEncoding = postEncoding;
     }
 
-    public boolean isEqual(String noticeType){
-        return StringUtils.equalsIgnoreCase(this.name, noticeType);
+    public boolean isEqual(String cmd){
+        return StringUtils.equalsIgnoreCase(this.cmd, cmd);
     }
 
     public static boolean contain(String noticeType){
@@ -31,24 +31,24 @@ public enum NoticeType {
             .anyMatch(nt -> nt.isEqual(noticeType));
     }
 
-    public static boolean notContain(String noticeType){
-        return !contain(noticeType);
+    public static boolean notContain(String cmd){
+        return !contain(cmd);
     }
 
-    public static NoticeType find(String noticeType){
+    public static NoticeType find(String cmd){
         return Arrays.stream(values())
-            .filter(nt -> nt.name.equals(noticeType))
+            .filter(nt -> StringUtils.equalsIgnoreCase(nt.cmd, cmd))
             .findAny()
             .orElseThrow(()->new RuntimeException("Not exist matched notice type."));
     }
 
-    private static boolean isExistType(String sType){
+    private static boolean isExistType(String sCmd){
         return Arrays.stream(values())
-            .anyMatch(cmdType -> cmdType.name.equals(sType));
+            .anyMatch(cmdType -> StringUtils.equalsIgnoreCase(cmdType.cmd, sCmd));
     }
 
-    public static boolean notExistType(String sType){
-        return !isExistType(sType);
+    public static boolean notExistType(String sCmd){
+        return !isExistType(sCmd);
     }
 
     public String decorate(String msg){

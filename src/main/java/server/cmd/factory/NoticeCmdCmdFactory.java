@@ -1,15 +1,12 @@
 package server.cmd.factory;
 
-import java.util.List;
-import org.apache.commons.lang3.StringUtils;
 import server.cmd.Cmd;
-import server.cmd.GeneralCmd;
 import server.cmd.NoticeCmd;
 import server.cmd.type.CmdType;
 import server.cmd.type.NoticeType;
 import static server.cmd.type.CmdType.NOTICE;
 
-public class NoticeCmdFactory implements Factory{
+public class NoticeCmdCmdFactory implements CmdFactory {
     private static final CmdType cmdType = NOTICE;
     private static final int partSize = 4;
 
@@ -17,10 +14,10 @@ public class NoticeCmdFactory implements Factory{
     public Cmd create(String cmd) {
         String[] cmds = cmd.split(" ",partSize);
 
-        String noticeType = cmds[1];
+        String noticeCmd = cmds[1];
         String msg = cmds[2];
 
-        return new NoticeCmd(cmdType, NoticeType.find(noticeType), msg);
+        return new NoticeCmd(cmdType, NoticeType.find(noticeCmd), msg);
     }
 
     @Override

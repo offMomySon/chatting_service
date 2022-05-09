@@ -8,19 +8,19 @@ import server.cmd.Cmd;
 /**
  * sCmd 를 입력 받고 factories 를 통해 적절한 cmd 객체를 생성하는 역할.
  */
-public class CompositeCmdFactory implements Factory{
-    private final List<Factory> factories;
+public class CompositeCmdCmdFactory implements CmdFactory {
+    private final List<CmdFactory> factories;
 
-    public CompositeCmdFactory(List<Factory> factories) {
+    public CompositeCmdCmdFactory(List<CmdFactory> factories) {
         this.factories = validate(factories);
     }
 
-    private static List<Factory> validate(List<Factory> factories){
+    private static List<CmdFactory> validate(List<CmdFactory> factories){
         if(Objects.isNull(factories)){
             throw new RuntimeException("Factory is null.");
         }
 
-        List<Factory> newFactories = factories.stream().filter(Objects::nonNull).collect(Collectors.toList());
+        List<CmdFactory> newFactories = factories.stream().filter(Objects::nonNull).collect(Collectors.toList());
 
         if(newFactories.isEmpty()){
             throw new RuntimeException("Factory is empty.");
