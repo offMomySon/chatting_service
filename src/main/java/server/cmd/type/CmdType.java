@@ -1,13 +1,13 @@
 package server.cmd.type;
 
-import java.text.MessageFormat;
 import java.util.Arrays;
-import java.util.Optional;
-import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 
 public enum CmdType {
-    SEND("send",0), NOTICE("notice", 1);
+    SEND("send", 0), NOTICE("notice", 1);
+
+    private static final int GENERAL_VALUE = 0;
+    private static final int NOTICE_VALUE = 1;
 
     private final String name;
     private final int value;
@@ -32,11 +32,35 @@ public enum CmdType {
             .orElseThrow(()->new RuntimeException("Not exist cmd type."));
     }
 
+    private static boolean isExistGeneralType(String sCmdType){
+        return Arrays.stream(CmdType.values())
+            .filter(CmdType::isGeneralType)
+            .anyMatch(ct -> ct.name.equals(sCmdType));
+    }
+
+    public static boolean notExistGeneralType(String sCmdType){
+        return !isExistGeneralType(sCmdType);
+    }
+
+    private static boolean isExistNoticeType(String sCmdType){
+        return Arrays.stream(CmdType.values())
+            .filter(CmdType::isNoticeType)
+            .anyMatch(ct -> ct.name.equals(sCmdType));
+    }
+
+    public static boolean notExistNoticeType(String sCmdType){
+        return !isExistNoticeType(sCmdType);
+    }
+
     public int getValue() {
         return value;
     }
 
-    public String getName() {
-        return name;
+    public boolean isGeneralType(){
+        return GENERAL_VALUE == value;
+    }
+
+    public boolean isNoticeType(){
+        return NOTICE_VALUE == value;
     }
 }

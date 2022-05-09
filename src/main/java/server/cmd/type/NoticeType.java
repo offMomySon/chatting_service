@@ -26,10 +26,6 @@ public enum NoticeType {
         return StringUtils.equalsIgnoreCase(this.name, noticeType);
     }
 
-    public boolean notEqual(String noticeType){
-        return !isEqual(noticeType);
-    }
-
     public static boolean contain(String noticeType){
         return Arrays.stream(values())
             .anyMatch(nt -> nt.isEqual(noticeType));
@@ -46,16 +42,13 @@ public enum NoticeType {
             .orElseThrow(()->new RuntimeException("Not exist matched notice type."));
     }
 
-    public String getTag() {
-        return tag;
+    private static boolean isExistType(String sType){
+        return Arrays.stream(values())
+            .anyMatch(cmdType -> cmdType.name.equals(sType));
     }
 
-    public String getPrevEncoding() {
-        return prevEncoding;
-    }
-
-    public String getPostEncoding() {
-        return postEncoding;
+    public static boolean notExistType(String sType){
+        return !isExistType(sType);
     }
 
     public String decorate(String msg){
