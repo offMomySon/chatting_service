@@ -1,6 +1,5 @@
 package common;
 
-import java.text.MessageFormat;
 import java.util.Objects;
 import lombok.NonNull;
 import server.cmd.type.CmdType;
@@ -32,14 +31,14 @@ public class SimpleMessageFormat {
 
     private String createNotExistNoticeTypeMsg(){
         StringBuilder sb = new StringBuilder();
-        sb.append(cmdType.getValue()).append(TYPE_DELIMITER).append(message);
+        sb.append(cmdType.getCode()).append(TYPE_DELIMITER).append(message);
 
         return sb.toString();
     }
 
     private String createExistNoticeTypeMsg(){
         StringBuilder sb = new StringBuilder();
-        sb.append(cmdType.getValue()).append(TYPE_DELIMITER).append(noticeType.decorate(message));
+        sb.append(cmdType.getCode()).append(TYPE_DELIMITER).append(noticeType.decorate(message));
 
         return sb.toString();
     }

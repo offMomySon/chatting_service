@@ -15,11 +15,15 @@ import repository.IpOutputStreamRepository;
 import server.actor.CmdConsumer;
 import server.cmd.Cmd;
 import server.cmd.NoticeCmd;
-import server.cmd.factory.CompositeCmdFactory;
-import server.cmd.factory.GeneralCmdFactory;
-import server.cmd.factory.NoticeCmdFactory;
+import server.cmd.factory.CompositeCmdCmdFactory;
+import server.cmd.factory.GeneralCmdCmdFactory;
+import server.cmd.factory.NoticeCmdCmdFactory;
 import server.domain.IpAddress;
 import server.domain.IpAddresses;
+import server.validate.CmdValidateResult;
+import server.validate.CompositeCmdValidator;
+import server.validate.GeneralCmdValidator;
+import server.validate.NoticeCmdValidator;
 import static util.IoUtil.*;
 
 /**
@@ -29,7 +33,8 @@ import static util.IoUtil.*;
 class Sender {
     private static final String STOP_READ = null;
 
-    private final CompositeCmdFactory cmdFactory = new CompositeCmdFactory(List.of(new GeneralCmdFactory(), new NoticeCmdFactory()));
+    private final CompositeCmdValidator cmdValidator = CompositeCmdValidator.from(new GeneralCmdValidator(), new NoticeCmdValidator());
+    private final CompositeCmdCmdFactory cmdFactory = new CompositeCmdCmdFactory(List.of(new GeneralCmdCmdFactory(), new NoticeCmdCmdFactory()));
     private final BufferedReader in = createReader(System.in);
     private final CmdConsumer msgSender;
 
@@ -46,6 +51,13 @@ class Sender {
         try{
             while( (sCmd = in.readLine()) != STOP_READ){
                 log.info("console write : {}", sCmd);
+
+                CmdValidateResult validateResult = cmdValidator.validate(sCmd);
+                if(validateResult.notValid()){
+                    log.info("Invalid cmd. '{}'", validateResult.getMsg());
+                    continue;
+                }
+                sCmd = sCmd.substring(1);
 
                 Cmd cmd = cmdFactory.create(sCmd);
                 IpAddresses ipAddresses = getIpAddresses(sCmd, cmd);

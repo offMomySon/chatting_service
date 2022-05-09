@@ -5,7 +5,7 @@ import server.cmd.GeneralCmd;
 import server.cmd.type.CmdType;
 
 
-public class GeneralCmdFactory implements Factory{
+public class GeneralCmdCmdFactory implements CmdFactory {
     private static final int partSize = 3;
 
     @Override
@@ -25,7 +25,7 @@ public class GeneralCmdFactory implements Factory{
         if(cmds.length < partSize){
             return false;
         }
-        if(CmdType.find(type).isGeneralType()){
+        if(CmdType.notExistGeneralType(cmd)){
             return false;
         }
 

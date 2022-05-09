@@ -9,58 +9,58 @@ public enum CmdType {
     private static final int GENERAL_VALUE = 0;
     private static final int NOTICE_VALUE = 1;
 
-    private final String name;
-    private final int value;
+    private final String cmd;
+    private final int code;
 
-    CmdType(String name, int value) {
-        this.name = name;
-        this.value = value;
+    CmdType(String cmd, int code) {
+        this.cmd = cmd;
+        this.code = code;
     }
 
-    public boolean isEqual(String cmdType){
-        return StringUtils.equalsIgnoreCase(this.name, cmdType);
+    public boolean isEqual(String cmd){
+        return StringUtils.equalsIgnoreCase(this.cmd, cmd);
     }
 
-    public boolean notEqual(String cmdType){
-        return !isEqual(cmdType);
+    public boolean notEqual(String cmd){
+        return !isEqual(cmd);
     }
 
-    public static CmdType find(String cmdType){
+    public static CmdType find(String cmd){
         return Arrays.stream(values())
-            .filter(ct -> ct.equals(cmdType))
+            .filter(ct -> StringUtils.equalsIgnoreCase(ct.cmd, cmd))
             .findAny()
             .orElseThrow(()->new RuntimeException("Not exist cmd type."));
     }
 
-    private static boolean isExistGeneralType(String sCmdType){
+    private static boolean isExistGeneralType(String sCmd){
         return Arrays.stream(CmdType.values())
             .filter(CmdType::isGeneralType)
-            .anyMatch(ct -> ct.name.equals(sCmdType));
+            .anyMatch(ct -> ct.cmd.equals(sCmd));
     }
 
-    public static boolean notExistGeneralType(String sCmdType){
-        return !isExistGeneralType(sCmdType);
+    public static boolean notExistGeneralType(String sCmd){
+        return !isExistGeneralType(sCmd);
     }
 
-    private static boolean isExistNoticeType(String sCmdType){
+    private static boolean isExistNoticeType(String sCmd){
         return Arrays.stream(CmdType.values())
             .filter(CmdType::isNoticeType)
-            .anyMatch(ct -> ct.name.equals(sCmdType));
+            .anyMatch(ct -> ct.cmd.equals(sCmd));
     }
 
-    public static boolean notExistNoticeType(String sCmdType){
-        return !isExistNoticeType(sCmdType);
+    public static boolean notExistNoticeType(String sCmd){
+        return !isExistNoticeType(sCmd);
     }
 
-    public int getValue() {
-        return value;
+    public int getCode() {
+        return code;
     }
 
-    public boolean isGeneralType(){
-        return GENERAL_VALUE == value;
+    private boolean isGeneralType(){
+        return GENERAL_VALUE == code;
     }
 
-    public boolean isNoticeType(){
-        return NOTICE_VALUE == value;
+    private boolean isNoticeType(){
+        return NOTICE_VALUE == code;
     }
 }
