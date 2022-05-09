@@ -1,13 +1,11 @@
 package server.cmd.factory;
 
-import org.apache.commons.lang3.StringUtils;
 import server.cmd.Cmd;
 import server.cmd.GeneralCmd;
 import server.cmd.type.CmdType;
-import static server.cmd.type.CmdType.SEND;
+
 
 public class GeneralCmdFactory implements Factory{
-    private static final CmdType cmdType = SEND;
     private static final int partSize = 3;
 
     @Override
@@ -16,7 +14,7 @@ public class GeneralCmdFactory implements Factory{
 
         String msg = cmds[2];
 
-        return new GeneralCmd(cmdType, msg);
+        return new GeneralCmd(CmdType.find(cmds[0]), msg);
     }
 
     @Override
@@ -27,7 +25,7 @@ public class GeneralCmdFactory implements Factory{
         if(cmds.length < partSize){
             return false;
         }
-        if(cmdType.notEqual(type)){
+        if(CmdType.find(type).isGeneralType()){
             return false;
         }
 
