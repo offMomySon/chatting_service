@@ -1,6 +1,7 @@
 package server.cmd.type;
 
 import java.util.Arrays;
+import java.util.function.Predicate;
 import org.apache.commons.lang3.StringUtils;
 
 public enum CmdType {
@@ -17,50 +18,53 @@ public enum CmdType {
         this.code = code;
     }
 
-    public boolean isEqual(String cmd){
-        return StringUtils.equalsIgnoreCase(this.cmd, cmd);
+    public static CmdType findGeneralType(String cmd){
+        return filteredAnyFind(CmdType::isGeneralType,cmd);
     }
 
-    public boolean notEqual(String cmd){
-        return !isEqual(cmd);
+    public static CmdType findNoticeType(String cmd){
+        return filteredAnyFind(CmdType::isNoticeType,cmd);
     }
 
-    public static CmdType find(String cmd){
+    private static CmdType filteredAnyFind(Predicate<CmdType> predicate, String cmd) {
         return Arrays.stream(values())
+            .filter(predicate)
             .filter(ct -> StringUtils.equalsIgnoreCase(ct.cmd, cmd))
             .findAny()
             .orElseThrow(()->new RuntimeException("Not exist cmd type."));
     }
 
-    private static boolean isExistGeneralType(String sCmd){
-        return Arrays.stream(CmdType.values())
-            .filter(CmdType::isGeneralType)
-            .anyMatch(ct -> ct.cmd.equals(sCmd));
+    public static boolean isGeneralType(String sCmd){
+        return filteredAnyMatch(CmdType::isGeneralType, sCmd);
+    }
+
+    public static boolean isExistNoticeType(String sCmd){
+        return filteredAnyMatch(CmdType::isNoticeType, sCmd);
     }
 
     public static boolean notExistGeneralType(String sCmd){
-        return !isExistGeneralType(sCmd);
-    }
-
-    private static boolean isExistNoticeType(String sCmd){
-        return Arrays.stream(CmdType.values())
-            .filter(CmdType::isNoticeType)
-            .anyMatch(ct -> ct.cmd.equals(sCmd));
+        return !isGeneralType(sCmd);
     }
 
     public static boolean notExistNoticeType(String sCmd){
         return !isExistNoticeType(sCmd);
     }
 
+    public static boolean filteredAnyMatch(Predicate<CmdType> predicate, String sCmd){
+        return Arrays.stream(CmdType.values())
+            .filter(predicate)
+            .anyMatch(ct -> ct.cmd.equals(sCmd));
+    }
+
     public int getCode() {
         return code;
     }
 
-    private boolean isGeneralType(){
+    public boolean isGeneralType(){
         return GENERAL_VALUE == code;
     }
 
-    private boolean isNoticeType(){
+    public boolean isNoticeType(){
         return NOTICE_VALUE == code;
     }
 }

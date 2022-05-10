@@ -4,21 +4,14 @@ import common.SimpleMessageFormat;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import repository.IpOutputStreamRepository;
 import server.actor.CmdConsumer;
 import server.cmd.Cmd;
-import server.cmd.NoticeCmd;
-import server.cmd.factory.CompositeCmdCmdFactory;
-import server.cmd.factory.GeneralCmdCmdFactory;
-import server.cmd.factory.NoticeCmdCmdFactory;
-import server.domain.IpAddress;
+import server.cmd.factory.CmdFactory;
 import server.domain.IpAddresses;
 import server.validate.CmdValidateResult;
 import server.validate.CompositeCmdValidator;
@@ -34,7 +27,7 @@ class Sender {
     private static final String STOP_READ = null;
 
     private final CompositeCmdValidator cmdValidator = CompositeCmdValidator.from(new GeneralCmdValidator(), new NoticeCmdValidator());
-    private final CompositeCmdCmdFactory cmdFactory = new CompositeCmdCmdFactory(List.of(new GeneralCmdCmdFactory(), new NoticeCmdCmdFactory()));
+    private final CmdFactory cmdFactory = new CmdFactory();
     private final BufferedReader in = createReader(System.in);
     private final CmdConsumer msgSender;
 
@@ -57,12 +50,12 @@ class Sender {
                     log.info("Invalid cmd. '{}'", validateResult.getMsg());
                     continue;
                 }
-                sCmd = sCmd.substring(1);
+                sCmd = removeInitiateCmd(sCmd);
 
                 Cmd cmd = cmdFactory.create(sCmd);
-                IpAddresses ipAddresses = getIpAddresses(sCmd, cmd);
 
-                msgSender.appect(ipAddresses, cmd);
+                IpAddresses ipAddresses = new IpAddresses(cmd.getIpAddresses(), true);
+                msgSender.appect(ipAddresses, cmd.createSMF());
             }
         } catch (IOException e) {
             throw new RuntimeException("Fail console read.",e);
@@ -70,27 +63,11 @@ class Sender {
     }
 
     @NotNull
-    private IpAddresses getIpAddresses(String sCmd, Cmd cmd) {
-        String[] cmds = sCmd.split(" ");
-
-        if(cmd instanceof NoticeCmd){
-            List<IpAddress> ipAddresses = Arrays.stream(cmds[2].split(","))
-                .map(IpAddress::new)
-                .collect(Collectors.toList());
-
-            return new IpAddresses(ipAddresses,true);
-        }
-
-        List<IpAddress> ipAddresses = Arrays.stream(cmds[1].split(","))
-            .map(IpAddress::new)
-            .collect(Collectors.toList());
-
-        return new IpAddresses(ipAddresses,true);
+    private String removeInitiateCmd(String sCmd) {
+        return sCmd.substring(1);
     }
 
-    private static BiConsumer<BufferedWriter, Cmd> cmdWriter = (out, cmd)->{
-        SimpleMessageFormat smf = cmd.createSMF();
-
+    private static BiConsumer<BufferedWriter, SimpleMessageFormat> cmdWriter = (out, smf)->{
         try {
             out.write(smf.createMsg());
             out.flush();

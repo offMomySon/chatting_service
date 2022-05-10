@@ -1,5 +1,6 @@
 package server.actor;
 
+import common.SimpleMessageFormat;
 import java.io.BufferedWriter;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -14,31 +15,31 @@ import server.cmd.Cmd;
  */
 public class CmdConsumer {
     private final IpOutputStreamRepository ipRepository;
-    private final BiConsumer<BufferedWriter, Cmd> consumer;
+    private final BiConsumer<BufferedWriter, SimpleMessageFormat> consumer;
 
-    public CmdConsumer(@NonNull IpOutputStreamRepository ipRepository, @NonNull BiConsumer<BufferedWriter, Cmd> consumer) {
+    public CmdConsumer(@NonNull IpOutputStreamRepository ipRepository, @NonNull BiConsumer<BufferedWriter, SimpleMessageFormat> consumer) {
         this.ipRepository = ipRepository;
         this.consumer = consumer;
     }
 
-    public void appect(IpAddresses ipAddresses, Cmd cmd){
+    public void appect(IpAddresses ipAddresses, SimpleMessageFormat smf){
         if(ipAddresses.isAllUser()){
-            consumeAll(cmd);
+            consumeAll(smf);
             return;
         }
 
-        consumeSpecificIp(ipAddresses.getIps(), cmd);
+        consumeSpecificIp(ipAddresses.getIps(), smf);
     }
 
-    private void consumeSpecificIp(List<IpAddress> requestIp, Cmd cmd){
+    private void consumeSpecificIp(List<IpAddress> requestIp, SimpleMessageFormat smf){
         requestIp.stream()
             .filter(ipRepository::contain)
             .map(ipRepository::get)
-            .forEach(out -> consumer.accept(out, cmd));
+            .forEach(out -> consumer.accept(out, smf));
     }
 
-    private void consumeAll(Cmd cmd) {
+    private void consumeAll(SimpleMessageFormat smf) {
         ipRepository.values().stream()
-            .forEach(out -> consumer.accept(out, cmd));
+            .forEach(out -> consumer.accept(out, smf));
     }
 }
