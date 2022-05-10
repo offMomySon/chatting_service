@@ -5,7 +5,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import static org.junit.jupiter.api.Assertions.*;
 
 class IpAddressTest {
 
@@ -15,7 +14,7 @@ class IpAddressTest {
     void test1(String ip){
         //givne
         //when
-        Throwable actual = Assertions.catchThrowable(()->new IpAddress(ip));
+        Throwable actual = Assertions.catchThrowable(()->new IpAddress(ip, isAllMatch));
 
         //then
         Assertions.assertThat(actual)
@@ -28,7 +27,7 @@ class IpAddressTest {
     void test2(String ip){
         //givne
         //when
-        Throwable actual = Assertions.catchThrowable(()->new IpAddress(ip));
+        Throwable actual = Assertions.catchThrowable(()->new IpAddress(ip, isAllMatch));
 
         //then
         Assertions.assertThat(actual)
