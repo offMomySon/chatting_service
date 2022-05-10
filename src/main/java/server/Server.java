@@ -40,7 +40,7 @@ public class Server {
                 socket = serverSocket.accept();
                 log.info("[{} : {}] is connected.", socket.getInetAddress(), socket.getPort());
 
-                ipRepository.put(new IpAddress(socket.getInetAddress().getHostAddress()), createWriter(socket.getOutputStream()));
+                ipRepository.put(IpAddress.create(socket.getInetAddress().getHostAddress()), createWriter(socket.getOutputStream()));
                 log.info("Current user count : {}", ipRepository.getSize());
 
                 Socket finalSocket = socket;

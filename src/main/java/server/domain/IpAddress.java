@@ -15,13 +15,24 @@ public class IpAddress {
      * [0-9]          = 0-9
      * (\.(?!$))      = can't end with a dot
      */
-    private static final String IPV4_PATTERN= "^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\\.(?!$)|$)){4}$";
-    private static final Pattern pattern = Pattern.compile(IPV4_PATTERN);
+    private static final Pattern IP_ALL_MATCH_PATTERN = Pattern.compile("^(all)|(\\*)");
+    private static final Pattern IPV4_PATTERN = Pattern.compile("^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\\.(?!$)|$)){4}$");
 
     private final String value;
+    private final boolean isAllMatchIp;
 
-    public IpAddress(String value) {
+    private IpAddress(String value, boolean isAllMatchIp) {
         this.value = validateIpAddress(value);
+        this.isAllMatchIp = isAllMatchIp;
+    }
+
+    public static IpAddress create(String ipAddress){
+        Matcher allMatcher = IP_ALL_MATCH_PATTERN.matcher(ipAddress);
+        if(allMatcher.matches()){
+            return new IpAddress(ipAddress, true);
+        }
+
+        return new IpAddress(ipAddress, false);
     }
 
     private static String validateIpAddress(String ipAddress){
@@ -29,16 +40,21 @@ public class IpAddress {
             throw new RuntimeException("IpAddress is null.");
         }
 
-        Matcher matcher = pattern.matcher(ipAddress);
-        if(!matcher.matches()){
-            throw new RuntimeException("Not ip address pattern.");
+        Matcher allMatcher = IP_ALL_MATCH_PATTERN.matcher(ipAddress);
+        if(allMatcher.matches()){
+            return ipAddress;
         }
 
-        return ipAddress;
+        Matcher matcher = IPV4_PATTERN.matcher(ipAddress);
+        if(matcher.matches()){
+            return ipAddress;
+        }
+
+        throw new RuntimeException("Not ip address pattern.");
     }
 
-    public String getValue() {
-        return value;
+    public boolean isAllMatchIp() {
+        return isAllMatchIp;
     }
 
     @Override
