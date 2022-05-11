@@ -9,10 +9,10 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import repository.IpOutputStreamRepository;
-import server.actor.CmdConsumer;
+import server.actor.SpecificIpCmdConsumer;
 import server.cmd.Cmd;
 import server.cmd.factory.CmdFactory;
-import server.domain.IpAddresses;
+import server.domain.IpAddress;
 import server.validate.CmdValidateResult;
 import server.validate.CompositeCmdValidator;
 import server.validate.GeneralCmdValidator;
@@ -29,14 +29,14 @@ class Sender {
     private final CompositeCmdValidator cmdValidator = CompositeCmdValidator.from(new GeneralCmdValidator(), new NoticeCmdValidator());
     private final CmdFactory cmdFactory = new CmdFactory();
     private final BufferedReader in = createReader(System.in);
-    private final CmdConsumer msgSender;
+    private final SpecificIpCmdConsumer msgSender;
 
-    private Sender(@NonNull CmdConsumer msgSender) {
+    private Sender(@NonNull SpecificIpCmdConsumer msgSender) {
         this.msgSender = msgSender;
     }
 
     public static Sender from(@NonNull IpOutputStreamRepository ipRepository){
-        return new Sender(new CmdConsumer(ipRepository, cmdWriter));
+        return new Sender(new SpecificIpCmdConsumer(ipRepository, cmdWriter));
     }
 
     public void waitAndThenSendMsg() {
@@ -54,8 +54,9 @@ class Sender {
 
                 Cmd cmd = cmdFactory.create(sCmd);
 
-                IpAddresses ipAddresses = new IpAddresses(cmd.getIpAddresses(), true);
-                msgSender.appect(ipAddresses, cmd.createSMF());
+
+
+                msgSender.appect(cmd);
             }
         } catch (IOException e) {
             throw new RuntimeException("Fail console read.",e);
@@ -67,12 +68,14 @@ class Sender {
         return sCmd.substring(1);
     }
 
-    private static BiConsumer<BufferedWriter, SimpleMessageFormat> cmdWriter = (out, smf)->{
-        try {
-            out.write(smf.createMsg());
-            out.flush();
-        } catch (IOException e) {
-            throw new RuntimeException("Fail message send.", e);
-        }
+    private static BiConsumer<IpAddress, Cmd> cmdWriter = (out, cmd)->{
+//        SimpleMessageFormat smf = cmd.createSMF();
+//
+//        try {
+//            out.write(smf.createMsg());
+//            out.flush();
+//        } catch (IOException e) {
+//            throw new RuntimeException("Fail message send.", e);
+//        }
     };
 }
