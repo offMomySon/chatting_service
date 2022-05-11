@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import server.domain.IpAddress;
 
 /**
@@ -28,6 +29,8 @@ public class IpOutputStreamRepository {
     public boolean contain(IpAddress hostAddress) {
         return value.containsKey(hostAddress);
     }
+
+    public Set<IpAddress> getKeySet(){return value.keySet();}
 
     public Collection<BufferedWriter> values(){
         return value.values();
