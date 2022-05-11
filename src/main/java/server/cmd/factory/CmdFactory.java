@@ -44,7 +44,7 @@ public class CmdFactory {
 
     private List<IpAddress> getIpAddresses(String ips) {
         return Arrays.stream(ips.split(","))
-            .map(value -> new IpAddress(value, isAllMatch))
+            .map(IpAddress::create)
             .collect(Collectors.toList());
     }
 }
