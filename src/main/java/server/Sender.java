@@ -2,15 +2,14 @@ package server;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.function.BiConsumer;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import repository.IpOutputStreamRepository;
-import server.consumer.SpecificIpCmdConsumer;
+import server.consumer.RequestedIpSupplier;
 import server.cmd.Cmd;
 import server.cmd.factory.CmdFactory;
-import server.domain.IpAddress;
+import server.consumer.factory.IpSupplierFactory;
 import server.validate.CmdValidateResult;
 import server.validate.CompositeCmdValidator;
 import server.validate.GeneralCmdValidator;
@@ -27,14 +26,16 @@ class Sender {
     private final CompositeCmdValidator cmdValidator = CompositeCmdValidator.from(new GeneralCmdValidator(), new NoticeCmdValidator());
     private final CmdFactory cmdFactory = new CmdFactory();
     private final BufferedReader in = createReader(System.in);
-    private final SpecificIpCmdConsumer msgSender;
+    private final RequestedIpSupplier msgSender;
+    private final IpOutputStreamRepository ipOutputStreamRepository;
 
-    private Sender(@NonNull SpecificIpCmdConsumer msgSender) {
+    private Sender(@NonNull RequestedIpSupplier msgSender, IpOutputStreamRepository ipOutputStreamRepository) {
         this.msgSender = msgSender;
+        this.ipOutputStreamRepository = ipOutputStreamRepository;
     }
 
     public static Sender from(@NonNull IpOutputStreamRepository ipRepository){
-        return new Sender(new SpecificIpCmdConsumer(ipRepository, cmdWriter));
+        return new Sender(new RequestedIpSupplier(ipRepository, null), ipRepository);
     }
 
     public void waitAndThenSendMsg() {
@@ -53,8 +54,8 @@ class Sender {
                 Cmd cmd = cmdFactory.create(sCmd);
 
 
+                IpSupplierFactory ipSupplierFactory = new IpSupplierFactory(ipOutputStreamRepository);
 
-                msgSender.accept(cmd);
             }
         } catch (IOException e) {
             throw new RuntimeException("Fail console read.",e);
@@ -65,15 +66,4 @@ class Sender {
     private String removeInitiateCmd(String sCmd) {
         return sCmd.substring(1);
     }
-
-    private static BiConsumer<IpAddress, Cmd> cmdWriter = (out, cmd)->{
-//        SimpleMessageFormat smf = cmd.createSMF();
-//
-//        try {
-//            out.write(smf.createMsg());
-//            out.flush();
-//        } catch (IOException e) {
-//            throw new RuntimeException("Fail message send.", e);
-//        }
-    };
 }
