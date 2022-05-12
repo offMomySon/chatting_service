@@ -10,7 +10,7 @@ import static util.IoUtil.createReader;
 @Slf4j
 class Receiver {
     private static final int END_CONNECTION = -1;
-    public static final char[] BUFFER = new char[20];
+    public static final char[] BUFFER = new char[8192];
 
     private final BufferedReader in;
 
