@@ -24,6 +24,11 @@ public class NoticeCmd implements Cmd {
     }
 
     @Override
+    public String getMessage() {
+        return msg;
+    }
+
+    @Override
     public List<IpAddress> getIpAddresses() {
         return ipAddresses;
     }

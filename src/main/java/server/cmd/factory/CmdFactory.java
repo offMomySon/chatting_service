@@ -28,18 +28,26 @@ public class CmdFactory {
     private Cmd createGeneralType(String[] cmds) {
         CmdType cmdType = CmdType.findGeneralType(cmds[0]);
         List<IpAddress> ipAddresses = getIpAddresses(cmds[1]);
-        String msg = cmds[2];
 
-        return new GeneralCmd(cmdType, ipAddresses, msg);
+        StringBuilder msg = new StringBuilder();
+        for (int i = 2; i < cmds.length; i++) {
+            msg.append(cmds[i]).append(" ");
+        }
+
+        return new GeneralCmd(cmdType, ipAddresses, msg.toString());
     }
 
     private Cmd createNoticeType(String[] cmds) {
         CmdType cmdType = CmdType.findNoticeType(cmds[0]);
         NoticeType noticeType = NoticeType.find(cmds[1]);
         List<IpAddress> ipAddresses = getIpAddresses(cmds[2]);
-        String msg = cmds[3];
 
-        return new NoticeCmd(cmdType, noticeType, ipAddresses, msg);
+        StringBuilder msg = new StringBuilder();
+        for (int i = 3; i < cmds.length; i++) {
+            msg.append(cmds[i]).append(" ");
+        }
+
+        return new NoticeCmd(cmdType, noticeType, ipAddresses, msg.toString());
     }
 
     private List<IpAddress> getIpAddresses(String ips) {

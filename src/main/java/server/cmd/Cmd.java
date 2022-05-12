@@ -9,4 +9,6 @@ public interface Cmd {
     List<IpAddress> getIpAddresses();
 
     SimpleMessageFormat createSMF();
+
+    String getMessage();
 }

@@ -6,6 +6,9 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import repository.IpOutputStreamRepository;
+import server.actor.FileRecorder;
+import server.actor.SMFSender;
+import server.consumer.IpSupplier;
 import server.consumer.RequestedIpSupplier;
 import server.cmd.Cmd;
 import server.cmd.factory.CmdFactory;
@@ -26,16 +29,14 @@ class Sender {
     private final CompositeCmdValidator cmdValidator = CompositeCmdValidator.from(new GeneralCmdValidator(), new NoticeCmdValidator());
     private final CmdFactory cmdFactory = new CmdFactory();
     private final BufferedReader in = createReader(System.in);
-    private final RequestedIpSupplier msgSender;
     private final IpOutputStreamRepository ipOutputStreamRepository;
 
-    private Sender(@NonNull RequestedIpSupplier msgSender, IpOutputStreamRepository ipOutputStreamRepository) {
-        this.msgSender = msgSender;
+    private Sender(IpOutputStreamRepository ipOutputStreamRepository) {
         this.ipOutputStreamRepository = ipOutputStreamRepository;
     }
 
     public static Sender from(@NonNull IpOutputStreamRepository ipRepository){
-        return new Sender(new RequestedIpSupplier(ipRepository, null), ipRepository);
+        return new Sender(ipRepository);
     }
 
     public void waitAndThenSendMsg() {
@@ -53,9 +54,14 @@ class Sender {
 
                 Cmd cmd = cmdFactory.create(sCmd);
 
-
                 IpSupplierFactory ipSupplierFactory = new IpSupplierFactory(ipOutputStreamRepository);
+                IpSupplier ipSupplier = ipSupplierFactory.create(cmd.getIpAddresses());
 
+                SMFSender smfSender = new SMFSender(ipOutputStreamRepository, ipSupplier);
+                smfSender.accept(cmd);
+
+                FileRecorder fileRecorder = new FileRecorder(ipOutputStreamRepository, ipSupplier);
+                fileRecorder.accept(cmd);
             }
         } catch (IOException e) {
             throw new RuntimeException("Fail console read.",e);
