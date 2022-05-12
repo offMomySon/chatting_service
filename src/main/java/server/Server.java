@@ -43,9 +43,9 @@ public class Server {
                 ipRepository.put(IpAddress.create(socket.getInetAddress().getHostAddress()), createWriter(socket.getOutputStream()));
                 log.info("Current user count : {}", ipRepository.getSize());
 
-                Socket finalSocket = socket;
+                Socket _socket = socket;
                 Thread receiver = new Thread(
-                    ()-> Receiver.create(finalSocket, ipRepository)
+                    ()-> new Receiver(_socket,ipRepository)
                         .waitAndThenGetMsg()
                 );
                 receiver.start();
