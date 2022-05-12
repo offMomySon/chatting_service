@@ -19,6 +19,7 @@ public class IpAddress {
     private static final Pattern IPV4_PATTERN = Pattern.compile("^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\\.(?!$)|$)){4}$");
 
     private final String value;
+
     private final boolean isAllMatchIp;
 
     private IpAddress(String value, boolean isAllMatchIp) {
@@ -55,6 +56,10 @@ public class IpAddress {
 
     public boolean isAllMatchIp() {
         return isAllMatchIp;
+    }
+
+    public String getValue() {
+        return value;
     }
 
     @Override

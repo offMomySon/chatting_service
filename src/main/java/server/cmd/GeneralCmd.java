@@ -20,6 +20,11 @@ public class GeneralCmd implements Cmd {
         this.msg = msg;
     }
 
+    @Override
+    public String getMessage() {
+        return msg;
+    }
+
     public List<IpAddress> getIpAddresses() {
         return ipAddresses;
     }
