@@ -56,11 +56,17 @@ public class Receiver {
                     SMFSender smfSender = new SMFSender(ipOutputStreamRepository, ipSupplier);
                     smfSender.accept(noticeCmd);
 
-                    FileRecorder fileRecorder = new FileRecorder(ipOutputStreamRepository, ipSupplier);
+                    FileRecorder fileRecorder = new FileRecorder(ipOutputStreamRepository, ipSupplier, "서버");
                     fileRecorder.accept(noticeCmd);
 
                     break;
                 }
+
+                IpSupplierFactory ipSupplierFactory = new IpSupplierFactory(ipOutputStreamRepository);
+                IpSupplier ipSupplier = ipSupplierFactory.create(List.of(IpAddress.create(socket.getInetAddress().getHostAddress())));
+
+                FileRecorder fileRecorder = new FileRecorder(ipOutputStreamRepository, ipSupplier, "클라");
+                fileRecorder.accept(msg);
 
                 log.info("From client : {}", msg);
             }
