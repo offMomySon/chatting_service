@@ -8,7 +8,7 @@ public enum NoticeType {
     INFO("info", "\\u001B[33m", "[INFO]", "\\u001B[33m"),
     WARN("warn", "\\u001B[0m",  "[WARN]","\\u001B[33m");
 
-    private static final String MSG_DECORATOR= "{0}{1}{2} {3}";
+    private static final String MSG_DECORATOR= "{0}{1}{2}";
 
     private final String cmd;
     private final String prevEncoding;
@@ -35,6 +35,10 @@ public enum NoticeType {
         return !contain(cmd);
     }
 
+    public String getTag() {
+        return tag;
+    }
+
     public static NoticeType find(String cmd){
         return Arrays.stream(values())
             .filter(nt -> StringUtils.equalsIgnoreCase(nt.cmd, cmd))
@@ -51,7 +55,18 @@ public enum NoticeType {
         return !isExistType(sCmd);
     }
 
-    public String decorate(String msg){
-        return MessageFormat.format(MSG_DECORATOR, prevEncoding, tag, postEncoding, msg);
+    public String decorate(){
+        return MessageFormat.format(MSG_DECORATOR, prevEncoding, tag, postEncoding);
+    }
+
+    public static NoticeType findFromDecoratedNotice(String decoratedNotice){
+        return Arrays.stream(values())
+            .filter(noticeType -> {
+                String fromNoticeEnum = noticeType.prevEncoding + noticeType.tag + noticeType.postEncoding;
+
+                return StringUtils.equals(fromNoticeEnum, decoratedNotice );
+            })
+            .findAny()
+            .orElseThrow(()-> new RuntimeException("Not exist matchec notice type."));
     }
 }

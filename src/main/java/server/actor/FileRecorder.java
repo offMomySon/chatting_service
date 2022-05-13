@@ -17,10 +17,12 @@ import static util.IoUtil.createFileAppender;
 public class FileRecorder implements Actor{
     private final IpOutputStreamRepository ipRepository;
     private final IpSupplier ipSupplier;
+    private final String writer;
 
-    public FileRecorder(@NonNull IpOutputStreamRepository ipRepository, IpSupplier ipSupplier) {
+    public FileRecorder(@NonNull IpOutputStreamRepository ipRepository, IpSupplier ipSupplier, String writer) {
         this.ipRepository = ipRepository;
         this.ipSupplier = ipSupplier;
+        this.writer = writer;
     }
 
     @Override
@@ -35,11 +37,22 @@ public class FileRecorder implements Actor{
             .forEach(file -> writeWithFile(file, cmd.getMessage(), now));
     }
 
+    public void accept(@NonNull String message){
+        Date now = new Date();
+        String yyyyMMddHHmm = new SimpleDateFormat("yyyyMMddHHmm").format(now);
+        List<IpAddress> ipAddresses = getIpAddresses();
+
+        ipAddresses.stream()
+            .map(ipAddress -> new File(yyyyMMddHHmm + "_" + ipAddress.getValue()))
+            .peek(this::createFileIfNotExist)
+            .forEach(file -> writeWithFile(file, message, now));
+    }
+
     private void writeWithFile(File file, @NonNull String msg, Date now){
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
         StringBuilder log = new StringBuilder();
-        log.append(dateFormat.format(now)).append(" ").append("[서버]").append(" ").append(msg).append("\n");
+        log.append(dateFormat.format(now)).append(" ").append("[").append(writer).append("]").append(" ").append(msg).append("\n");
 
         BufferedWriter out = createFileAppender(file);
 

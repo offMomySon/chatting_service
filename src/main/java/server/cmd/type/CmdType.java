@@ -50,10 +50,17 @@ public enum CmdType {
         return !isExistNoticeType(sCmd);
     }
 
-    public static boolean filteredAnyMatch(Predicate<CmdType> predicate, String sCmd){
+    private static boolean filteredAnyMatch(Predicate<CmdType> predicate, String sCmd){
         return Arrays.stream(CmdType.values())
             .filter(predicate)
             .anyMatch(ct -> ct.cmd.equals(sCmd));
+    }
+
+    public static CmdType findByCode(int code){
+        return Arrays.stream(CmdType.values())
+            .filter(cmdType -> cmdType.code == code)
+            .findAny()
+            .orElseThrow(()-> new RuntimeException("Not exit cmd type code."));
     }
 
     public int getCode() {

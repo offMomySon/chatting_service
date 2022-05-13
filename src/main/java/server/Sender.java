@@ -9,7 +9,6 @@ import repository.IpOutputStreamRepository;
 import server.actor.FileRecorder;
 import server.actor.SMFSender;
 import server.consumer.IpSupplier;
-import server.consumer.RequestedIpSupplier;
 import server.cmd.Cmd;
 import server.cmd.factory.CmdFactory;
 import server.consumer.factory.IpSupplierFactory;
@@ -60,7 +59,7 @@ class Sender {
                 SMFSender smfSender = new SMFSender(ipOutputStreamRepository, ipSupplier);
                 smfSender.accept(cmd);
 
-                FileRecorder fileRecorder = new FileRecorder(ipOutputStreamRepository, ipSupplier);
+                FileRecorder fileRecorder = new FileRecorder(ipOutputStreamRepository, ipSupplier, "서버");
                 fileRecorder.accept(cmd);
             }
         } catch (IOException e) {
