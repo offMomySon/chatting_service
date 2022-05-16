@@ -1,12 +1,10 @@
 package client;
 
-import common.SimpleMessageFormat;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import client.actor.FileRecorder;
 import static util.IoUtil.createReader;
 
 @Slf4j
@@ -32,12 +30,12 @@ class Receiver {
 
                 log.info("From server : {}", msg);
 
-                SimpleMessageFormat simpleMessageFormat = SimpleMessageFormat.create(msg);
-
-                log.info(simpleMessageFormat.decodeForConsole());
-
-                FileRecorder fileRecorder = new FileRecorder("서버");
-                fileRecorder.accept(simpleMessageFormat.decodeForFile());
+//                SimpleMessageFormat simpleMessageFormat = SimpleMessageFormat.create(msg);
+//
+//                log.info(simpleMessageFormat.decodeForConsole());
+//
+//                FileRecorder fileRecorder = new FileRecorder("서버");
+//                fileRecorder.accept(simpleMessageFormat.decodeForFile());
             }
         } catch(IOException e) {
             throw new RuntimeException("Fail to receive msg.",e);
