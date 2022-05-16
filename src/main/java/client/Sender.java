@@ -1,6 +1,5 @@
 package client;
 
-import client.actor.FileRecorder;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -28,9 +27,9 @@ class Sender {
         try {
             while((line = reader.readLine()) != null){
                 log.info("console write : {}", line);
-
-                FileRecorder fileRecorder = new FileRecorder("클라");
-                fileRecorder.accept(line);
+//
+//                FileRecorder fileRecorder = new FileRecorder("클라");
+//                fileRecorder.accept(line);
 
                 out.write(line+"\\n");
                 out.flush();
