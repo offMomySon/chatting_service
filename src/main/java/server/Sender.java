@@ -33,6 +33,9 @@ class Sender {
                     continue;
                 }
                 sCmd = removeInitiateCmd(sCmd);
+
+
+
             }
         } catch (IOException e) {
             throw new RuntimeException("Fail console read.",e);
