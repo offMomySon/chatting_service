@@ -15,14 +15,14 @@ public abstract class CmdValidator {
 
     public abstract CmdValidateResult validate(String cmd);
 
-    protected boolean inValidIps(String sIps){
+    protected boolean isValidIps(String sIps){
         String[] ips = sIps.split(IP_DELIMITER);
 
         return Arrays.stream(ips)
-            .anyMatch(CmdValidator::isNotValidIp);
+            .anyMatch(CmdValidator::notValidIp);
     }
 
-    private static boolean isNotValidIp(String ip){
+    private static boolean notValidIp(String ip){
         Matcher ipv4Matcher = IPV4_PATTERN.matcher(ip);
         Matcher ipAllMatcher = IP_ALL_MATCH_PATTERN.matcher(ip);
 
