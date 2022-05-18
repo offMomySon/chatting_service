@@ -1,10 +1,19 @@
 package server;
 
 
+import common.repository.AddressRepository;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import lombok.extern.slf4j.Slf4j;
+import server.domain.Address;
 
 @Slf4j
 public class Server {
+    private static final int MIN_PORT = 7777;
+
+    private final AddressRepository addressRepository = new AddressRepository();
     private final int port;
 
     public Server(int port) {
@@ -12,39 +21,34 @@ public class Server {
     }
 
     private static int validate(int port){
-        if(port <= 0){
+        if(port < MIN_PORT){
             throw new RuntimeException("Abnormal port number.");
         }
         return port;
     }
 
     public void start() {
-//        Socket socket;
-//        Thread sender = new Thread(
-//            () -> Sender.from(ipRepository)
-//                .waitAndThenSendMsg()
-//        );
-//        sender.start();
-//
-//        try( ServerSocket serverSocket = new ServerSocket(port) ) {
-//            log.info("Server start.");
-//
-//            while(true) {
-//                socket = serverSocket.accept();
-//                log.info("[{} : {}] is connected.", socket.getInetAddress(), socket.getPort());
-//
-//                ipRepository.put(IpAddress.create(socket.getInetAddress().getHostAddress()), createWriter(socket.getOutputStream()));
-//                log.info("Current user count : {}", ipRepository.getSize());
-//
-//                Socket _socket = socket;
-//                Thread receiver = new Thread(
-//                    ()-> new Receiver(_socket,ipRepository)
-//                        .waitAndThenGetMsg()
-//                );
-//                receiver.start();
-//            }
-//        } catch(IOException e) {
-//            throw new RuntimeException("Fail connection.", e);
-//        }
+        Socket socket;
+        Thread sender = new Thread(
+            () -> new Sender(addressRepository).waitAndThenSendMsg()
+        );
+        sender.start();
+
+        try( ServerSocket serverSocket = new ServerSocket(port) ) {
+            log.info("Server start.");
+
+            while(true) {
+                socket = serverSocket.accept();
+                log.info("[{} : {}] is connected.", socket.getInetAddress(), socket.getPort());
+
+                addressRepository.put(new Address(socket.getInetAddress().getHostAddress()), socket.getOutputStream());
+
+                Socket _socket = socket;
+                Thread receiver = new Thread(()-> new Receiver(_socket).waitAndThenGetMsg());
+                receiver.start();
+            }
+        } catch(IOException e) {
+            throw new RuntimeException("Fail connection.", e);
+        }
     }
 }
