@@ -1,6 +1,7 @@
 package server.type;
 
 import java.util.Arrays;
+import org.apache.commons.lang3.StringUtils;
 
 public enum Notice {
     INFO("\\u001B[33m", "[INFO]", "\\u001B[0m"),
@@ -38,4 +39,10 @@ public enum Notice {
         return !isExist(cmd);
     }
 
+    public static Notice getNotice(String cmd){
+        return Arrays.stream(values())
+            .filter(n-> StringUtils.equalsIgnoreCase(n.name(), cmd))
+            .findAny()
+            .orElseThrow(()-> new RuntimeException("Fail to find notice cmd"));
+    }
 }

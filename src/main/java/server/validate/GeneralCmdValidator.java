@@ -9,11 +9,6 @@ public class GeneralCmdValidator extends CmdValidator{
     private static final char CMD_STARTER = '/';
 
     public CmdValidateResult validate(String cmd){
-        if(cmd.charAt(0) != CMD_STARTER){
-            return CmdValidateResult.fail("Fail, Invalid cmd initiator.");
-        }
-        cmd = cmd.substring(1);
-
         String[] cmds = cmd.split(" ");
 
         if(Cmd.notGeneric(cmds[0])){

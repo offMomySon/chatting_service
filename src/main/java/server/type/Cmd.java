@@ -4,11 +4,13 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 public enum Cmd {
-    SEND(Type.GENERIC), NOTICE(Type.NOTICE);
+    SEND("/send", Type.GENERIC), NOTICE("/notice", Type.NOTICE);
 
+    private final String cmd;
     private final Cmd.Type type;
 
-    Cmd(Type type) {
+    Cmd(String cmd, Type type) {
+        this.cmd = cmd;
         this.type = type;
     }
 
@@ -43,7 +45,7 @@ public enum Cmd {
     private static boolean filteredAnyMatch(Predicate<Cmd> predicate, String cmd){
         return Arrays.stream(values())
             .filter(predicate)
-            .anyMatch(cmdType -> cmdType.name().equalsIgnoreCase(cmd));
+            .anyMatch(cmdType -> cmdType.cmd.equalsIgnoreCase(cmd));
     }
 
     private enum Type{

@@ -33,16 +33,14 @@ public class Client {
 
             Thread sender = new Thread(()-> {
                 try {
-                    Sender.create(socket.getOutputStream())
-                        .waitAndThenSendMsg();
+                    Sender.create(socket.getOutputStream()).waitAndThenSendMsg();
                 } catch (IOException e) {
                     throw new RuntimeException("Fail get outputStream, from socket.", e);
                 }
             });
             Thread receiver = new Thread(()-> {
                 try {
-                    Receiver.create(socket.getInputStream())
-                        .waitAndThenGetMsg();
+                    Receiver.create(socket.getInputStream()).waitAndThenGetMsg();
                 } catch (IOException e) {
                     throw new RuntimeException("Fail get inputStream, from socket.", e);
                 }

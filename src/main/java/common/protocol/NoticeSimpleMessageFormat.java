@@ -10,14 +10,10 @@ import server.type.Cmd;
 import server.type.Notice;
 
 public class NoticeSimpleMessageFormat implements SimpleMessageFormat{
-    private static final String NOTICE_DELIMITER = " ";
-
-    private final Cmd cmd;
     private final Notice notice;
     private final String message;
 
-    public NoticeSimpleMessageFormat(Cmd cmd, Notice notice, String message) {
-        this.cmd = cmd;
+    public NoticeSimpleMessageFormat(Notice notice, String message) {
         this.notice = notice;
         this.message = message;
     }
