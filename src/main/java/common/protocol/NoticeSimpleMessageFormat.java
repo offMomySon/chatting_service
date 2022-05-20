@@ -19,6 +19,7 @@ public class NoticeSimpleMessageFormat implements SimpleMessageFormat{
     }
 
     /**
+     * TODO
      * NoticeInfoConsoleFormat 데이터 생성 방법을 2가지로 분리 할 수 있을 것 같다.
      *
      * 1. 데이터 비교를 통해 구체적인 객체를 생성한다.

@@ -1,14 +1,11 @@
 package common.repository;
 
-import java.io.BufferedWriter;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import server.domain.Address;
-import util.IoUtil;
+import common.domain.Address;
 import static util.IoUtil.*;
 
 public class AddressRepository {

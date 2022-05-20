@@ -2,9 +2,6 @@ package server.actor;
 
 import common.protocol.SimpleMessageFormat;
 import common.repository.AddressRepository;
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
@@ -12,7 +9,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.NonNull;
-import server.domain.Address;
+import common.domain.Address;
+import common.domain.SpecificAddress;
 
 public class SMFSender {
     private static final List<String> ALL_ADDRESS = List.of("*", "all");
@@ -32,7 +30,7 @@ public class SMFSender {
         }
 
         List<Address> addresses = Arrays.stream(address.split(ADDRESS_DELIMITER))
-            .map(Address::new)
+            .map(SpecificAddress::new)
             .collect(Collectors.toList());
 
         sendSpecificAddress(addresses);

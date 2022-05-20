@@ -45,6 +45,9 @@ class Sender {
                 }
 
                 SimpleMessageFormat simpleMessageFormat = simpleMessageFormatFactory.create(cmd);
+
+
+
                 String address = getAddress(simpleMessageFormat, cmd);
 
                 SMFSender smfSender = new SMFSender(simpleMessageFormat, addressRepository);
