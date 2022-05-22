@@ -1,7 +1,9 @@
 package server.type;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.Predicate;
+import org.apache.commons.lang3.StringUtils;
 
 public enum Cmd {
     SEND("/send", Type.GENERIC), NOTICE("/notice", Type.NOTICE);
@@ -12,6 +14,12 @@ public enum Cmd {
     Cmd(String cmd, Type type) {
         this.cmd = cmd;
         this.type = type;
+    }
+
+    public static Optional<Cmd> from(String sCmd){
+        return Arrays.stream(values())
+            .filter(cmd -> StringUtils.equalsIgnoreCase(cmd.name(), sCmd))
+            .findAny();
     }
 
     public int getTypeCode() {

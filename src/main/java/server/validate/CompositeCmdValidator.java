@@ -48,10 +48,6 @@ public class CompositeCmdValidator extends CmdValidator {
             }
         }
 
-        /**
-         * TODO
-         * 생성된 실패 메세지를 정확하게 전달하고 싶다..
-         */
         return getInvalidResult(validateResults);
     }
 

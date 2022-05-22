@@ -1,6 +1,6 @@
 package server.actor;
 
-import common.protocol.SimpleMessageFormat;
+import common.view.format.SimpleMessageFormat;
 import common.repository.AddressRepository;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
