@@ -1,15 +1,14 @@
 package server;
 
-import common.protocol.NoticeSimpleMessageFormat;
-import common.protocol.SimpleMessageFormat;
-import common.protocol.SimpleMessageFormatFactory;
+import common.view.format.NoticeSimpleMessageFormat;
+import common.view.format.SimpleMessageFormat;
+import common.view.format.SimpleMessageFormatFactory;
 import common.repository.AddressRepository;
 import java.io.BufferedReader;
 import java.io.IOException;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import server.actor.SMFSender;
-import server.validate.CmdValidateResult;
 import server.validate.CompositeCmdValidator;
 import server.validate.GeneralCmdValidator;
 import server.validate.NoticeCmdValidator;
@@ -38,15 +37,16 @@ class Sender {
             while( (cmd = in.readLine()) != STOP_READ){
                 log.info("console write : {}", cmd);
 
-                CmdValidateResult validateResult = cmdValidator.validate(cmd);
-                if(validateResult.notValid()){
-                    log.info("Invalid cmd. '{}'", validateResult.getMsg());
-                    continue;
-                }
+                /**
+                 * anti pattern.
+                 */
+//                CmdValidateResult validateResult = cmdValidator.validate(cmd);
+//                if(validateResult.notValid()){
+//                    log.info("Invalid cmd. '{}'", validateResult.getMsg());
+//                    continue;
+//                }
 
                 SimpleMessageFormat simpleMessageFormat = simpleMessageFormatFactory.create(cmd);
-
-
 
                 String address = getAddress(simpleMessageFormat, cmd);
 

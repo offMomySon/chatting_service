@@ -1,16 +1,13 @@
 package client;
 
-import common.protocol.SimpleMessageFormat;
+import common.view.format.SimpleMessageFormat;
 import common.view.console.ConsoleMessage;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import static util.IoUtil.createObjectInputStream;
-import static util.IoUtil.createReader;
 
 @Slf4j
 class Receiver {

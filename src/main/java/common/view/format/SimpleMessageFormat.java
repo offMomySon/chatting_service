@@ -1,4 +1,4 @@
-package common.protocol;
+package common.view.format;
 
 import common.view.console.ConsoleMessage;
 import common.view.file.FileMessage;

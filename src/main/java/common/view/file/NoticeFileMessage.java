@@ -1,5 +1,8 @@
 package common.view.file;
 
+/**
+ * notice 명령어를 file 에 출력하기 위한 view 객체.
+ */
 public abstract class NoticeFileMessage implements FileMessage {
     private static final String PREFIX_DELIMITER = " ";
 

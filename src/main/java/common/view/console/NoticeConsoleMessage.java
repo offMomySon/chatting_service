@@ -1,7 +1,7 @@
 package common.view.console;
 
 /**
- * client 에서 notice message 를 출력하는 역할.
+ * notice 명령어를 console 에 출력하기 위한 메세지 view.
  */
 public abstract class NoticeConsoleMessage implements ConsoleMessage {
     private static final String PREFIX_DELIMITER = " ";
