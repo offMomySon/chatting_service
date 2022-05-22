@@ -25,7 +25,7 @@ public class SimpleMessageFormatFactory {
                 String[] splitCmd = sCmd.split(CMD_DELIMITER, NOTICE_CMD_PART_SIZE);
 
                 Notice notice = Notice.from(splitCmd[1]).orElseThrow(()-> new RuntimeException("Not exist notice."));;
-                String message = splitCmd[4];
+                String message = splitCmd[3];
 
                 return new NoticeSimpleMessageFormat(notice, message);
             }

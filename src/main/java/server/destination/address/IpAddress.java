@@ -1,16 +1,18 @@
-package common.domain;
+package server.destination.address;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 
 /**
  * 특정 ip 가 목적지라는 데이터를 담은 객체
  */
-public class SpecificAddress extends Address {
+public class IpAddress extends Address {
     private static final Integer MAX_ADDRESS_NUM = 255;
 
-    public SpecificAddress(String value) {
-        super(validate(value));
+    private final String value;
+    public IpAddress(String value) {
+        this.value = validate(value);
     }
 
     private static String validate(String address) {
@@ -24,5 +26,18 @@ public class SpecificAddress extends Address {
         return Arrays.stream(address.split("."))
             .map(Integer::parseInt)
             .anyMatch(addressNum -> addressNum > MAX_ADDRESS_NUM);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IpAddress ipAddress = (IpAddress) o;
+        return Objects.equals(value, ipAddress.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 }

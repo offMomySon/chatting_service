@@ -1,9 +1,9 @@
-package common.domain;
+package server.destination.address;
 
 import java.util.Objects;
+import server.destination.Destination;
 
 /**
- * 
  * 
  * 외부 관점에서 * 이든 127.0.0.1 이든 전송할 대상을 지칭하는 데이터 이다.
  * 하지만, 내부 관점에서는 사용방식이 다르기 때문에 별도의 객체로 분리해야한다.
@@ -20,23 +20,6 @@ import java.util.Objects;
  * 사용방법이 다르다?
  *
  */
-public abstract class Address {
-    private final String value;
+public abstract class Address implements Destination {
 
-    protected Address(String value) {
-        this.value = value;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Address address = (Address) o;
-        return Objects.equals(value, address.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(value);
-    }
 }
