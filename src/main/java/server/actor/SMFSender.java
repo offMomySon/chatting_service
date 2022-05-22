@@ -9,8 +9,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.NonNull;
-import common.domain.Address;
-import common.domain.SpecificAddress;
+import server.destination.address.Address;
+import server.destination.address.IpAddress;
 
 public class SMFSender {
     private static final List<String> ALL_ADDRESS = List.of("*", "all");
@@ -30,7 +30,7 @@ public class SMFSender {
         }
 
         List<Address> addresses = Arrays.stream(address.split(ADDRESS_DELIMITER))
-            .map(SpecificAddress::new)
+            .map(IpAddress::new)
             .collect(Collectors.toList());
 
         sendSpecificAddress(addresses);

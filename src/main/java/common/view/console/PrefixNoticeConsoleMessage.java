@@ -40,11 +40,11 @@ public class PrefixNoticeConsoleMessage implements ConsoleMessage {
  *
  * 3. Prefix 생성자에서 view 를 지정하는 경우.
  *      (1) low 데이터를 모두 끊어내고 순수한 view 객체로 이용가능하다.
- *      (2) NoticeInfoFileMessage, NoticeWarn fileMessage 등 상세한 개념을 생성할 수 있다.
- *
+ *      (2) NoticeInfoFileMessage, NoticeWarn fileMessage 등 상세한 개념 prefix 개념을 이용해서 생성 할 수 있다.
  *          public class NoticeInfoFileMessage extends NoticeFileMessage {
  *              super(new PrefixNoticeFileMessage("[INFO]"), message);
  *          }
  *
  * 4. prefix 개념을 왜 만들어야 할까?
+ * class 를 통해 문맥을 추가하기 위해?
  */
