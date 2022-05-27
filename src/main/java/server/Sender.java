@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import server.sender.SmfSender;
 import server.sender.factory.SmfSendStrategyFactory;
 import server.sender.validator.AddressValidator;
+import server.type.Cmd;
 import static util.IoUtil.*;
 
 /**
@@ -35,20 +36,11 @@ class Sender {
             while( (cmd = in.readLine()) != STOP_READ){
                 log.info("console write : {}", cmd);
 
-                /**
-                 * anti pattern.
-                 */
-//                CmdValidateResult validateResult = cmdValidator.validate(cmd);
-//                if(validateResult.notValid()){
-//                    log.info("Invalid cmd. '{}'", validateResult.getMsg());
-//                    continue;
-//                }
-
                 SimpleMessageFormat simpleMessageFormat = simpleMessageFormatFactory.create(cmd);
 
                 SmfSendStrategyFactory smfSendStrategyFactory = new SmfSendStrategyFactory(new AddressValidator(), addressRepository, simpleMessageFormat);
 
-                SmfSender smfSender = smfSendStrategyFactory.create(getDestination(cmd, simpleMessageFormat));
+                SmfSender smfSender = smfSendStrategyFactory.create(getDestination(cmd));
                 smfSender.send();
 
 //                List<Destination> destinations =destinationFactory.createDestinations(getDestination(cmd, simpleMessageFormat));
@@ -63,26 +55,18 @@ class Sender {
         }
     }
 
-    private String getDestination(String cmd, SimpleMessageFormat simpleMessageFormat) {
-        String[] sCmd = cmd.split(" ");
+    private String getDestination(String scmd) {
+        String[] splitCmd = scmd.split(" ");
 
-        if(simpleMessageFormat instanceof GenericSimpleMessageFormat){
-            return sCmd[1];
+        Cmd cmd = Cmd.from(splitCmd[0]).orElseThrow(()-> new RuntimeException("일치하는 cmd 가 존재하지 않습니다."));
+
+        switch (cmd){
+            case SEND:
+                return splitCmd[1];
+            case NOTICE:
+                return splitCmd[2];
+            default:
+                throw new RuntimeException("일치하는 cmd 가 존재하지 않습니다.");
         }
-
-        if(simpleMessageFormat instanceof NoticeSimpleMessageFormat){
-            return sCmd[2];
-        }
-
-        throw new RuntimeException("적합한 simpleMessage format 이 존재하지 않습니다.");
-    }
-
-    private String getAddress(SimpleMessageFormat simpleMessageFormat, String cmd) {
-        String[] cmds = cmd.split(" ");
-
-        if( simpleMessageFormat instanceof NoticeSimpleMessageFormat){
-            return cmds[2];
-        }
-        return cmds[1];
     }
 }
