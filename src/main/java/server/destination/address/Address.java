@@ -1,25 +1,43 @@
 package server.destination.address;
 
+import java.util.Arrays;
 import java.util.Objects;
-import server.destination.Destination;
+
 
 /**
- * 
- * 외부 관점에서 * 이든 127.0.0.1 이든 전송할 대상을 지칭하는 데이터 이다.
- * 하지만, 내부 관점에서는 사용방식이 다르기 때문에 별도의 객체로 분리해야한다.
- * 외부 관점을 녹이기 위해 address 추상 클래스를 만들고, 내부의 사용방식에 따라 데이터를 디테일 하게 다루기 위해 추상 클래스를 상속한
- * AllMatchDestination,SpecificDestination 으로 나눈다.
- *
- *
- * ip 를 string 으로만 다루게 된다면,
- *  '*' 이든, 127.0.0.1 이든 동일하게 의도대로 동작하게 할 수 있지만,사용할 때마다 , 값 포멧의 검사가 필요합니다.
- *
- * 그렇기 때문에 객체 생성을 통해 format 을 보장하고 객체로 데이터를 전달하는 것이 좋아 보입니다.
- *
- * 성질이 다르다는 것은?
- * 사용방법이 다르다?
- *
+ * 특정 ip 가 목적지라는 데이터를 담은 객체
  */
-public abstract class Address implements Destination {
+public class Address {
+    private static final Integer MAX_ADDRESS_NUM = 255;
 
+    private final String value;
+    public Address(String value) {
+        this.value = validate(value);
+    }
+
+    private static String validate(String address) {
+        if(checkValidAddress(address)){
+            throw new RuntimeException("Invalid Address.");
+        }
+        return address;
+    }
+
+    private static boolean checkValidAddress(String address){
+        return Arrays.stream(address.split("."))
+            .map(Integer::parseInt)
+            .anyMatch(addressNum -> addressNum > MAX_ADDRESS_NUM);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Address address = (Address) o;
+        return Objects.equals(value, address.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
+    }
 }
