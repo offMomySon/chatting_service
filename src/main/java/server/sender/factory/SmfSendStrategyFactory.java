@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
-import server.destination.address.Address;
+import server.destination.Address;
 import server.sender.AllSmfSmfSender;
 import server.sender.IpSmfSmfSender;
 import server.sender.MultiIpSmfSmfSender;

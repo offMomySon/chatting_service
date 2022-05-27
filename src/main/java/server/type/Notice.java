@@ -11,18 +11,6 @@ public enum Notice {
     private final String prevColorCode;
     private final String symbol;
 
-    public String getPrevColorCode() {
-        return prevColorCode;
-    }
-
-    public String getSymbol() {
-        return symbol;
-    }
-
-    public String getPostColorCode() {
-        return postColorCode;
-    }
-
     private final String postColorCode;
 
     Notice(String prevColorCode, String symbol, String postColorCode) {

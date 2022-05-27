@@ -4,7 +4,7 @@ import common.repository.AddressRepository;
 import common.view.format.SimpleMessageFormat;
 import java.util.List;
 import lombok.NonNull;
-import server.destination.address.Address;
+import server.destination.Address;
 
 public class MultiIpSmfSmfSender implements SmfSender {
     private final AddressRepository addressRepository;

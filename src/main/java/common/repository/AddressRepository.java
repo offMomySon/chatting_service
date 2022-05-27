@@ -5,7 +5,7 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import server.destination.address.Address;
+import server.destination.Address;
 import static util.IoUtil.*;
 
 public class AddressRepository {

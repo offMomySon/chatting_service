@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import lombok.extern.slf4j.Slf4j;
-import server.destination.address.Address;
+import server.destination.Address;
 
 @Slf4j
 public class Server {

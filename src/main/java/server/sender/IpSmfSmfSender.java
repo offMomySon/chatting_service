@@ -5,7 +5,7 @@ import common.view.format.SimpleMessageFormat;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import lombok.NonNull;
-import server.destination.address.Address;
+import server.destination.Address;
 
 public class IpSmfSmfSender implements SmfSender {
     private final AddressRepository addressRepository;

@@ -1,4 +1,4 @@
-package server.destination.address;
+package server.destination;
 
 import java.util.Arrays;
 import java.util.Objects;
