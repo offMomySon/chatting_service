@@ -7,14 +7,11 @@ import common.view.format.SimpleMessageFormatFactory;
 import common.repository.AddressRepository;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.List;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import server.actor.SMFSender;
-import server.destination.Destination;
-import server.destination.factory.AddressFactory;
-import server.destination.factory.CompositedDestinationFactory;
-import server.destination.factory.URLFactory;
+import server.sender.SmfSender;
+import server.sender.factory.SmfSendStrategyFactory;
+import server.sender.validator.AddressValidator;
 import static util.IoUtil.*;
 
 /**
@@ -23,8 +20,6 @@ import static util.IoUtil.*;
 @Slf4j
 class Sender {
     private static final String STOP_READ = null;
-
-    private static final CompositedDestinationFactory destinationFactory = CompositedDestinationFactory.from(new AddressFactory(), new URLFactory());
     private static final SimpleMessageFormatFactory simpleMessageFormatFactory = new SimpleMessageFormatFactory();
     private static final BufferedReader in = createReader(System.in);
 
@@ -51,7 +46,12 @@ class Sender {
 
                 SimpleMessageFormat simpleMessageFormat = simpleMessageFormatFactory.create(cmd);
 
-                List<Destination> destinations =destinationFactory.createDestinations(getDestination(cmd, simpleMessageFormat));
+                SmfSendStrategyFactory smfSendStrategyFactory = new SmfSendStrategyFactory(new AddressValidator(), addressRepository, simpleMessageFormat);
+
+                SmfSender smfSender = smfSendStrategyFactory.create(getDestination(cmd, simpleMessageFormat));
+                smfSender.send();
+
+//                List<Destination> destinations =destinationFactory.createDestinations(getDestination(cmd, simpleMessageFormat));
 
 //                String address = getAddress(simpleMessageFormat, cmd);
 //
@@ -74,7 +74,7 @@ class Sender {
             return sCmd[2];
         }
 
-        throw new RuntimeException("적합한 simpleMessage format 이 존재하지 않습니다.");ㄴ
+        throw new RuntimeException("적합한 simpleMessage format 이 존재하지 않습니다.");
     }
 
     private String getAddress(SimpleMessageFormat simpleMessageFormat, String cmd) {

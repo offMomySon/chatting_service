@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import lombok.extern.slf4j.Slf4j;
-import server.destination.address.IpAddress;
+import server.destination.address.Address;
 
 @Slf4j
 public class Server {
@@ -40,7 +40,7 @@ public class Server {
                 socket = serverSocket.accept();
                 log.info("[{} : {}] is connected.", socket.getInetAddress(), socket.getPort());
 
-                addressRepository.put(new IpAddress(socket.getInetAddress().getHostAddress()), socket.getOutputStream());
+                addressRepository.put(new Address(socket.getInetAddress().getHostAddress()), socket.getOutputStream());
 
                 Socket _socket = socket;
                 Thread receiver = new Thread(()-> new Receiver(_socket).waitAndThenGetMsg());
