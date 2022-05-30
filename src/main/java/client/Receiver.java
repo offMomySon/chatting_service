@@ -1,6 +1,6 @@
 package client;
 
-import common.view.format.SimpleMessageFormat;
+import client.format.SimpleMessageFormat;
 import common.view.console.ConsoleMessage;
 import java.io.IOException;
 import java.io.InputStream;

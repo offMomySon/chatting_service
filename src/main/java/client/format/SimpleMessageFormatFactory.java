@@ -1,4 +1,4 @@
-package common.view.format;
+package client.format;
 
 import server.type.Cmd;
 import server.type.Notice;

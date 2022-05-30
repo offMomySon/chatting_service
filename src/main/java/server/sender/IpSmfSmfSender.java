@@ -1,7 +1,7 @@
 package server.sender;
 
 import common.repository.AddressRepository;
-import common.view.format.SimpleMessageFormat;
+import client.format.SimpleMessageFormat;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import lombok.NonNull;

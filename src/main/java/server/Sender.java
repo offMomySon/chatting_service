@@ -1,9 +1,7 @@
 package server;
 
-import common.view.format.GenericSimpleMessageFormat;
-import common.view.format.NoticeSimpleMessageFormat;
-import common.view.format.SimpleMessageFormat;
-import common.view.format.SimpleMessageFormatFactory;
+import client.format.SimpleMessageFormat;
+import client.format.SimpleMessageFormatFactory;
 import common.repository.AddressRepository;
 import java.io.BufferedReader;
 import java.io.IOException;

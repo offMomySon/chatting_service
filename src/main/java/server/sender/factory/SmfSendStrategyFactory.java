@@ -1,7 +1,7 @@
 package server.sender.factory;
 
 import common.repository.AddressRepository;
-import common.view.format.SimpleMessageFormat;
+import client.format.SimpleMessageFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
