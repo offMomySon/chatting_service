@@ -6,6 +6,7 @@ import server.type.Notice;
 /**
  * smp 를 생성하는 역할, 책임 을 가지는 객체.
  */
+@Deprecated
 public class SimpleMessageFormatFactory {
     private static final String CMD_DELIMITER = " ";
     private static final int GENERIC_CMD_PART_SIZE = 3;

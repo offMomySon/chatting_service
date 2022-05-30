@@ -11,6 +11,7 @@ import server.type.Notice;
 /**
  * 용도 별 generic view 를 생성하기 위한, 헬퍼 view 객체
  */
+@Deprecated
 public class NoticeSimpleMessageFormat implements SimpleMessageFormat{
     private final Notice notice;
     private final String message;

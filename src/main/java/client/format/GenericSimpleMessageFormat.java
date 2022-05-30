@@ -8,6 +8,7 @@ import common.view.file.GenericFileMessage;
 /**
  * 용도 별 generic view 를 생성하기 위한, 헬퍼 view 객체
  */
+@Deprecated
 public class GenericSimpleMessageFormat implements SimpleMessageFormat{
     private final String message;
 
