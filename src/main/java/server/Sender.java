@@ -1,7 +1,7 @@
 package server;
 
-import client.format.SimpleMessageFormat;
-import client.format.SimpleMessageFormatFactory;
+import server.protocal.SimpleMessageFormat;
+import server.protocal.SimpleMessageFormatFactory;
 import common.repository.AddressRepository;
 import java.io.BufferedReader;
 import java.io.IOException;

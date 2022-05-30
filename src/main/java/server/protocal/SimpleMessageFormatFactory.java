@@ -1,12 +1,15 @@
-package client.format;
+package server.protocal;
 
+import server.protocal.SimpleMessageFormat;
+import server.protocal.generic.GenericSimpleMessageFormat;
+import server.protocal.notice.NoticeInfoSimpleMessageFormat;
 import server.type.Cmd;
 import server.type.Notice;
 
 /**
  * smp 를 생성하는 역할, 책임 을 가지는 객체.
  */
-@Deprecated
+
 public class SimpleMessageFormatFactory {
     private static final String CMD_DELIMITER = " ";
     private static final int GENERIC_CMD_PART_SIZE = 3;
@@ -20,15 +23,21 @@ public class SimpleMessageFormatFactory {
         switch(cmd) {
             case SEND:{
                 String[] splitCmd = sCmd.split(CMD_DELIMITER, GENERIC_CMD_PART_SIZE);
+
                 return new GenericSimpleMessageFormat(splitCmd[2]);
             }
             case NOTICE:{
                 String[] splitCmd = sCmd.split(CMD_DELIMITER, NOTICE_CMD_PART_SIZE);
 
-                Notice notice = Notice.from(splitCmd[1]).orElseThrow(()-> new RuntimeException("Not exist notice."));;
+                Notice notice = Notice.from(splitCmd[1]).orElseThrow(()-> new RuntimeException("Not exist notice."));
                 String message = splitCmd[3];
 
-                return new NoticeSimpleMessageFormat(notice, message);
+                switch (notice){
+                    case INFO:
+                        return new NoticeInfoSimpleMessageFormat(message);
+                    case WARN:
+                        return new GenericSimpleMessageFormat(message);
+                }
             }
         }
 

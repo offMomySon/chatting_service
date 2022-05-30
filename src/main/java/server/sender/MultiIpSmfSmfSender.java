@@ -1,10 +1,10 @@
 package server.sender;
 
 import common.repository.AddressRepository;
-import client.format.SimpleMessageFormat;
 import java.util.List;
 import lombok.NonNull;
 import server.destination.Address;
+import server.protocal.SimpleMessageFormat;
 
 public class MultiIpSmfSmfSender implements SmfSender {
     private final AddressRepository addressRepository;
