@@ -1,13 +1,13 @@
 package server.sender.factory;
 
 import common.repository.AddressRepository;
-import client.format.SimpleMessageFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import server.destination.Address;
+import server.protocal.SimpleMessageFormat;
 import server.sender.AllSmfSmfSender;
 import server.sender.IpSmfSmfSender;
 import server.sender.MultiIpSmfSmfSender;
