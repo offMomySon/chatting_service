@@ -1,7 +1,7 @@
 package client.message.console;
 
-import common.protocal.notice.PrefixMessage;
 import lombok.NonNull;
+import server.protocal.notice.PrefixMessage;
 
 public class ConsoleNoticeWarnMessage extends ConsoleNoticeMessage {
     public ConsoleNoticeWarnMessage(@NonNull String message) {

@@ -1,8 +1,8 @@
-package common.protocal.generic;
+package server.protocal.generic;
 
-import common.protocal.SimpleMessageFormat;
 import java.text.MessageFormat;
 import lombok.NonNull;
+import server.protocal.SimpleMessageFormat;
 
 public class GenericSimpleMessageFormat implements SimpleMessageFormat {
     private final String message;

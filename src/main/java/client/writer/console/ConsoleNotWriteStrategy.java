@@ -1,6 +1,6 @@
 package client.writer.console;
 
-public class NotWriteConsoleWriteStrategy extends ConsoleWriteStrategy {
+public class ConsoleNotWriteStrategy extends ConsoleWriteStrategy {
 
     @Override
     public void write() {

@@ -1,9 +1,9 @@
 package server.sender;
 
-import common.protocal.SimpleMessageFormat;
 import common.repository.AddressRepository;
 import java.io.IOException;
 import lombok.NonNull;
+import server.protocal.SimpleMessageFormat;
 
 public class AllSmfSmfSender implements SmfSender {
     private final AddressRepository addressRepository;

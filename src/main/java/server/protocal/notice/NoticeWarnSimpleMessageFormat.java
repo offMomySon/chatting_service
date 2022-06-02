@@ -1,4 +1,4 @@
-package common.protocal.notice;
+package server.protocal.notice;
 
 import lombok.NonNull;
 

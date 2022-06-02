@@ -1,8 +1,8 @@
-package common.protocal.notice;
+package server.protocal.notice;
 
-import common.protocal.SimpleMessageFormat;
 import java.text.MessageFormat;
 import lombok.NonNull;
+import server.protocal.SimpleMessageFormat;
 
 public class NoticeSimpleMessageFormat implements SimpleMessageFormat {
     private final PrefixMessage prefix;

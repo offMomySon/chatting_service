@@ -3,10 +3,10 @@ package client.writer.console;
 import client.message.console.ConsoleNoticeMessage;
 import lombok.NonNull;
 
-public class NoticeConsoleWriteStrategy extends ConsoleWriteStrategy {
+public class ConsoleSmfWriteStrategy extends ConsoleWriteStrategy {
     private final ConsoleNoticeMessage message;
 
-    public NoticeConsoleWriteStrategy(@NonNull ConsoleNoticeMessage message) {
+    public ConsoleSmfWriteStrategy(@NonNull ConsoleNoticeMessage message) {
         this.message = message;
     }
 

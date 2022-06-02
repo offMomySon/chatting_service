@@ -1,6 +1,6 @@
 package server.sender.factory;
 
-import common.protocal.SimpleMessageFormat;
+import server.protocal.SimpleMessageFormat;
 import common.repository.AddressRepository;
 import java.util.Arrays;
 import java.util.List;
