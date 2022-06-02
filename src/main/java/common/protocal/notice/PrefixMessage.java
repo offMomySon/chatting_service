@@ -1,4 +1,4 @@
-package server.protocal.notice;
+package common.protocal.notice;
 
 public class PrefixMessage {
     private final String message;
@@ -7,7 +7,7 @@ public class PrefixMessage {
         this.message = message;
     }
 
-    public String getMessage(){
+    public String create() {
         return message;
     }
 }

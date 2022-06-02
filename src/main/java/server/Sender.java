@@ -1,7 +1,7 @@
 package server;
 
-import server.protocal.SimpleMessageFormat;
-import server.protocal.SimpleMessageFormatFactory;
+import common.protocal.SimpleMessageFormat;
+import common.protocal.SimpleMessageFormatFactory;
 import common.repository.AddressRepository;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import server.sender.SmfSender;
 import server.sender.factory.SmfSendStrategyFactory;
 import server.sender.validator.AddressValidator;
 import server.type.Cmd;
-import static util.IoUtil.*;
+import static util.IoUtil.createReader;
 
 /**
  * server 에서 입력 받은 cmd 를 client 에 뿌리는 역할.
@@ -30,13 +30,15 @@ class Sender {
 
     public void waitAndThenSendMsg() {
         String cmd;
-        try{
-            while( (cmd = in.readLine()) != STOP_READ){
+        try {
+            while ((cmd = in.readLine()) != STOP_READ) {
                 log.info("console write : {}", cmd);
 
                 SimpleMessageFormat simpleMessageFormat = simpleMessageFormatFactory.create(cmd);
 
-                SmfSendStrategyFactory smfSendStrategyFactory = new SmfSendStrategyFactory(new AddressValidator(), addressRepository, simpleMessageFormat);
+                SmfSendStrategyFactory smfSendStrategyFactory = new SmfSendStrategyFactory(new AddressValidator(),
+                                                                                           addressRepository,
+                                                                                           simpleMessageFormat);
 
                 SmfSender smfSender = smfSendStrategyFactory.create(getDestination(cmd));
                 smfSender.send();
@@ -49,16 +51,16 @@ class Sender {
 //                smfSender.send(address);
             }
         } catch (IOException e) {
-            throw new RuntimeException("Fail console read.",e);
+            throw new RuntimeException("Fail console read.", e);
         }
     }
 
     private String getDestination(String scmd) {
         String[] splitCmd = scmd.split(" ");
 
-        Cmd cmd = Cmd.from(splitCmd[0]).orElseThrow(()-> new RuntimeException("일치하는 cmd 가 존재하지 않습니다."));
+        Cmd cmd = Cmd.from(splitCmd[0]).orElseThrow(() -> new RuntimeException("일치하는 cmd 가 존재하지 않습니다."));
 
-        switch (cmd){
+        switch (cmd) {
             case SEND:
                 return splitCmd[1];
             case NOTICE:
