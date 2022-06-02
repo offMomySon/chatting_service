@@ -11,8 +11,7 @@ public class MultiIpSmfSmfSender implements SmfSender {
     private final List<Address> addresses;
     private final SimpleMessageFormat simpleMessageFormat;
 
-    public MultiIpSmfSmfSender(@NonNull AddressRepository addressRepository, @NonNull List<Address> addresses,
-                               SimpleMessageFormat simpleMessageFormat) {
+    public MultiIpSmfSmfSender(@NonNull AddressRepository addressRepository, @NonNull List<Address> addresses, @NonNull SimpleMessageFormat simpleMessageFormat) {
         this.addressRepository = addressRepository;
         this.addresses = addresses;
         this.simpleMessageFormat = simpleMessageFormat;

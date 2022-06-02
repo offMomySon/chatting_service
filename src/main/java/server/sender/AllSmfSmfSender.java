@@ -7,8 +7,8 @@ import server.protocal.SimpleMessageFormat;
 
 public class AllSmfSmfSender implements SmfSender {
     private final AddressRepository addressRepository;
-    private final server.protocal.SimpleMessageFormat simpleMessageFormat;
-    public AllSmfSmfSender(@NonNull AddressRepository addressRepository, SimpleMessageFormat simpleMessageFormat) {
+    private final SimpleMessageFormat simpleMessageFormat;
+    public AllSmfSmfSender(@NonNull AddressRepository addressRepository, @NonNull SimpleMessageFormat simpleMessageFormat) {
         this.addressRepository = addressRepository;
         this.simpleMessageFormat = simpleMessageFormat;
     }
@@ -18,7 +18,7 @@ public class AllSmfSmfSender implements SmfSender {
         addressRepository.values().stream()
             .forEach(out -> {
                 try {
-                    out.writeObject(simpleMessageFormat);
+                    out.write(simpleMessageFormat.createMessage());
                     out.flush();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
