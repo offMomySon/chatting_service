@@ -1,8 +1,7 @@
-package server.protocal;
+package common.protocal;
 
-import server.protocal.SimpleMessageFormat;
-import server.protocal.generic.GenericSimpleMessageFormat;
-import server.protocal.notice.NoticeInfoSimpleMessageFormat;
+import common.protocal.generic.GenericSimpleMessageFormat;
+import common.protocal.notice.NoticeInfoSimpleMessageFormat;
 import server.type.Cmd;
 import server.type.Notice;
 
@@ -15,24 +14,24 @@ public class SimpleMessageFormatFactory {
     private static final int GENERIC_CMD_PART_SIZE = 3;
     private static final int NOTICE_CMD_PART_SIZE = 4;
 
-    public SimpleMessageFormat create(String sCmd){
+    public SimpleMessageFormat create(String sCmd) {
         String cmdType = getCmdType(sCmd);
 
-        Cmd cmd = Cmd.from(cmdType).orElseThrow(()-> new RuntimeException("Not exist cmd."));
+        Cmd cmd = Cmd.from(cmdType).orElseThrow(() -> new RuntimeException("Not exist cmd."));
 
-        switch(cmd) {
-            case SEND:{
+        switch (cmd) {
+            case SEND: {
                 String[] splitCmd = sCmd.split(CMD_DELIMITER, GENERIC_CMD_PART_SIZE);
 
                 return new GenericSimpleMessageFormat(splitCmd[2]);
             }
-            case NOTICE:{
+            case NOTICE: {
                 String[] splitCmd = sCmd.split(CMD_DELIMITER, NOTICE_CMD_PART_SIZE);
 
-                Notice notice = Notice.from(splitCmd[1]).orElseThrow(()-> new RuntimeException("Not exist notice."));
+                Notice notice = Notice.from(splitCmd[1]).orElseThrow(() -> new RuntimeException("Not exist notice."));
                 String message = splitCmd[3];
 
-                switch (notice){
+                switch (notice) {
                     case INFO:
                         return new NoticeInfoSimpleMessageFormat(message);
                     case WARN:
@@ -44,7 +43,7 @@ public class SimpleMessageFormatFactory {
         throw new RuntimeException("Not exist sCmd");
     }
 
-    private String getCmdType(String cmd){
+    private String getCmdType(String cmd) {
         return cmd.substring(0, cmd.indexOf(CMD_DELIMITER));
     }
 }

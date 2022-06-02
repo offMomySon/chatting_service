@@ -1,5 +1,6 @@
 package common.repository;
 
+import java.io.BufferedWriter;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.Collection;
@@ -9,25 +10,17 @@ import server.destination.Address;
 import static util.IoUtil.*;
 
 public class AddressRepository {
-    private final Map<Address, ObjectOutputStream> value = new HashMap<>();
+    private final Map<Address, BufferedWriter> value = new HashMap<>();
 
-    public ObjectOutputStream get(Address address){
+    public BufferedWriter get(Address address){
         return value.get(address);
     }
 
     public void put(Address address, OutputStream outputStream){
-        value.put(address, createObjectOutputStream(outputStream));
+        value.put(address, createWriter(outputStream));
     }
 
-    public boolean containsKey(Address address){
-        return value.containsKey(address);
-    }
-
-    public Collection<ObjectOutputStream> values(){
+    public Collection<BufferedWriter> values(){
         return value.values();
-    }
-
-    public void remove(Address address){
-        value.remove(address);
     }
 }

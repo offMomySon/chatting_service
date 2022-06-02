@@ -13,8 +13,6 @@ public abstract class CmdValidator {
     private static final Pattern IP_ALL_MATCH_PATTERN = Pattern.compile("^(all)|(\\*)");
     private static final String IP_DELIMITER = ",";
 
-    public abstract CmdValidateResult validate(String cmd);
-
     protected boolean isValidIps(String sIps){
         String[] ips = sIps.split(IP_DELIMITER);
 

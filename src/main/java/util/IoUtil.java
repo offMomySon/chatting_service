@@ -36,15 +36,6 @@ public class IoUtil {
         }
     }
 
-    public static ObjectOutputStream createObjectOutputStream(@NonNull OutputStream outputStream){
-        try {
-            return new ObjectOutputStream(new BufferedOutputStream(outputStream));
-        } catch (IOException e) {
-            throw new RuntimeException("Fail to create ObjectOutput stream.", e);
-        }
-    }
-
-
     public static BufferedWriter createFileAppender(@NonNull File file){
         try {
             return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file,true), UTF_8));

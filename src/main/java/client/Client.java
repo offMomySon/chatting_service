@@ -1,11 +1,10 @@
 package client;
 
 
+import client.writer.console.ConsoleWriteStrategyFactory;
 import java.io.IOException;
-import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Objects;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,16 +30,16 @@ public class Client {
             Socket socket = new Socket(serverIp, port);
             log.info("Connected to server.");
 
-            Thread sender = new Thread(()-> {
+            Thread sender = new Thread(() -> {
                 try {
                     Sender.create(socket.getOutputStream()).waitAndThenSendMsg();
                 } catch (IOException e) {
                     throw new RuntimeException("Fail get outputStream, from socket.", e);
                 }
             });
-            Thread receiver = new Thread(()-> {
+            Thread receiver = new Thread(() -> {
                 try {
-                    Receiver.create(socket.getInputStream()).waitAndThenGetMsg();
+                    Receiver.create(socket.getInputStream(), new ConsoleWriteStrategyFactory()).waitAndThenGetMsg();
                 } catch (IOException e) {
                     throw new RuntimeException("Fail get inputStream, from socket.", e);
                 }
