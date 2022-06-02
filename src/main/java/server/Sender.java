@@ -1,16 +1,16 @@
 package server;
 
-import common.protocal.SimpleMessageFormat;
-import common.protocal.SimpleMessageFormatFactory;
 import common.repository.AddressRepository;
+import common.type.Cmd;
 import java.io.BufferedReader;
 import java.io.IOException;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import server.protocal.SimpleMessageFormat;
+import server.protocal.SimpleMessageFormatFactory;
 import server.sender.SmfSender;
 import server.sender.factory.SmfSendStrategyFactory;
 import server.sender.validator.AddressValidator;
-import server.type.Cmd;
 import static util.IoUtil.createReader;
 
 /**

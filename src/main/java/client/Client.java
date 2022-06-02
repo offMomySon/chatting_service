@@ -1,7 +1,6 @@
 package client;
 
 
-import client.writer.console.ConsoleWriteStrategyFactory;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -39,7 +38,7 @@ public class Client {
             });
             Thread receiver = new Thread(() -> {
                 try {
-                    Receiver.create(socket.getInputStream(), new ConsoleWriteStrategyFactory()).waitAndThenGetMsg();
+                    Receiver.create(socket.getInputStream()).waitAndThenGetMsg();
                 } catch (IOException e) {
                     throw new RuntimeException("Fail get inputStream, from socket.", e);
                 }

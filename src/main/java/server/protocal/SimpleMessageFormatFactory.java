@@ -1,9 +1,9 @@
-package common.protocal;
+package server.protocal;
 
-import common.protocal.generic.GenericSimpleMessageFormat;
-import common.protocal.notice.NoticeInfoSimpleMessageFormat;
-import server.type.Cmd;
-import server.type.Notice;
+import common.type.Cmd;
+import common.type.Notice;
+import server.protocal.generic.GenericSimpleMessageFormat;
+import server.protocal.notice.NoticeInfoSimpleMessageFormat;
 
 /**
  * smp 를 생성하는 역할, 책임 을 가지는 객체.

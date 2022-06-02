@@ -1,4 +1,4 @@
-package server.type;
+package common.type;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -19,25 +19,25 @@ public enum Notice {
         this.postColorCode = postColorCode;
     }
 
-    public static Optional<Notice> from(String sNotice){
+    public static Optional<Notice> from(String sNotice) {
         return Arrays.stream(values())
             .filter(notice -> StringUtils.equalsIgnoreCase(notice.name(), sNotice))
             .findAny();
     }
 
-    private static boolean isExist(String cmd){
+    private static boolean isExist(String cmd) {
         return Arrays.stream(values())
             .anyMatch(noticeType -> noticeType.name().equalsIgnoreCase(cmd));
     }
 
-    public static boolean notExist(String cmd){
+    public static boolean notExist(String cmd) {
         return !isExist(cmd);
     }
 
-    public static Notice getNotice(String cmd){
+    public static Notice getNotice(String cmd) {
         return Arrays.stream(values())
-            .filter(n-> StringUtils.equalsIgnoreCase(n.name(), cmd))
+            .filter(n -> StringUtils.equalsIgnoreCase(n.name(), cmd))
             .findAny()
-            .orElseThrow(()-> new RuntimeException("Fail to find notice cmd"));
+            .orElseThrow(() -> new RuntimeException("Fail to find notice cmd"));
     }
 }

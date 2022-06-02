@@ -1,11 +1,11 @@
 package server.sender;
 
-import common.protocal.SimpleMessageFormat;
 import common.repository.AddressRepository;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import lombok.NonNull;
 import server.destination.Address;
+import server.protocal.SimpleMessageFormat;
 
 public class IpSmfSmfSender implements SmfSender {
     private final AddressRepository addressRepository;
