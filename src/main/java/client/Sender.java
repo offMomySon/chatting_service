@@ -27,7 +27,7 @@ class Sender {
         try {
             while((line = reader.readLine()) != null){
                 log.info("console write : {}", line);
-//
+
 //                FileRecorder fileRecorder = new FileRecorder("클라");
 //                fileRecorder.accept(line);
 

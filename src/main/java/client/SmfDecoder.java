@@ -48,15 +48,15 @@ public class SmfDecoder {
         String message = String.join(" ", deque);
 
         if (StringUtils.equals(code, GENERIC_CODE)) {
-            return new SmfDecoder(FileWriter.create("SERVER"), new FileGenericMessage(message), new ConsoleNotWriteStrategy());
+            return new SmfDecoder(new FileWriter("SERVER"), new FileGenericMessage(message), new ConsoleNotWriteStrategy());
         }
 
         if (StringUtils.equals(code, NOTICE_CODE) && StringUtils.equals(prefix, NOTICE_INFO_PREFIX)) {
-            return new SmfDecoder(FileWriter.create("INFO"), new FileNoticeInfoMessage(message), new ConsoleSmfWriteStrategy(new ConsoleNoticeInfoMessage(message)));
+            return new SmfDecoder(new FileWriter("INFO"), new FileNoticeInfoMessage(message), new ConsoleSmfWriteStrategy(new ConsoleNoticeInfoMessage(message)));
         }
 
         if (StringUtils.equals(code, NOTICE_CODE) && StringUtils.equals(prefix, NOTICE_WARN_PREFIX)) {
-            return new SmfDecoder(FileWriter.create("WARN"), new FileNoticeWarnMessage(message), new ConsoleSmfWriteStrategy(new ConsoleNoticeWarnMessage(message)));
+            return new SmfDecoder(new FileWriter("WARN"), new FileNoticeWarnMessage(message), new ConsoleSmfWriteStrategy(new ConsoleNoticeWarnMessage(message)));
         }
 
         throw new RuntimeException("올바른 simpleMessage 가 아닙니다.");
