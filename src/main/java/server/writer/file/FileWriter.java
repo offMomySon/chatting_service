@@ -17,8 +17,8 @@ import server.Address;
 import util.IoUtil;
 
 public class FileWriter {
-    private static final String FILE_PREFIX_NAME = "yyyyMMddHHmm";
-    private static final String MESSAGE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
+    private static final SimpleDateFormat PREFIX_FILE_NAME_FORMAT = new SimpleDateFormat("yyyyMMddHHmm");
+    private static final SimpleDateFormat MESSAGE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     private final Set<Address> destination = new HashSet<>();
 
     public void addAddress(@NonNull Address address){
@@ -51,14 +51,14 @@ public class FileWriter {
     }
 
     private String createFileMessage(String message, String owner){
-        String timeFormat = new SimpleDateFormat(MESSAGE_TIME_FORMAT).format(new Date());
+        String timeFormat = MESSAGE_TIME_FORMAT.format(new Date());
 
         return MessageFormat.format("{0} {1} {2}", timeFormat, owner, message);
     }
 
     @NotNull
     private File createFileIfNotExist(Address address) {
-        String fileName = MessageFormat.format("{0}_{1}", new SimpleDateFormat(FILE_PREFIX_NAME).format(new Date()), address.getValue());
+        String fileName = MessageFormat.format("{0}_{1}", PREFIX_FILE_NAME_FORMAT.format(new Date()), address.getValue());
         File file = new File(fileName);
 
         try {

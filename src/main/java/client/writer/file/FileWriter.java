@@ -11,17 +11,22 @@ import lombok.NonNull;
 import static util.IoUtil.createFileAppender;
 
 public class FileWriter {
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-    private final BufferedWriter out;
+    private static final SimpleDateFormat FILE_NAME_FORMAT = new SimpleDateFormat("yyyyMMddHHmm");
+    private static final SimpleDateFormat MESSAGE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     private final String msgOwner;
 
-    private FileWriter(@NonNull BufferedWriter out, @NonNull String msgOwner) {
-        this.out = out;
+    public FileWriter(@NonNull String msgOwner) {
         this.msgOwner = msgOwner;
     }
+    public void write(@NonNull FileMessage fileMessage) {
+        String message = MessageFormat.format("{0} [{1}] {2}\n", MESSAGE_TIME_FORMAT.format(new Date()), msgOwner, fileMessage.create());
+        File file = createFileIfNotExist();
 
-    public static FileWriter create(String msgOwner) {
-        File file = new File(new SimpleDateFormat("yyyyMMddHHmm").format(new Date()));
+        doWrite(message, createFileAppender(file));
+    }
+
+    private File createFileIfNotExist(){
+        File file = new File(FILE_NAME_FORMAT.format(new Date()));
 
         if (!file.exists()) {
             try {
@@ -31,12 +36,10 @@ public class FileWriter {
             }
         }
 
-        return new FileWriter(createFileAppender(file), msgOwner);
+        return file;
     }
 
-    public void write(@NonNull FileMessage fileMessage) {
-        String message = MessageFormat.format("{0} [{1}] {2}\n", dateFormat.format(new Date()), msgOwner, fileMessage.create());
-
+    private void doWrite(String message, BufferedWriter out){
         try {
             out.write(message);
             out.flush();

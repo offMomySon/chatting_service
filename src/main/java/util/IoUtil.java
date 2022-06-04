@@ -7,10 +7,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import lombok.NonNull;
@@ -18,25 +16,16 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class IoUtil {
     public static BufferedReader createReader(@NonNull InputStream inputStream) {
-        return new BufferedReader(new InputStreamReader(new BufferedInputStream(inputStream), UTF_8));
+        return new BufferedReader(new InputStreamReader(new BufferedInputStream(inputStream, 8192), UTF_8),8192);
     }
 
     public static BufferedWriter createWriter(@NonNull OutputStream outputStream) {
-        return new BufferedWriter(new OutputStreamWriter(new BufferedOutputStream(outputStream), UTF_8));
-    }
-
-    public static ObjectInputStream createObjectInputStream(@NonNull InputStream inputStream) {
-        try {
-            return new ObjectInputStream(new BufferedInputStream(inputStream));
-        } catch (IOException e) {
-            throw new RuntimeException("Fail to create ObjectInput stream.", e);
-        }
+        return new BufferedWriter(new OutputStreamWriter(new BufferedOutputStream(outputStream,8192), UTF_8),8192);
     }
 
     public static BufferedWriter createFileAppender(@NonNull File file) {
         try {
-            return new BufferedWriter(
-                new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(file, true)), UTF_8));
+            return new BufferedWriter(new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(file, true),8192), UTF_8),8192);
         } catch (FileNotFoundException e) {
             throw new RuntimeException("File not found.", e);
         }

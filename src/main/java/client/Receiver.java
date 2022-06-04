@@ -35,7 +35,6 @@ class Receiver {
 
                 FileWriter fileWriter = smfDecoder.getFileWriter();
                 FileMessage fileMessage = smfDecoder.getFileMessage();
-
                 fileWriter.write(fileMessage);
 
                 ConsoleWriteStrategy consoleWriteStrategy = smfDecoder.getConsoleWriteStrategy();
