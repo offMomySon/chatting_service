@@ -1,8 +1,8 @@
-package server.sender.v2;
+package server.writer.file;
 
 import java.util.List;
 import lombok.NonNull;
-import server.destination.Address;
+import server.Address;
 
 public class FileIpWriteStrategy implements FileWriteStrategy{
     private final List<Address> addresses;

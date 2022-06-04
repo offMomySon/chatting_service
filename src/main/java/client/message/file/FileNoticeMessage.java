@@ -2,7 +2,7 @@ package client.message.file;
 
 import java.text.MessageFormat;
 import lombok.NonNull;
-import server.protocal.notice.PrefixMessage;
+import server.message.notice.PrefixMessage;
 
 public abstract class FileNoticeMessage implements FileMessage {
     private final PrefixMessage prefix;

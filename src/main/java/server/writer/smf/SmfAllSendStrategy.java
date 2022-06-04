@@ -1,7 +1,7 @@
-package server.sender.v2;
+package server.writer.smf;
 
 import lombok.NonNull;
-import server.protocal.SimpleMessageFormat;
+import server.message.SimpleMessageFormat;
 
 public class SmfAllSendStrategy implements SmfSendStrategy{
     private final SmfSender smfSender;

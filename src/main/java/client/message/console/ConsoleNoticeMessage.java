@@ -2,7 +2,7 @@ package client.message.console;
 
 import java.text.MessageFormat;
 import lombok.NonNull;
-import server.protocal.notice.PrefixMessage;
+import server.message.notice.PrefixMessage;
 
 public abstract class ConsoleNoticeMessage {
     private final PrefixMessage prefix;

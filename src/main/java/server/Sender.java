@@ -1,13 +1,13 @@
 package server;
 
-import common.type.Cmd;
+import command.Cmd;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import server.sender.v2.FileWriter;
-import server.sender.v2.SmfSender;
+import server.writer.file.FileWriter;
+import server.writer.smf.SmfSender;
 import static util.IoUtil.createReader;
 
 /**

@@ -1,7 +1,7 @@
-package server.sender.v2;
+package server;
 
-import common.type.Cmd;
-import common.type.Notice;
+import command.Cmd;
+import command.Notice;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
@@ -12,11 +12,18 @@ import java.util.stream.Stream;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import server.destination.Address;
-import server.protocal.SimpleMessageFormat;
-import server.protocal.generic.GenericSimpleMessageFormat;
-import server.protocal.notice.NoticeInfoSimpleMessageFormat;
-import server.protocal.notice.NoticeWarnSimpleMessageFormat;
+import server.message.SimpleMessageFormat;
+import server.message.generic.GenericSimpleMessageFormat;
+import server.message.notice.NoticeInfoSimpleMessageFormat;
+import server.message.notice.NoticeWarnSimpleMessageFormat;
+import server.writer.file.FileAllWriteStrategy;
+import server.writer.file.FileIpWriteStrategy;
+import server.writer.file.FileWriteStrategy;
+import server.writer.file.FileWriter;
+import server.writer.smf.SmfAllSendStrategy;
+import server.writer.smf.SmfIpSendStrategy;
+import server.writer.smf.SmfSendStrategy;
+import server.writer.smf.SmfSender;
 
 public class CmdParser {
     private static final Set<String> ALL_ADDRESS = Set.of("*", "ALL");

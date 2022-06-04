@@ -1,4 +1,4 @@
-package server.sender.v2;
+package server.writer.file;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.NonNull;
 import org.jetbrains.annotations.NotNull;
-import server.destination.Address;
+import server.Address;
 import util.IoUtil;
 
 public class FileWriter {
