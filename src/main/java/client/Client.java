@@ -1,9 +1,12 @@
 package client;
 
 
+import client.writer.MessageSender;
+import client.writer.file.FileOwnerWriter;
+import client.writer.file.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,7 +34,11 @@ public class Client {
 
             Thread sender = new Thread(() -> {
                 try {
-                    Sender.create(socket.getOutputStream()).waitAndThenSendMsg();
+                    InputStream in = System.in;
+                    MessageSender messageSender = MessageSender.create(socket.getOutputStream());
+                    FileOwnerWriter fileOwnerWriter = new FileOwnerWriter("클라", new FileWriter());
+
+                    Sender.create(in, messageSender, fileOwnerWriter).waitAndThenSendMsg();
                 } catch (IOException e) {
                     throw new RuntimeException("Fail get outputStream, from socket.", e);
                 }
@@ -46,8 +53,6 @@ public class Client {
 
             sender.start();
             receiver.start();
-        } catch (UnknownHostException e) {
-            throw new RuntimeException("Fail connection.", e);
         } catch (IOException e) {
             throw new RuntimeException("Fail connection.", e);
         }

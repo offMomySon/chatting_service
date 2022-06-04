@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +26,7 @@ import server.writer.smf.SmfIpSendStrategy;
 import server.writer.smf.SmfSendStrategy;
 import server.writer.smf.SmfSender;
 
+@Getter
 public class CmdParser {
     private static final Set<String> ALL_ADDRESS = Set.of("*", "ALL");
 

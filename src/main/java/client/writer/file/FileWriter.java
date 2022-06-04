@@ -13,13 +13,9 @@ import static util.IoUtil.createFileAppender;
 public class FileWriter {
     private static final SimpleDateFormat FILE_NAME_FORMAT = new SimpleDateFormat("yyyyMMddHHmm");
     private static final SimpleDateFormat MESSAGE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-    private final String msgOwner;
-
-    public FileWriter(@NonNull String msgOwner) {
-        this.msgOwner = msgOwner;
-    }
-    public void write(@NonNull FileMessage fileMessage) {
+    public void write(@NonNull FileMessage fileMessage, String msgOwner) {
         String message = MessageFormat.format("{0} [{1}] {2}\n", MESSAGE_TIME_FORMAT.format(new Date()), msgOwner, fileMessage.create());
+
         File file = createFileIfNotExist();
 
         doWrite(message, createFileAppender(file));
