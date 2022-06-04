@@ -1,7 +1,6 @@
 package server;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.List;
@@ -23,14 +22,12 @@ public class Receiver {
     private static final String END_MSG = "서버와의 연결이 종료됬습니다.";
 
     private final BufferedReader in;
-    private final BufferedWriter out;
     private final Address address;
     private final SmfSender smfSender;
     private final FileWriter fileWriter;
 
-    private Receiver(@NonNull BufferedReader in, BufferedWriter out, @NonNull Address address, SmfSender smfSender, @NonNull FileWriter fileWriter) {
+    private Receiver(@NonNull BufferedReader in, @NonNull Address address, SmfSender smfSender, @NonNull FileWriter fileWriter) {
         this.in = in;
-        this.out = out;
         this.address = address;
         this.smfSender = smfSender;
         this.fileWriter = fileWriter;
@@ -39,10 +36,9 @@ public class Receiver {
     public static Receiver create(@NonNull Socket socket, @NonNull SmfSender smfSender, @NonNull FileWriter fileWriter){
         try {
             BufferedReader in = IoUtil.createReader(socket.getInputStream());
-            BufferedWriter out = IoUtil.createWriter(socket.getOutputStream());
             Address address = new Address(socket.getInetAddress().getHostAddress());
 
-            return new Receiver(in, out, address, smfSender, fileWriter);
+            return new Receiver(in, address, smfSender, fileWriter);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
