@@ -1,9 +1,9 @@
-package server.sender.v2;
+package server.writer.smf;
 
 import java.util.List;
 import lombok.NonNull;
-import server.destination.Address;
-import server.protocal.SimpleMessageFormat;
+import server.Address;
+import server.message.SimpleMessageFormat;
 
 public class SmfIpSendStrategy implements SmfSendStrategy{
     private final List<Address> addresses;

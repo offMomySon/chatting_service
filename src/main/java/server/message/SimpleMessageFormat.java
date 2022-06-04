@@ -1,4 +1,4 @@
-package server.protocal;
+package server.message;
 
 public interface SimpleMessageFormat {
     String createMessage();

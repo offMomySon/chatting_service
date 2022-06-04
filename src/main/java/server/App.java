@@ -1,7 +1,7 @@
 package server;
 
-import server.sender.v2.FileWriter;
-import server.sender.v2.SmfSender;
+import server.writer.file.FileWriter;
+import server.writer.smf.SmfSender;
 
 public class App {
     public static void main(String args[]) {

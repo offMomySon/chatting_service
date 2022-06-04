@@ -1,4 +1,4 @@
-package server.sender.v2;
+package server.writer.smf;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.NonNull;
-import server.destination.Address;
-import server.protocal.SimpleMessageFormat;
+import server.Address;
+import server.message.SimpleMessageFormat;
 import static util.IoUtil.createWriter;
 
 public class SmfSender {

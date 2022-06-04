@@ -1,4 +1,4 @@
-package server.sender.v2;
+package server.writer.file;
 
 import lombok.NonNull;
 

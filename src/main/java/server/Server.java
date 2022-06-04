@@ -7,9 +7,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import server.destination.Address;
-import server.sender.v2.FileWriter;
-import server.sender.v2.SmfSender;
+import server.writer.file.FileWriter;
+import server.writer.smf.SmfSender;
 
 @Slf4j
 public class Server {

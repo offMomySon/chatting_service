@@ -1,4 +1,4 @@
-package server.protocal.notice;
+package server.message.notice;
 
 public class PrefixMessage {
     private final String message;
