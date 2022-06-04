@@ -52,7 +52,7 @@ public class Server {
                 fileWriter.addAddress(address);
 
                 Socket _socket = socket;
-                Thread receiver = new Thread(()-> new Receiver(_socket).waitAndThenGetMsg());
+                Thread receiver = new Thread(()-> Receiver.create(_socket, smfSender, fileWriter).waitAndThenGetMsg());
                 receiver.start();
             }
         } catch(IOException e) {

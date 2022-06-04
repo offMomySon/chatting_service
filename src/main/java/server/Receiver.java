@@ -1,58 +1,67 @@
 package server;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.List;
 import java.util.Objects;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import static util.IoUtil.createReader;
+import server.message.notice.NoticeInfoSimpleMessageFormat;
+import server.writer.file.FileWriter;
+import server.writer.smf.SmfSender;
+import util.IoUtil;
 
 /**
  * client 로 부터 메세지를 수신하는 역할.
  */
 @Slf4j
 public class Receiver {
-    private static final int END_CONNECTION = -1;
+    private static final String END_CONNECTION = null;
     private static final String EXIT_CMD = "/exit";
-    private static final char[] BUFFER = new char[10];
+    private static final String END_MSG = "서버와의 연결이 종료됬습니다.";
 
-    private final Socket socket;
+    private final BufferedReader in;
+    private final BufferedWriter out;
+    private final Address address;
+    private final SmfSender smfSender;
+    private final FileWriter fileWriter;
 
-    public Receiver(@NonNull Socket socket) {
-        this.socket = socket;
+    private Receiver(@NonNull BufferedReader in, BufferedWriter out, @NonNull Address address, SmfSender smfSender, @NonNull FileWriter fileWriter) {
+        this.in = in;
+        this.out = out;
+        this.address = address;
+        this.smfSender = smfSender;
+        this.fileWriter = fileWriter;
     }
 
-    public void waitAndThenGetMsg() {
-        BufferedReader in = null;
+    public static Receiver create(@NonNull Socket socket, @NonNull SmfSender smfSender, @NonNull FileWriter fileWriter){
         try {
-            in = createReader(socket.getInputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            BufferedReader in = IoUtil.createReader(socket.getInputStream());
+            BufferedWriter out = IoUtil.createWriter(socket.getOutputStream());
+            Address address = new Address(socket.getInetAddress().getHostAddress());
 
-        int readCount = END_CONNECTION;
+            return new Receiver(in, out, address, smfSender, fileWriter);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public void waitAndThenGetMsg() {
+        String msg = END_CONNECTION;
         try {
-            while( (readCount = in.read(BUFFER)) != END_CONNECTION ){
-                String msg = String.valueOf(BUFFER, 0, readCount);
+            while( (msg = in.readLine()) != END_CONNECTION ){
+                log.info("From client : {}", msg);
 
                 if(Objects.equals(msg, EXIT_CMD)){
-
-//                    NoticeCmd noticeCmd = new NoticeCmd(CmdType.NOTICE, NoticeType.INFO, List.of(IpAddress.create(socket.getInetAddress().getHostAddress())), "서버와의 연결이 종료됬습니다.");
-//                    SMFSender smfSender = new SMFSender(ipOutputStreamRepository, ipSupplier);
-//                    smfSender.accept(noticeCmd);
-//
-//                    FileRecorder fileRecorder = new FileRecorder(ipOutputStreamRepository, ipSupplier, "서버");
-//                    fileRecorder.accept(noticeCmd);
-
+                    fileWriter.write(END_MSG, "INFO", List.of(address));
+                    smfSender.send(new NoticeInfoSimpleMessageFormat(END_MSG), List.of(address));
                     break;
                 }
 
-//                FileRecorder fileRecorder = new FileRecorder(ipOutputStreamRepository, ipSupplier, "클라");
-//                fileRecorder.accept(msg);
-
-                log.info("From client : {}", msg);
+                fileWriter.write(msg, "클라", List.of(address));
             }
         } catch(IOException e) {
             throw new RuntimeException("Fail to receive msg.",e);
