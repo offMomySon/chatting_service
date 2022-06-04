@@ -1,26 +1,32 @@
 package server;
 
 
-import common.repository.AddressRepository;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import server.destination.Address;
+import server.sender.v2.FileWriter;
+import server.sender.v2.SmfSender;
 
 @Slf4j
 public class Server {
-    private static final int MIN_PORT = 7777;
+    private static final int MIN_PORT_NUM = 7777;
 
-    private final AddressRepository addressRepository = new AddressRepository();
+    private final SmfSender smfSender;
+    private final FileWriter fileWriter;
     private final int port;
 
-    public Server(int port) {
+    public Server(@NonNull SmfSender smfSender, @NonNull FileWriter fileWriter, int port) {
+        this.smfSender = smfSender;
+        this.fileWriter = fileWriter;
         this.port = validate(port);
     }
 
     private static int validate(int port){
-        if(port < MIN_PORT){
+        if(port < MIN_PORT_NUM){
             throw new RuntimeException("Abnormal port number.");
         }
         return port;
@@ -29,7 +35,7 @@ public class Server {
     public void start() {
         Socket socket;
         Thread sender = new Thread(
-            () -> new Sender(addressRepository).waitAndThenSendMsg()
+            () -> Sender.create(smfSender, fileWriter, System.in).waitAndThenSendMsg()
         );
         sender.start();
 
@@ -40,7 +46,11 @@ public class Server {
                 socket = serverSocket.accept();
                 log.info("[{} : {}] is connected.", socket.getInetAddress(), socket.getPort());
 
-                addressRepository.put(new Address(socket.getInetAddress().getHostAddress()), socket.getOutputStream());
+                Address address = new Address(socket.getInetAddress().getHostAddress());
+                OutputStream socketStream = socket.getOutputStream();
+
+                smfSender.addAddress(address, socketStream);
+                fileWriter.addAddress(address);
 
                 Socket _socket = socket;
                 Thread receiver = new Thread(()-> new Receiver(_socket).waitAndThenGetMsg());

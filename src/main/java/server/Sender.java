@@ -1,11 +1,13 @@
 package server;
 
-import common.repository.AddressRepository;
 import common.type.Cmd;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import server.sender.v2.FileWriter;
+import server.sender.v2.SmfSender;
 import static util.IoUtil.createReader;
 
 /**
@@ -14,12 +16,18 @@ import static util.IoUtil.createReader;
 @Slf4j
 class Sender {
     private static final String STOP_READ = null;
-    private static final BufferedReader in = createReader(System.in);
+    private final BufferedReader in;
+    private final SmfSender smfSender;
+    private final FileWriter fileWriter;
 
-    private final AddressRepository addressRepository;
+    private Sender(@NonNull SmfSender smfSender, @NonNull FileWriter fileWriter, @NonNull BufferedReader in) {
+        this.smfSender = smfSender;
+        this.fileWriter = fileWriter;
+        this.in = in;
+    }
 
-    public Sender(@NonNull AddressRepository addressRepository) {
-        this.addressRepository = addressRepository;
+    public static Sender create(@NonNull SmfSender smfSender, @NonNull FileWriter fileWriter, @NonNull InputStream in) {
+        return new Sender(smfSender, fileWriter, createReader(in));
     }
 
     public void waitAndThenSendMsg() {
