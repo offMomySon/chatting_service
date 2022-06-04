@@ -6,11 +6,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import server.protocal.SimpleMessageFormat;
-import server.protocal.SimpleMessageFormatFactory;
-import server.sender.SmfSender;
-import server.sender.factory.SmfSendStrategyFactory;
-import server.sender.validator.AddressValidator;
 import static util.IoUtil.createReader;
 
 /**
@@ -19,7 +14,6 @@ import static util.IoUtil.createReader;
 @Slf4j
 class Sender {
     private static final String STOP_READ = null;
-    private static final SimpleMessageFormatFactory simpleMessageFormatFactory = new SimpleMessageFormatFactory();
     private static final BufferedReader in = createReader(System.in);
 
     private final AddressRepository addressRepository;
@@ -34,21 +28,6 @@ class Sender {
             while ((cmd = in.readLine()) != STOP_READ) {
                 log.info("console write : {}", cmd);
 
-                SimpleMessageFormat simpleMessageFormat = simpleMessageFormatFactory.create(cmd);
-
-                SmfSendStrategyFactory smfSendStrategyFactory = new SmfSendStrategyFactory(new AddressValidator(),
-                                                                                           addressRepository,
-                                                                                           simpleMessageFormat);
-
-                SmfSender smfSender = smfSendStrategyFactory.create(getDestination(cmd));
-                smfSender.send();
-
-//                List<Destination> destinations =destinationFactory.createDestinations(getDestination(cmd, simpleMessageFormat));
-
-//                String address = getAddress(simpleMessageFormat, cmd);
-//
-//                SMFSender smfSender = new SMFSender(simpleMessageFormat, addressRepository);
-//                smfSender.send(address);
             }
         } catch (IOException e) {
             throw new RuntimeException("Fail console read.", e);

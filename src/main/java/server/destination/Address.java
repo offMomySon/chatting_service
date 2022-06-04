@@ -2,11 +2,13 @@ package server.destination;
 
 import java.util.Arrays;
 import java.util.Objects;
+import lombok.Getter;
 
 
 /**
  * 특정 ip 가 목적지라는 데이터를 담은 객체
  */
+@Getter
 public class Address {
     private static final Integer MAX_ADDRESS_NUM = 255;
 
