@@ -1,46 +1,37 @@
 package client.writer.file;
 
 import client.message.file.FileMessage;
+import common.Writer;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
 import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.NonNull;
-import static util.IoUtil.createFileAppender;
 
-public class FileWriter {
-    private static final SimpleDateFormat FILE_NAME_FORMAT = new SimpleDateFormat("yyyyMMddHHmm");
-    private static final SimpleDateFormat MESSAGE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-    public void write(@NonNull FileMessage fileMessage, String msgOwner) {
-        String message = MessageFormat.format("{0} [{1}] {2}\n", MESSAGE_TIME_FORMAT.format(new Date()), msgOwner, fileMessage.create());
+public class FileWriter implements FileWriterInterface{
+    private static final DateTimeFormatter MESSAGE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
 
-        File file = createFileIfNotExist();
+    private final Writer writer;
 
-        doWrite(message, createFileAppender(file));
+    private FileWriter(@NonNull Writer writer) {
+        this.writer = writer;
     }
 
-    private File createFileIfNotExist(){
-        File file = new File(FILE_NAME_FORMAT.format(new Date()));
+    public static FileWriter create(TimeNameFile timeNameFile){
+        BufferedWriter out = timeNameFile.getBufferedWriter();
 
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                throw new RuntimeException("Fail create file. Name = " + file.getName(), e);
-            }
-        }
-
-        return file;
+        return new FileWriter(new Writer(out));
     }
 
-    private void doWrite(String message, BufferedWriter out){
-        try {
-            out.write(message);
-            out.flush();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void write(@NonNull FileMessage fileMessage) {
+        String messageLine = createMessageLine(fileMessage);
+
+        writer.write(messageLine);
+    }
+
+    private static String createMessageLine(FileMessage fileMessage){
+        String timeFormat = LocalDateTime.now().format(MESSAGE_TIME_FORMAT);
+
+        return MessageFormat.format("{0} {1}\n", timeFormat, fileMessage.create());
     }
 }

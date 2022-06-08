@@ -1,5 +1,15 @@
 package client.message.file;
 
-public interface FileMessage {
-    public abstract String create();
+import lombok.NonNull;
+
+public class FileMessage {
+    private final String message;
+
+    public FileMessage(@NonNull String message) {
+        this.message = message;
+    }
+
+    public String create() {
+        return message;
+    }
 }

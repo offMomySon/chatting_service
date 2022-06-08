@@ -1,4 +1,4 @@
-package command;
+package common.command;
 
 import java.util.Arrays;
 import java.util.Optional;

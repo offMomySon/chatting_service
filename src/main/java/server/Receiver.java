@@ -3,12 +3,14 @@ package server;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.Socket;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import server.message.notice.NoticeInfoSimpleMessageFormat;
-import server.writer.file.FileWriter;
+import server.v2.writer.file.FileOwnerWriterV2;
+import server.v2.writer.file.TimeAndIpNamedFileWriterV2;
 import server.writer.smf.SmfSender;
 import util.IoUtil;
 
@@ -24,21 +26,19 @@ public class Receiver {
     private final BufferedReader in;
     private final Address address;
     private final SmfSender smfSender;
-    private final FileWriter fileWriter;
 
-    private Receiver(@NonNull BufferedReader in, @NonNull Address address, SmfSender smfSender, @NonNull FileWriter fileWriter) {
+    private Receiver(@NonNull BufferedReader in, @NonNull Address address, SmfSender smfSender) {
         this.in = in;
         this.address = address;
         this.smfSender = smfSender;
-        this.fileWriter = fileWriter;
     }
 
-    public static Receiver create(@NonNull Socket socket, @NonNull SmfSender smfSender, @NonNull FileWriter fileWriter){
+    public static Receiver create(@NonNull Socket socket, @NonNull SmfSender smfSender){
         try {
             BufferedReader in = IoUtil.createReader(socket.getInputStream());
             Address address = new Address(socket.getInetAddress().getHostAddress());
 
-            return new Receiver(in, address, smfSender, fileWriter);
+            return new Receiver(in, address, smfSender);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -46,18 +46,21 @@ public class Receiver {
 
 
     public void waitAndThenGetMsg() {
-        String msg = END_CONNECTION;
+        String message = END_CONNECTION;
         try {
-            while( (msg = in.readLine()) != END_CONNECTION ){
-                log.info("From client : {}", msg);
+            while( (message = in.readLine()) != END_CONNECTION ){
+                log.info("From client : {}", message);
 
-                if(Objects.equals(msg, EXIT_CMD)){
-                    fileWriter.write(END_MSG, "INFO", List.of(address));
+                if(Objects.equals(message, EXIT_CMD)){
+                    FileOwnerWriterV2 fileWriter = new FileOwnerWriterV2("INFO", TimeAndIpNamedFileWriterV2.create(LocalDateTime.now(), address));
+                    fileWriter.write(END_MSG);
+
                     smfSender.send(new NoticeInfoSimpleMessageFormat(END_MSG), List.of(address));
                     break;
                 }
 
-                fileWriter.write(msg, "클라", List.of(address));
+                FileOwnerWriterV2 fileWriter = new FileOwnerWriterV2("클라", TimeAndIpNamedFileWriterV2.create(LocalDateTime.now(), address));
+                fileWriter.write(message);
             }
         } catch(IOException e) {
             throw new RuntimeException("Fail to receive msg.",e);

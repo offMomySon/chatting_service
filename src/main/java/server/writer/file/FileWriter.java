@@ -1,5 +1,6 @@
 package server.writer.file;
 
+import common.Writer;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -26,13 +27,14 @@ public class FileWriter {
     }
 
     public void write(@NonNull String message, @NonNull String owner, @NonNull Collection<Address> addresses){
-        String fileMessage = createFileMessage(message, owner);
+        String messageLine = createMessageLine(message, owner);
 
         addresses.stream()
             .filter(destination::contains)
             .map(this::createFileIfNotExist)
             .map(IoUtil::createFileAppender)
-            .forEach(out -> doWrite(fileMessage,out));
+            .map(Writer::new)
+            .forEach(writer -> writer.write(messageLine));
     }
 
     public void writeAll(@NonNull String message, @NonNull String owner){
@@ -50,7 +52,7 @@ public class FileWriter {
         }
     }
 
-    private String createFileMessage(String message, String owner){
+    private String createMessageLine(String message, String owner){
         String timeFormat = MESSAGE_TIME_FORMAT.format(new Date());
 
         return MessageFormat.format("{0} {1} {2}", timeFormat, owner, message);
