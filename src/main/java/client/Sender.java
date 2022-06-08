@@ -1,6 +1,6 @@
 package client;
 
-import client.message.file.FileGenericMessage;
+import client.message.file.FileMessage;
 import client.writer.MessageSender;
 import client.writer.file.FileOwnerWriter;
 import java.io.BufferedReader;
@@ -33,7 +33,7 @@ class Sender {
             while((msg = reader.readLine()) != null){
                 log.info("console write : {}", msg);
 
-                FileGenericMessage fileMessage = new FileGenericMessage(msg);
+                FileMessage fileMessage = new FileMessage(msg);
                 fileOwnerWriter.write(fileMessage);
 
                 messageSender.send(msg);

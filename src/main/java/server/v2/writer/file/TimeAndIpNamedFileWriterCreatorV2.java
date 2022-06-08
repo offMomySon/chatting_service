@@ -1,0 +1,30 @@
+package server.v2.writer.file;
+
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import lombok.NonNull;
+import server.Address;
+import static java.util.stream.Collectors.toUnmodifiableList;
+
+public class TimeAndIpNamedFileWriterCreatorV2 {
+    private final Set<Address> addresses = new HashSet<>();
+
+    public void addAddress(@NonNull Address address){
+        addresses.add(address);
+    }
+
+    public List<TimeAndIpNamedFileWriterV2> create(LocalDateTime time, Collection<Address> requestAddress){
+        List<Address> destinations = requestAddress.stream().filter(addresses::contains).collect(toUnmodifiableList());
+
+        return destinations.stream()
+            .map(address -> TimeAndIpNamedFileWriterV2.create(time, address))
+            .collect(toUnmodifiableList());
+    }
+
+    public List<TimeAndIpNamedFileWriterV2> createAll(LocalDateTime time){
+        return create(time, addresses);
+    }
+}

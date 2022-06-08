@@ -33,7 +33,7 @@ class Receiver {
 
                 SmfDecoder smfDecoder = SmfDecoder.decode(smfMessage);
 
-                FileOwnerWriter fileOwnerWriter = smfDecoder.getFileOwnerWriter();
+                FileOwnerWriter fileOwnerWriter = smfDecoder.getFileWriter();
                 FileMessage fileMessage = smfDecoder.getFileMessage();
                 fileOwnerWriter.write(fileMessage);
 
