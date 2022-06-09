@@ -6,7 +6,6 @@ import java.io.InputStream;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import server.message.SimpleMessageFormat;
-import server.v2.writer.file.CmdParserV2;
 import server.v2.writer.file.FileWritersV2;
 import server.v2.writer.file.TimeAndIpNamedFileWriterCreatorV2;
 import server.writer.smf.SmfSendStrategy;
@@ -39,7 +38,7 @@ class Sender {
             while ((cmd = in.readLine()) != STOP_READ) {
                 log.info("console write : {}", cmd);
 
-                CmdParserV2 cmdParser = CmdParserV2.parse(cmd, smfSender, fileWriterCreator);
+                CmdParser cmdParser = CmdParser.parse(cmd, smfSender, fileWriterCreator);
 
                 SmfSendStrategy smfSendStrategy = cmdParser.getSmfSendStrategy();
                 SimpleMessageFormat simpleMessageFormat = cmdParser.getSimpleMessageFormat();

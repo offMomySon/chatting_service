@@ -1,7 +1,9 @@
 package server;
 
+import common.MessageOwner;
 import common.command.Cmd;
 import common.command.Notice;
+import java.time.LocalDateTime;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
@@ -17,98 +19,71 @@ import server.message.SimpleMessageFormat;
 import server.message.generic.GenericSimpleMessageFormat;
 import server.message.notice.NoticeInfoSimpleMessageFormat;
 import server.message.notice.NoticeWarnSimpleMessageFormat;
-import server.writer.file.FileAllWriteStrategy;
-import server.writer.file.FileIpWriteStrategy;
-import server.writer.file.FileWriteStrategy;
-import server.writer.file.FileWriter;
+import server.v2.writer.file.FileOwnerWriterV2;
+import server.v2.writer.file.FileWriterV2;
+import server.v2.writer.file.FileWritersV2;
+import server.v2.writer.file.TimeAndIpNamedFileWriterCreatorV2;
 import server.writer.smf.SmfAllSendStrategy;
 import server.writer.smf.SmfIpSendStrategy;
 import server.writer.smf.SmfSendStrategy;
 import server.writer.smf.SmfSender;
+import static common.MessageOwner.INFO;
+import static common.MessageOwner.SERVER;
+import static common.MessageOwner.WARN;
 
 @Getter
 public class CmdParser {
     private static final Set<String> ALL_ADDRESS = Set.of("*", "ALL");
-
     private final SmfSendStrategy smfSendStrategy;
     private final SimpleMessageFormat simpleMessageFormat;
-    private final FileWriteStrategy fileWriteStrategy;
+    private final FileWritersV2 fileWriters;
     private final String message;
 
-    private CmdParser(@NonNull SmfSendStrategy smfSendStrategy, @NonNull SimpleMessageFormat simpleMessageFormat, @NonNull FileWriteStrategy fileWriteStrategy, @NonNull String message) {
+    private CmdParser(@NonNull SmfSendStrategy smfSendStrategy, @NonNull SimpleMessageFormat simpleMessageFormat, @NonNull FileWritersV2 fileWriters, @NonNull String message) {
         this.smfSendStrategy = smfSendStrategy;
         this.simpleMessageFormat = simpleMessageFormat;
-        this.fileWriteStrategy = fileWriteStrategy;
+        this.fileWriters = fileWriters;
         this.message = message;
     }
 
-    public static CmdParser parse(@NonNull String sCmd, @NonNull SmfSender smfSender, @NonNull FileWriter fileWriter) {
+    public static CmdParser parse(@NonNull String sCmd, @NonNull SmfSender smfSender, @NonNull TimeAndIpNamedFileWriterCreatorV2 fileWritersCreator) {
         SmfSendStrategy smfSendStrategy = null;
         SimpleMessageFormat simpleMessageFormat = null;
-        FileWriteStrategy fileWriteStrategy = null;
+        List<FileWriterV2> fileWriterV2s = null;
 
         Deque<String> queue = new ArrayDeque<>(List.of(sCmd.split(" ")));
 
         Cmd cmd = Cmd.from(queue.poll()).orElseThrow(()-> new RuntimeException("일치하는 cmd 가 존재 하지 않습니다."));
         Notice notice = null;
         if(cmd == Cmd.NOTICE){
-             notice = Notice.from(queue.poll()).orElseThrow(()-> new RuntimeException("일치하는 notice 가 존재하지 않습니다."));
+            notice = Notice.from(queue.poll()).orElseThrow(()-> new RuntimeException("일치하는 notice 가 존재하지 않습니다."));
         }
         String[] sAddresses = queue.poll().split(",");
         String message = String.join(" ", queue.poll());
 
-        String fileWriterOwner = createFileWriterOwner(notice, cmd);
-        simpleMessageFormat = createSimpleMessageFormat(message, notice, cmd);
+        MessageFormatAndOwnerParser messageFormatAndOwnerParser = MessageFormatAndOwnerParser.parse(message, notice, cmd);
+        MessageOwner owner = messageFormatAndOwnerParser.getOwner();
+        simpleMessageFormat = messageFormatAndOwnerParser.getSimpleMessageFormat();
 
         if(isAllAddressContain(sAddresses)){
             smfSendStrategy = new SmfAllSendStrategy(smfSender);
-            fileWriteStrategy = new FileAllWriteStrategy(fileWriter, fileWriterOwner);
+            fileWriterV2s = decorateOwnerFileWriter(owner, fileWritersCreator.createAll(LocalDateTime.now()));
 
-            return new CmdParser(smfSendStrategy, simpleMessageFormat, fileWriteStrategy, message);
+            return new CmdParser(smfSendStrategy, simpleMessageFormat, new FileWritersV2(fileWriterV2s), message);
         }
 
         List<Address> addresses = createAddresses(sAddresses);
 
         smfSendStrategy = new SmfIpSendStrategy(addresses, smfSender);
-        fileWriteStrategy = new FileIpWriteStrategy(addresses, fileWriter, fileWriterOwner);
+        fileWriterV2s = decorateOwnerFileWriter(owner, fileWritersCreator.create(LocalDateTime.now(), addresses));
 
-        return new CmdParser(smfSendStrategy, simpleMessageFormat, fileWriteStrategy, message);
+        return new CmdParser(smfSendStrategy, simpleMessageFormat, new FileWritersV2(fileWriterV2s), message);
     }
 
-    @NotNull
-    private static SimpleMessageFormat createSimpleMessageFormat(String message, Notice notice, Cmd cmd) {
-        if(cmd == Cmd.SEND){
-            return new GenericSimpleMessageFormat(message);
-        }
-
-        if(cmd == Cmd.NOTICE){
-            switch (notice){
-                case INFO:
-                    return new NoticeInfoSimpleMessageFormat(message);
-                case WARN:
-                    return new NoticeWarnSimpleMessageFormat(message);
-            }
-        }
-
-        throw new RuntimeException("not exist notice cmd");
-    }
-
-    @NotNull
-    private static String createFileWriterOwner(Notice notice, Cmd cmd) {
-        if(cmd == Cmd.SEND){
-            return "서버";
-        }
-
-        if(cmd == Cmd.NOTICE){
-            switch (notice){
-                case INFO:
-                    return "INFO";
-                case WARN:
-                    return "WARN";
-            }
-        }
-
-        throw new RuntimeException("not exist notice cmd");
+    private static <T extends FileWriterV2> List<FileWriterV2> decorateOwnerFileWriter(MessageOwner owner, List<T> fileWriters){
+        return fileWriters.stream()
+            .map(fileWriter -> new FileOwnerWriterV2(owner, fileWriter))
+            .collect(Collectors.toUnmodifiableList());
     }
 
     @NotNull
@@ -118,5 +93,34 @@ public class CmdParser {
 
     private static boolean isAllAddressContain(String[] sAddresses) {
         return Arrays.stream(sAddresses).anyMatch(sAddress -> ALL_ADDRESS.contains(StringUtils.upperCase(sAddress)));
+    }
+    @Getter
+    private static class MessageFormatAndOwnerParser {
+        private final SimpleMessageFormat simpleMessageFormat;
+
+        private final MessageOwner owner;
+
+        private MessageFormatAndOwnerParser(@NonNull SimpleMessageFormat simpleMessageFormat, @NonNull MessageOwner owner) {
+            this.simpleMessageFormat = simpleMessageFormat;
+            this.owner = owner;
+        }
+
+        public static MessageFormatAndOwnerParser parse(@NonNull String message, @NonNull Notice notice, @NonNull Cmd cmd) {
+            if (cmd == Cmd.SEND) {
+                return new MessageFormatAndOwnerParser(new GenericSimpleMessageFormat(message), SERVER);
+            }
+
+            if (cmd == Cmd.NOTICE) {
+                switch (notice) {
+                    case INFO:
+                        return new MessageFormatAndOwnerParser(new NoticeInfoSimpleMessageFormat(message), INFO);
+                    case WARN:
+                        return new MessageFormatAndOwnerParser(new NoticeWarnSimpleMessageFormat(message), WARN);
+                }
+            }
+
+            throw new RuntimeException("not exist notice cmd");
+        }
+
     }
 }
