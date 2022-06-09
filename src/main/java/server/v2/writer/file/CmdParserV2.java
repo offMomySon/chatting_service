@@ -1,5 +1,6 @@
 package server.v2.writer.file;
 
+import common.MessageOwner;
 import common.command.Cmd;
 import common.command.Notice;
 import java.time.LocalDateTime;
@@ -23,6 +24,9 @@ import server.writer.smf.SmfAllSendStrategy;
 import server.writer.smf.SmfIpSendStrategy;
 import server.writer.smf.SmfSendStrategy;
 import server.writer.smf.SmfSender;
+import static common.MessageOwner.INFO;
+import static common.MessageOwner.SERVER;
+import static common.MessageOwner.WARN;
 
 @Getter
 public class CmdParserV2 {
@@ -55,7 +59,7 @@ public class CmdParserV2 {
         String message = String.join(" ", queue.poll());
 
         MessageFormatAndOwnerParser messageFormatAndOwnerParser = MessageFormatAndOwnerParser.parse(message, notice, cmd);
-        String owner = messageFormatAndOwnerParser.getOwner();
+        MessageOwner owner = messageFormatAndOwnerParser.getOwner();
         simpleMessageFormat = messageFormatAndOwnerParser.getSimpleMessageFormat();
 
         if(isAllAddressContain(sAddresses)){
@@ -73,7 +77,7 @@ public class CmdParserV2 {
         return new CmdParserV2(smfSendStrategy, simpleMessageFormat, new FileWritersV2(fileWriterV2s), message);
     }
 
-    private static <T extends FileWriterV2> List<FileWriterV2> decorateOwnerFileWriter(String owner, List<T> fileWriters){
+    private static <T extends FileWriterV2> List<FileWriterV2> decorateOwnerFileWriter(MessageOwner owner, List<T> fileWriters){
         return fileWriters.stream()
             .map(fileWriter -> new FileOwnerWriterV2(owner, fileWriter))
             .collect(Collectors.toUnmodifiableList());
@@ -91,24 +95,24 @@ public class CmdParserV2 {
     private static class MessageFormatAndOwnerParser {
         private final SimpleMessageFormat simpleMessageFormat;
 
-        private final String owner;
+        private final MessageOwner owner;
 
-        private MessageFormatAndOwnerParser(@NonNull SimpleMessageFormat simpleMessageFormat, @NonNull String owner) {
+        private MessageFormatAndOwnerParser(@NonNull SimpleMessageFormat simpleMessageFormat, @NonNull MessageOwner owner) {
             this.simpleMessageFormat = simpleMessageFormat;
             this.owner = owner;
         }
 
         public static MessageFormatAndOwnerParser parse(@NonNull String message, @NonNull Notice notice, @NonNull Cmd cmd) {
             if (cmd == Cmd.SEND) {
-                return new MessageFormatAndOwnerParser(new GenericSimpleMessageFormat(message), "서버");
+                return new MessageFormatAndOwnerParser(new GenericSimpleMessageFormat(message), SERVER);
             }
 
             if (cmd == Cmd.NOTICE) {
                 switch (notice) {
                     case INFO:
-                        return new MessageFormatAndOwnerParser(new NoticeInfoSimpleMessageFormat(message), "INFO");
+                        return new MessageFormatAndOwnerParser(new NoticeInfoSimpleMessageFormat(message), INFO);
                     case WARN:
-                        return new MessageFormatAndOwnerParser(new NoticeWarnSimpleMessageFormat(message), "WARN");
+                        return new MessageFormatAndOwnerParser(new NoticeWarnSimpleMessageFormat(message), WARN);
                 }
             }
 
