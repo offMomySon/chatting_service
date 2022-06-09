@@ -92,8 +92,11 @@ public class CmdParser {
     }
 
     private static boolean isAllAddressContain(String[] sAddresses) {
-        return Arrays.stream(sAddresses).anyMatch(sAddress -> ALL_ADDRESS.contains(StringUtils.upperCase(sAddress)));
+        return Arrays.stream(sAddresses)
+            .map(StringUtils::upperCase)
+            .anyMatch(ALL_ADDRESS::contains);
     }
+
     @Getter
     private static class MessageFormatAndOwnerParser {
         private final SimpleMessageFormat simpleMessageFormat;
