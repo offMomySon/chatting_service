@@ -39,7 +39,6 @@ class Sender {
             while ((cmd = in.readLine()) != STOP_READ) {
                 log.info("console write : {}", cmd);
 
-//                CmdParser cmdParser = CmdParser.parse(cmd, smfSender, fileWriter);
                 CmdParserV2 cmdParser = CmdParserV2.parse(cmd, smfSender, fileWriterCreator);
 
                 SmfSendStrategy smfSendStrategy = cmdParser.getSmfSendStrategy();
