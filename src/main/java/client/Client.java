@@ -2,15 +2,15 @@ package client;
 
 
 import client.writer.MessageSender;
+import client.writer.file.BasicFileWriter;
 import client.writer.file.FileOwnerWriter;
-import client.writer.file.FileWriter;
-import client.writer.file.TimeNameFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 import java.time.LocalDateTime;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import static common.MessageOwner.CLIENT;
 
 @Slf4j
 public class Client {
@@ -38,7 +38,7 @@ public class Client {
                 try {
                     InputStream in = System.in;
                     MessageSender messageSender = MessageSender.create(socket.getOutputStream());
-                    FileOwnerWriter fileOwnerWriter = new FileOwnerWriter("클라", FileWriter.create(TimeNameFile.create(LocalDateTime.now())));
+                    FileOwnerWriter fileOwnerWriter = new FileOwnerWriter(CLIENT, BasicFileWriter.create(LocalDateTime.now()));
 
                     Sender.create(in, messageSender, fileOwnerWriter).waitAndThenSendMsg();
                 } catch (IOException e) {

@@ -9,10 +9,12 @@ import java.util.Objects;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import server.message.notice.NoticeInfoSimpleMessageFormat;
+import server.v2.writer.file.BasicFileWriterV2;
 import server.v2.writer.file.FileOwnerWriterV2;
-import server.v2.writer.file.TimeAndIpNamedFileWriterV2;
 import server.writer.smf.SmfSender;
 import util.IoUtil;
+import static common.MessageOwner.CLIENT;
+import static common.MessageOwner.INFO;
 
 /**
  * client 로 부터 메세지를 수신하는 역할.
@@ -52,14 +54,14 @@ public class Receiver {
                 log.info("From client : {}", message);
 
                 if(Objects.equals(message, EXIT_CMD)){
-                    FileOwnerWriterV2 fileWriter = new FileOwnerWriterV2("INFO", TimeAndIpNamedFileWriterV2.create(LocalDateTime.now(), address));
+                    FileOwnerWriterV2 fileWriter = new FileOwnerWriterV2(INFO, BasicFileWriterV2.create(LocalDateTime.now(), address));
                     fileWriter.write(END_MSG);
 
                     smfSender.send(new NoticeInfoSimpleMessageFormat(END_MSG), List.of(address));
                     break;
                 }
 
-                FileOwnerWriterV2 fileWriter = new FileOwnerWriterV2("클라", TimeAndIpNamedFileWriterV2.create(LocalDateTime.now(), address));
+                FileOwnerWriterV2 fileWriter = new FileOwnerWriterV2(CLIENT, BasicFileWriterV2.create(LocalDateTime.now(), address));
                 fileWriter.write(message);
             }
         } catch(IOException e) {

@@ -6,10 +6,9 @@ import client.message.file.FileMessage;
 import client.writer.console.ConsoleNotWriteStrategy;
 import client.writer.console.ConsoleSmfWriteStrategy;
 import client.writer.console.ConsoleWriteStrategy;
+import client.writer.file.BasicFileWriter;
 import client.writer.file.FileOwnerWriter;
 import client.writer.file.FileWriter;
-import client.writer.file.FileWriterInterface;
-import client.writer.file.TimeNameFile;
 import java.time.LocalDateTime;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -17,6 +16,9 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
+import static common.MessageOwner.INFO;
+import static common.MessageOwner.SERVER;
+import static common.MessageOwner.WARN;
 
 @Getter
 public class SmfDecoder {
@@ -28,7 +30,7 @@ public class SmfDecoder {
     private static final String NOTICE_INFO_PREFIX = "\\u001B[33m[INFO]\\u001B[0m";
     private static final String NOTICE_WARN_PREFIX = "\\u001B[31m[WARN]\\u001B[0m";
 
-    private final FileWriterInterface fileWriter;
+    private final FileWriter fileWriter;
     private final FileMessage fileMessage;
     private final ConsoleWriteStrategy consoleWriteStrategy;
 
@@ -49,15 +51,15 @@ public class SmfDecoder {
         String message = String.join(" ", deque);
 
         if (StringUtils.equals(code, GENERIC_CODE)) {
-            return new SmfDecoder(new FileOwnerWriter("SERVER", FileWriter.create(TimeNameFile.create(LocalDateTime.now()))), new FileMessage(message), new ConsoleNotWriteStrategy());
+            return new SmfDecoder(new FileOwnerWriter(SERVER, BasicFileWriter.create(LocalDateTime.now())), new FileMessage(message), new ConsoleNotWriteStrategy());
         }
 
         if (StringUtils.equals(code, NOTICE_CODE) && StringUtils.equals(prefix, NOTICE_INFO_PREFIX)) {
-            return new SmfDecoder(new FileOwnerWriter("INFO", FileWriter.create(TimeNameFile.create(LocalDateTime.now()))), new FileMessage(message), new ConsoleSmfWriteStrategy(new ConsoleNoticeInfoMessage(message)));
+            return new SmfDecoder(new FileOwnerWriter(INFO, BasicFileWriter.create(LocalDateTime.now())), new FileMessage(message), new ConsoleSmfWriteStrategy(new ConsoleNoticeInfoMessage(message)));
         }
 
         if (StringUtils.equals(code, NOTICE_CODE) && StringUtils.equals(prefix, NOTICE_WARN_PREFIX)) {
-            return new SmfDecoder(new FileOwnerWriter("WARN", FileWriter.create(TimeNameFile.create(LocalDateTime.now()))), new FileMessage(message), new ConsoleSmfWriteStrategy(new ConsoleNoticeWarnMessage(message)));
+            return new SmfDecoder(new FileOwnerWriter(WARN, BasicFileWriter.create(LocalDateTime.now())), new FileMessage(message), new ConsoleSmfWriteStrategy(new ConsoleNoticeWarnMessage(message)));
         }
 
         throw new RuntimeException("올바른 simpleMessage 가 아닙니다.");

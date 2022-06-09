@@ -16,15 +16,15 @@ public class TimeAndIpNamedFileWriterCreatorV2 {
         addresses.add(address);
     }
 
-    public List<TimeAndIpNamedFileWriterV2> create(LocalDateTime time, Collection<Address> requestAddress){
+    public List<BasicFileWriterV2> create(LocalDateTime time, Collection<Address> requestAddress){
         List<Address> destinations = requestAddress.stream().filter(addresses::contains).collect(toUnmodifiableList());
 
         return destinations.stream()
-            .map(address -> TimeAndIpNamedFileWriterV2.create(time, address))
+            .map(address -> BasicFileWriterV2.create(time, address))
             .collect(toUnmodifiableList());
     }
 
-    public List<TimeAndIpNamedFileWriterV2> createAll(LocalDateTime time){
+    public List<BasicFileWriterV2> createAll(LocalDateTime time){
         return create(time, addresses);
     }
 }

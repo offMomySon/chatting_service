@@ -2,7 +2,7 @@ package client;
 
 import client.message.file.FileMessage;
 import client.writer.console.ConsoleWriteStrategy;
-import client.writer.file.FileOwnerWriter;
+import client.writer.file.FileWriter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,9 +33,9 @@ class Receiver {
 
                 SmfDecoder smfDecoder = SmfDecoder.decode(smfMessage);
 
-                FileOwnerWriter fileOwnerWriter = smfDecoder.getFileWriter();
+                FileWriter fileWriter = smfDecoder.getFileWriter();
                 FileMessage fileMessage = smfDecoder.getFileMessage();
-                fileOwnerWriter.write(fileMessage);
+                fileWriter.write(fileMessage);
 
                 ConsoleWriteStrategy consoleWriteStrategy = smfDecoder.getConsoleWriteStrategy();
                 consoleWriteStrategy.write();
