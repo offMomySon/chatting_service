@@ -54,8 +54,9 @@ public class CmdParserV2 {
         String[] sAddresses = queue.poll().split(",");
         String message = String.join(" ", queue.poll());
 
-        String owner = createFileWriterOwner(notice, cmd);
-        simpleMessageFormat = createSimpleMessageFormat(message, notice, cmd);
+        MessageFormatAndOwnerParser messageFormatAndOwnerParser = MessageFormatAndOwnerParser.parse(message, notice, cmd);
+        String owner = messageFormatAndOwnerParser.getOwner();
+        simpleMessageFormat = messageFormatAndOwnerParser.getSimpleMessageFormat();
 
         if(isAllAddressContain(sAddresses)){
             smfSendStrategy = new SmfAllSendStrategy(smfSender);
@@ -77,41 +78,6 @@ public class CmdParserV2 {
             .map(fileWriter -> new FileOwnerWriterV2(owner, fileWriter))
             .collect(Collectors.toUnmodifiableList());
     }
-    @NotNull
-    private static SimpleMessageFormat createSimpleMessageFormat(String message, Notice notice, Cmd cmd) {
-        if(cmd == Cmd.SEND){
-            return new GenericSimpleMessageFormat(message);
-        }
-
-        if(cmd == Cmd.NOTICE){
-            switch (notice){
-                case INFO:
-                    return new NoticeInfoSimpleMessageFormat(message);
-                case WARN:
-                    return new NoticeWarnSimpleMessageFormat(message);
-            }
-        }
-
-        throw new RuntimeException("not exist notice cmd");
-    }
-
-    @NotNull
-    private static String createFileWriterOwner(Notice notice, Cmd cmd) {
-        if(cmd == Cmd.SEND){
-            return "서버";
-        }
-
-        if(cmd == Cmd.NOTICE){
-            switch (notice){
-                case INFO:
-                    return "INFO";
-                case WARN:
-                    return "WARN";
-            }
-        }
-
-        throw new RuntimeException("not exist notice cmd");
-    }
 
     @NotNull
     private static List<Address> createAddresses(String[] sAddresses) {
@@ -120,5 +86,34 @@ public class CmdParserV2 {
 
     private static boolean isAllAddressContain(String[] sAddresses) {
         return Arrays.stream(sAddresses).anyMatch(sAddress -> ALL_ADDRESS.contains(StringUtils.upperCase(sAddress)));
+    }
+    @Getter
+    private static class MessageFormatAndOwnerParser {
+        private final SimpleMessageFormat simpleMessageFormat;
+
+        private final String owner;
+
+        private MessageFormatAndOwnerParser(@NonNull SimpleMessageFormat simpleMessageFormat, @NonNull String owner) {
+            this.simpleMessageFormat = simpleMessageFormat;
+            this.owner = owner;
+        }
+
+        public static MessageFormatAndOwnerParser parse(@NonNull String message, @NonNull Notice notice, @NonNull Cmd cmd) {
+            if (cmd == Cmd.SEND) {
+                return new MessageFormatAndOwnerParser(new GenericSimpleMessageFormat(message), "서버");
+            }
+
+            if (cmd == Cmd.NOTICE) {
+                switch (notice) {
+                    case INFO:
+                        return new MessageFormatAndOwnerParser(new NoticeInfoSimpleMessageFormat(message), "INFO");
+                    case WARN:
+                        return new MessageFormatAndOwnerParser(new NoticeWarnSimpleMessageFormat(message), "WARN");
+                }
+            }
+
+            throw new RuntimeException("not exist notice cmd");
+        }
+
     }
 }
