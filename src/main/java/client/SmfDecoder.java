@@ -3,11 +3,11 @@ package client;
 import client.message.console.ConsoleMessage;
 import client.message.file.FileMessage;
 import client.writer.CompositedWriter;
-import client.writer.console.ConsoleWriteStrategy;
+import client.writer.console.ConsoleWriteHmm;
 import client.writer.console.ConsoleWriter;
 import client.writer.file.BasicFileWriter;
 import client.writer.file.FileOwnerWriter;
-import client.writer.file.FileWriteStrategy;
+import client.writer.file.FileWriteHmm;
 import common.command.Cmd;
 import common.command.Notice;
 import java.time.LocalDateTime;
@@ -48,8 +48,8 @@ public class SmfDecoder {
         }
 
         if(cmd == Cmd.SEND){
-            FileWriteStrategy fileWriteStrategy = new FileWriteStrategy(new FileOwnerWriter(SERVER, BasicFileWriter.create(LocalDateTime.now())), new FileMessage(message));
-            CompositedWriter writer = new CompositedWriter(List.of(fileWriteStrategy));
+            FileWriteHmm fileWriteHmm = new FileWriteHmm(new FileOwnerWriter(SERVER, BasicFileWriter.create(LocalDateTime.now())), new FileMessage(message));
+            CompositedWriter writer = new CompositedWriter(List.of(fileWriteHmm));
             return new SmfDecoder(writer);
         }
 
@@ -57,19 +57,19 @@ public class SmfDecoder {
             Notice notice = Notice.fromPrefix(prefix).orElseThrow(()-> new RuntimeException("일치하는 notice 가 없습니다."));
             FileMessage fileMessage = new FileMessage(message);
             BasicFileWriter basicFileWriter = BasicFileWriter.create(LocalDateTime.now());
-            ConsoleWriteStrategy consoleWriteStrategy = new ConsoleWriteStrategy(new ConsoleWriter(), new ConsoleMessage(message));
+            ConsoleWriteHmm consoleWriteHmm = new ConsoleWriteHmm(new ConsoleWriter(), new ConsoleMessage(message));
 
             if(notice == Notice.INFO){
-                FileWriteStrategy fileWriteStrategy = new FileWriteStrategy(new FileOwnerWriter(INFO, basicFileWriter), fileMessage);
+                FileWriteHmm fileWriteHmm = new FileWriteHmm(new FileOwnerWriter(INFO, basicFileWriter), fileMessage);
 
-                CompositedWriter writer = new CompositedWriter(List.of(fileWriteStrategy, consoleWriteStrategy));
+                CompositedWriter writer = new CompositedWriter(List.of(fileWriteHmm, consoleWriteHmm));
                 return new SmfDecoder(writer);
             }
 
             if(notice == Notice.WARN){
-                FileWriteStrategy fileWriteStrategy = new FileWriteStrategy(new FileOwnerWriter(WARN, basicFileWriter), fileMessage);
+                FileWriteHmm fileWriteHmm = new FileWriteHmm(new FileOwnerWriter(WARN, basicFileWriter), fileMessage);
 
-                CompositedWriter writer = new CompositedWriter(List.of(fileWriteStrategy, consoleWriteStrategy));
+                CompositedWriter writer = new CompositedWriter(List.of(fileWriteHmm, consoleWriteHmm));
                 return new SmfDecoder(writer);
             }
         }
