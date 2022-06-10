@@ -9,7 +9,7 @@ import lombok.NonNull;
 import server.Address;
 import static java.util.stream.Collectors.toUnmodifiableList;
 
-public class TimeAndIpNamedFileWriterCreatorV2 {
+public class BasicFileWriterCreatorV2 {
     private final Set<Address> addresses = new HashSet<>();
 
     public void addAddress(@NonNull Address address){

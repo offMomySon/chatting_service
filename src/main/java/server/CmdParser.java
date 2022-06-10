@@ -19,10 +19,10 @@ import server.message.SimpleMessageFormat;
 import server.message.generic.GenericSimpleMessageFormat;
 import server.message.notice.NoticeInfoSimpleMessageFormat;
 import server.message.notice.NoticeWarnSimpleMessageFormat;
+import server.v2.writer.file.BasicFileWriterCreatorV2;
 import server.v2.writer.file.FileOwnerWriterV2;
 import server.v2.writer.file.FileWriterV2;
 import server.v2.writer.file.FileWritersV2;
-import server.v2.writer.file.TimeAndIpNamedFileWriterCreatorV2;
 import server.writer.smf.SmfAllSendStrategy;
 import server.writer.smf.SmfIpSendStrategy;
 import server.writer.smf.SmfSendStrategy;
@@ -46,7 +46,7 @@ public class CmdParser {
         this.message = message;
     }
 
-    public static CmdParser parse(@NonNull String sCmd, @NonNull SmfSender smfSender, @NonNull TimeAndIpNamedFileWriterCreatorV2 fileWritersCreator) {
+    public static CmdParser parse(@NonNull String sCmd, @NonNull SmfSender smfSender, @NonNull BasicFileWriterCreatorV2 fileWritersCreator) {
         SmfSendStrategy smfSendStrategy = null;
         SimpleMessageFormat simpleMessageFormat = null;
         List<FileWriterV2> fileWriterV2s = null;

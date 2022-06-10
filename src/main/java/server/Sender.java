@@ -6,8 +6,8 @@ import java.io.InputStream;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import server.message.SimpleMessageFormat;
+import server.v2.writer.file.BasicFileWriterCreatorV2;
 import server.v2.writer.file.FileWritersV2;
-import server.v2.writer.file.TimeAndIpNamedFileWriterCreatorV2;
 import server.writer.smf.SmfSendStrategy;
 import server.writer.smf.SmfSender;
 import static util.IoUtil.createReader;
@@ -20,15 +20,15 @@ class Sender {
     private static final String STOP_READ = null;
     private final BufferedReader in;
     private final SmfSender smfSender;
-    private final TimeAndIpNamedFileWriterCreatorV2 fileWriterCreator;
+    private final BasicFileWriterCreatorV2 fileWriterCreator;
 
-    private Sender(@NonNull SmfSender smfSender, @NonNull BufferedReader in, @NonNull TimeAndIpNamedFileWriterCreatorV2 fileWriterCreator) {
+    private Sender(@NonNull SmfSender smfSender, @NonNull BufferedReader in, @NonNull BasicFileWriterCreatorV2 fileWriterCreator) {
         this.smfSender = smfSender;
         this.in = in;
         this.fileWriterCreator = fileWriterCreator;
     }
 
-    public static Sender create(@NonNull SmfSender smfSender, @NonNull InputStream in, @NonNull TimeAndIpNamedFileWriterCreatorV2 fileWriterCreator) {
+    public static Sender create(@NonNull SmfSender smfSender, @NonNull InputStream in, @NonNull BasicFileWriterCreatorV2 fileWriterCreator) {
         return new Sender(smfSender, createReader(in), fileWriterCreator);
     }
 

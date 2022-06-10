@@ -7,7 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import server.v2.writer.file.TimeAndIpNamedFileWriterCreatorV2;
+import server.v2.writer.file.BasicFileWriterCreatorV2;
 import server.writer.smf.SmfSender;
 
 @Slf4j
@@ -15,10 +15,10 @@ public class Server {
     private static final int MIN_PORT_NUM = 7777;
 
     private final SmfSender smfSender;
-    private final TimeAndIpNamedFileWriterCreatorV2 fileWriterCreator;
+    private final BasicFileWriterCreatorV2 fileWriterCreator;
     private final int port;
 
-    public Server(@NonNull SmfSender smfSender, @NonNull TimeAndIpNamedFileWriterCreatorV2 fileWriterCreator, int port) {
+    public Server(@NonNull SmfSender smfSender, @NonNull BasicFileWriterCreatorV2 fileWriterCreator, int port) {
         this.smfSender = smfSender;
         this.fileWriterCreator = fileWriterCreator;
         this.port = validate(port);
