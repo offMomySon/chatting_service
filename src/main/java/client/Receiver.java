@@ -1,8 +1,6 @@
 package client;
 
-import client.message.file.FileMessage;
-import client.writer.console.ConsoleWriteStrategy;
-import client.writer.file.FileWriter;
+import client.writer.CompositedWriter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,12 +31,8 @@ class Receiver {
 
                 SmfDecoder smfDecoder = SmfDecoder.decode(smfMessage);
 
-                FileWriter fileWriter = smfDecoder.getFileWriter();
-                FileMessage fileMessage = smfDecoder.getFileMessage();
-                fileWriter.write(fileMessage);
-
-                ConsoleWriteStrategy consoleWriteStrategy = smfDecoder.getConsoleWriteStrategy();
-                consoleWriteStrategy.write();
+                CompositedWriter writer = smfDecoder.getWriter();
+                writer.write();
             }
         } catch (IOException e) {
             throw new RuntimeException("Fail to receive msg.", e);
