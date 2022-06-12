@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import server.message.SimpleMessageFormat;
-import server.v2.writer.file.BasicFileWriterCreatorV2;
-import server.v2.writer.file.FileWritersV2;
+import server.message.file.FileMessage;
+import server.message.smf.SimpleMessageFormat;
+import server.v3.AddressRepository;
+import server.v3.CmdParserV3;
+import server.v3.FileWritersV3;
 import server.writer.smf.SmfSendStrategy;
 import server.writer.smf.SmfSender;
 import static util.IoUtil.createReader;
@@ -20,15 +22,15 @@ class Sender {
     private static final String STOP_READ = null;
     private final BufferedReader in;
     private final SmfSender smfSender;
-    private final BasicFileWriterCreatorV2 fileWriterCreator;
+    private final AddressRepository addressRepository;
 
-    private Sender(@NonNull SmfSender smfSender, @NonNull BufferedReader in, @NonNull BasicFileWriterCreatorV2 fileWriterCreator) {
+    private Sender(@NonNull SmfSender smfSender, @NonNull BufferedReader in, @NonNull AddressRepository addressRepository) {
         this.smfSender = smfSender;
         this.in = in;
-        this.fileWriterCreator = fileWriterCreator;
+        this.addressRepository = addressRepository;
     }
 
-    public static Sender create(@NonNull SmfSender smfSender, @NonNull InputStream in, @NonNull BasicFileWriterCreatorV2 fileWriterCreator) {
+    public static Sender create(@NonNull SmfSender smfSender, @NonNull InputStream in, AddressRepository fileWriterCreator) {
         return new Sender(smfSender, createReader(in), fileWriterCreator);
     }
 
@@ -38,15 +40,16 @@ class Sender {
             while ((cmd = in.readLine()) != STOP_READ) {
                 log.info("console write : {}", cmd);
 
-                CmdParser cmdParser = CmdParser.parse(cmd, smfSender, fileWriterCreator);
+//                CmdParser cmdParser = CmdParser.parse(cmd, smfSender, addressRepository);
+                CmdParserV3 cmdParserV3 = CmdParserV3.parse(cmd, smfSender, addressRepository);
 
-                SmfSendStrategy smfSendStrategy = cmdParser.getSmfSendStrategy();
-                SimpleMessageFormat simpleMessageFormat = cmdParser.getSimpleMessageFormat();
+                SmfSendStrategy smfSendStrategy = cmdParserV3.getSmfSendStrategy();
+                SimpleMessageFormat simpleMessageFormat = cmdParserV3.getSimpleMessageFormat();
                 smfSendStrategy.send(simpleMessageFormat);
 
-                FileWritersV2 fileWritersV2 = cmdParser.getFileWriters();
-                String message = cmdParser.getMessage();
-                fileWritersV2.write(message);
+                FileWritersV3 fileWritersV3 = cmdParserV3.getFileWritersV3();
+                FileMessage fileMessage = cmdParserV3.getFileMessage();
+                fileWritersV3.write(fileMessage);
             }
         } catch (IOException e) {
             throw new RuntimeException("Fail console read.", e);

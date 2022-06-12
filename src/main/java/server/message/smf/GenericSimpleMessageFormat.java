@@ -1,8 +1,8 @@
-package server.message.generic;
+package server.message.smf.generic;
 
 import java.text.MessageFormat;
 import lombok.NonNull;
-import server.message.SimpleMessageFormat;
+import server.message.smf.SimpleMessageFormat;
 
 public class GenericSimpleMessageFormat implements SimpleMessageFormat {
     private final String message;

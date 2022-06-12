@@ -1,4 +1,4 @@
-package server.message.notice;
+package server.message.smf.notice;
 
 import common.command.Notice;
 import lombok.NonNull;

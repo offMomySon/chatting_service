@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Objects;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import server.message.notice.NoticeInfoSimpleMessageFormat;
+import server.message.smf.notice.NoticeInfoSimpleMessageFormat;
 import server.v2.writer.file.BasicFileWriterV2;
 import server.v2.writer.file.FileOwnerWriterV2;
 import server.writer.smf.SmfSender;

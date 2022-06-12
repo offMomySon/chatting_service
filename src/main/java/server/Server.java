@@ -7,7 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import server.v2.writer.file.BasicFileWriterCreatorV2;
+import server.v3.AddressRepository;
 import server.writer.smf.SmfSender;
 
 @Slf4j
@@ -15,12 +15,12 @@ public class Server {
     private static final int MIN_PORT_NUM = 7777;
 
     private final SmfSender smfSender;
-    private final BasicFileWriterCreatorV2 fileWriterCreator;
+    private final AddressRepository addressRepository;
     private final int port;
 
-    public Server(@NonNull SmfSender smfSender, @NonNull BasicFileWriterCreatorV2 fileWriterCreator, int port) {
+    public Server(@NonNull SmfSender smfSender, @NonNull AddressRepository addressRepository, int port) {
         this.smfSender = smfSender;
-        this.fileWriterCreator = fileWriterCreator;
+        this.addressRepository = addressRepository;
         this.port = validate(port);
     }
 
@@ -34,7 +34,7 @@ public class Server {
     public void start() {
         Socket socket;
         Thread sender = new Thread(
-            () -> Sender.create(smfSender, System.in, fileWriterCreator).waitAndThenSendMsg()
+            () -> Sender.create(smfSender, System.in, addressRepository).waitAndThenSendMsg()
         );
         sender.start();
 
@@ -48,8 +48,9 @@ public class Server {
                 Address address = new Address(socket.getInetAddress().getHostAddress());
                 OutputStream socketStream = socket.getOutputStream();
 
+                addressRepository.addAddress(address);
                 smfSender.addAddress(address, socketStream);
-                fileWriterCreator.addAddress(address);
+//                fileWriterCreator.addAddress(address);
 
                 Socket _socket = socket;
                 Thread receiver = new Thread(()-> Receiver.create(_socket, smfSender).waitAndThenGetMsg());

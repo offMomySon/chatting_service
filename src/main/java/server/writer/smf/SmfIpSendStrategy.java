@@ -3,7 +3,7 @@ package server.writer.smf;
 import java.util.List;
 import lombok.NonNull;
 import server.Address;
-import server.message.SimpleMessageFormat;
+import server.message.smf.SimpleMessageFormat;
 
 public class SmfIpSendStrategy implements SmfSendStrategy{
     private final List<Address> addresses;
