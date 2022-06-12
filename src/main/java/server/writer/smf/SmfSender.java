@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.NonNull;
 import server.Address;
-import server.message.SimpleMessageFormat;
+import server.message.smf.SimpleMessageFormat;
 import static util.IoUtil.createWriter;
 
 public class SmfSender {

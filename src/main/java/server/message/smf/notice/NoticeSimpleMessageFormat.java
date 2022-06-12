@@ -1,8 +1,8 @@
-package server.message.notice;
+package server.message.smf.notice;
 
 import java.text.MessageFormat;
 import lombok.NonNull;
-import server.message.SimpleMessageFormat;
+import server.message.smf.SimpleMessageFormat;
 
 public class NoticeSimpleMessageFormat implements SimpleMessageFormat {
     private final PrefixMessage prefix;
