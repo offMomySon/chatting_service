@@ -12,7 +12,7 @@ public class Writer {
     }
 
     public void write(@NonNull String message){
-        try (out){
+        try{
             out.write(message);
             out.flush();
         } catch (IOException e) {

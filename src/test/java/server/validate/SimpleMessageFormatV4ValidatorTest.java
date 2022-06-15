@@ -4,9 +4,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
-class SimpleMessageFormatValidatorTest {
+class SimpleMessageFormatV4ValidatorTest {
 
     @Test
     void test(){
