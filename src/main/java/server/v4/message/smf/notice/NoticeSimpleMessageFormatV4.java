@@ -1,14 +1,15 @@
-package server.message.smf.notice;
+package server.v4.message.smf.notice;
 
 import java.text.MessageFormat;
 import lombok.NonNull;
+import server.message.smf.notice.PrefixMessage;
 import server.v4.message.smf.SimpleMessageFormatV4;
 
-public class NoticeSimpleMessageFormat implements SimpleMessageFormatV4 {
-    private final PrefixMessage prefix;
+public class NoticeSimpleMessageFormatV4 implements SimpleMessageFormatV4 {
+    private final server.message.smf.notice.PrefixMessage prefix;
     private final String message;
 
-    protected NoticeSimpleMessageFormat(@NonNull PrefixMessage prefix, @NonNull String message) {
+    protected NoticeSimpleMessageFormatV4(@NonNull PrefixMessage prefix, @NonNull String message) {
         this.prefix = prefix;
         this.message = message;
     }

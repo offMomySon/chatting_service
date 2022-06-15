@@ -1,10 +1,9 @@
 package server;
 
-import server.v3.AddressRepository;
-import server.writer.smf.SmfSender;
+import server.v4.MessageWriter;
 
 public class App {
     public static void main(String args[]) {
-        new Server(new SmfSender(), new AddressRepository(), 7777).start();
+        new Server(new MessageWriter(), 7777).start();
     }
 }

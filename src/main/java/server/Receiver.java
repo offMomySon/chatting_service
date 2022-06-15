@@ -9,9 +9,8 @@ import java.util.Objects;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import server.message.smf.notice.NoticeInfoSimpleMessageFormat;
-import server.v2.writer.file.BasicFileWriterV2;
-import server.v2.writer.file.FileOwnerWriterV2;
-import server.writer.smf.SmfSender;
+import server.v4.MessageWriter;
+import server.v4.message.file.FileMessageV4;
 import util.IoUtil;
 import static common.MessageOwner.CLIENT;
 import static common.MessageOwner.INFO;
@@ -27,25 +26,24 @@ public class Receiver {
 
     private final BufferedReader in;
     private final Address address;
-    private final SmfSender smfSender;
+    private final MessageWriter messageWriter;
 
-    private Receiver(@NonNull BufferedReader in, @NonNull Address address, SmfSender smfSender) {
+    private Receiver(@NonNull BufferedReader in, @NonNull Address address, @NonNull MessageWriter messageWriter) {
         this.in = in;
         this.address = address;
-        this.smfSender = smfSender;
+        this.messageWriter = messageWriter;
     }
 
-    public static Receiver create(@NonNull Socket socket, @NonNull SmfSender smfSender){
+    public static Receiver create(@NonNull Socket socket, @NonNull MessageWriter messageWriter){
         try {
             BufferedReader in = IoUtil.createReader(socket.getInputStream());
             Address address = new Address(socket.getInetAddress().getHostAddress());
 
-            return new Receiver(in, address, smfSender);
+            return new Receiver(in, address, messageWriter);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-
 
     public void waitAndThenGetMsg() {
         String message = END_CONNECTION;
@@ -54,15 +52,16 @@ public class Receiver {
                 log.info("From client : {}", message);
 
                 if(Objects.equals(message, EXIT_CMD)){
-                    FileOwnerWriterV2 fileWriter = new FileOwnerWriterV2(INFO, BasicFileWriterV2.create(LocalDateTime.now(), address));
-                    fileWriter.write(END_MSG);
+                    FileMessageV4 fileMessage = new FileMessageV4(LocalDateTime.now(), INFO, message);
+                    messageWriter.write(fileMessage, List.of());
 
-                    smfSender.send(new NoticeInfoSimpleMessageFormat(END_MSG), List.of(address));
+                    NoticeInfoSimpleMessageFormat smfMessage = new NoticeInfoSimpleMessageFormat(END_MSG);
+                    messageWriter.write(smfMessage, List.of(address));
                     break;
                 }
 
-                FileOwnerWriterV2 fileWriter = new FileOwnerWriterV2(CLIENT, BasicFileWriterV2.create(LocalDateTime.now(), address));
-                fileWriter.write(message);
+                FileMessageV4 fileMessage = new FileMessageV4(LocalDateTime.now(), CLIENT, message);
+                messageWriter.write(fileMessage, List.of());
             }
         } catch(IOException e) {
             throw new RuntimeException("Fail to receive msg.",e);

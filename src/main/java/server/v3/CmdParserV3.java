@@ -18,8 +18,6 @@ import server.Address;
 import server.message.file.FileMessage;
 import server.message.smf.SimpleMessageFormat;
 import server.message.smf.generic.GenericSimpleMessageFormat;
-import server.message.smf.notice.NoticeInfoSimpleMessageFormat;
-import server.message.smf.notice.NoticeWarnSimpleMessageFormat;
 import server.writer.smf.SmfAllSendStrategy;
 import server.writer.smf.SmfIpSendStrategy;
 import server.writer.smf.SmfSendStrategy;
@@ -112,12 +110,12 @@ public class CmdParserV3 {
                 throw new RuntimeException("notice is null");
             }
 
-            switch (notice){
-                case INFO:
-                    return new SimpleMessageFormatMessageOwnerCreator(new NoticeInfoSimpleMessageFormat(message), MessageOwner.INFO);
-                case WARN:
-                    return new SimpleMessageFormatMessageOwnerCreator(new NoticeWarnSimpleMessageFormat(message), MessageOwner.WARN);
-            }
+//            switch (notice){
+//                case INFO:
+//                    return new SimpleMessageFormatMessageOwnerCreator(new NoticeInfoSimpleMessageFormat(message), MessageOwner.INFO);
+//                case WARN:
+//                    return new SimpleMessageFormatMessageOwnerCreator(new NoticeWarnSimpleMessageFormat(message), MessageOwner.WARN);
+//            }
             throw new RuntimeException("일치하는 type 이 존재하지 않습니다.");
         }
 

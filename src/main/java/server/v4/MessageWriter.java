@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.NonNull;
 import server.Address;
+import server.v4.message.file.FileMessageV4;
+import server.v4.message.smf.SimpleMessageFormatV4;
 import static server.v4.Usage.FILE;
 import static server.v4.Usage.SOCKET;
 
@@ -16,25 +18,47 @@ public class MessageWriter {
         destinations.computeIfAbsent(address, k-> new HashMap<>());
 
         Map<Usage, WriterV4> usageWriterV4Map = destinations.get(address);
-        if(writer instanceof BasicWriter){
+        if(writer instanceof SimpleFormatMessageWriter){
             usageWriterV4Map.put(SOCKET, writer);
             return;
         }
-        usageWriterV4Map.put(FILE, writer);
+        if(writer instanceof  TimeAddressNamedFileWriter){
+            usageWriterV4Map.put(FILE, writer);
+            return;
+        }
+
+        throw new RuntimeException("not typed writer.");
     }
 
-    public void write(@NonNull Usage usage, @NonNull Message message, @NonNull List<Address> addresses){
+    public void write(@NonNull SimpleMessageFormatV4 message, List<Address> addresses){
+        write(SOCKET, message, addresses);
+    }
+
+    public void writeAll(@NonNull SimpleMessageFormatV4 message){
+        writeAll(SOCKET, message);
+    }
+
+    public void write(@NonNull FileMessageV4 message, List<Address> addresses){
+        write(FILE, message, addresses);
+    }
+
+    public void writeAll(@NonNull FileMessageV4 message){
+        writeAll(FILE, message);
+    }
+
+    private void write(@NonNull Usage usage, @NonNull Message message, @NonNull List<Address> addresses){
+
         addresses.stream()
             .filter(destinations::containsKey)
-            .map(address -> destinations.get(address))
-            .filter(value -> value.containsKey(usage))
-            .map(value -> value.get(usage))
-            .forEach(writerV4 -> writerV4.write(message.create()));
+            .map(destinations::get)
+            .filter(usages -> usages.containsKey(usage))
+            .map(usages -> usages.get(usage))
+            .forEach(writerV4 -> writerV4.write(message.createMessage()));
     }
 
-    public void writeAll(@NonNull Usage usage, @NonNull Message message){
-        List<Address> addresses = destinations.keySet().stream().collect(Collectors.toUnmodifiableList());
+    private void writeAll(@NonNull Usage usage, @NonNull Message message){
+        List<Address> allAddresses = destinations.keySet().stream().collect(Collectors.toUnmodifiableList());
 
-        write(usage, message, addresses);
+        write(usage, message, allAddresses);
     }
 }

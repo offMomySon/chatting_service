@@ -2,26 +2,26 @@ package server;
 
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalDateTime;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import server.v3.AddressRepository;
-import server.writer.smf.SmfSender;
+import server.v4.MessageWriter;
+import server.v4.SimpleFormatMessageWriter;
+import server.v4.TimeAddressNamedFileWriter;
 
 @Slf4j
 public class Server {
     private static final int MIN_PORT_NUM = 7777;
 
-    private final SmfSender smfSender;
-    private final AddressRepository addressRepository;
     private final int port;
 
-    public Server(@NonNull SmfSender smfSender, @NonNull AddressRepository addressRepository, int port) {
-        this.smfSender = smfSender;
-        this.addressRepository = addressRepository;
+    private final MessageWriter messageWriter;
+
+    public Server(@NonNull MessageWriter messageWriter, int port) {
         this.port = validate(port);
+        this.messageWriter = messageWriter;
     }
 
     private static int validate(int port){
@@ -34,7 +34,7 @@ public class Server {
     public void start() {
         Socket socket;
         Thread sender = new Thread(
-            () -> Sender.create(smfSender, System.in, addressRepository).waitAndThenSendMsg()
+            () -> Sender.create(System.in, messageWriter).waitAndThenSendMsg()
         );
         sender.start();
 
@@ -43,17 +43,17 @@ public class Server {
 
             while(true) {
                 socket = serverSocket.accept();
-                log.info("[{} : {}] is connected.", socket.getInetAddress(), socket.getPort());
 
                 Address address = new Address(socket.getInetAddress().getHostAddress());
-                OutputStream socketStream = socket.getOutputStream();
 
-                addressRepository.addAddress(address);
-                smfSender.addAddress(address, socketStream);
-//                fileWriterCreator.addAddress(address);
+                SimpleFormatMessageWriter simpleFormatMessageWriter = SimpleFormatMessageWriter.create(socket.getOutputStream());
+                TimeAddressNamedFileWriter timeAddressNamedFileWriter = TimeAddressNamedFileWriter.create(LocalDateTime.now(),address);
+
+                messageWriter.addAddress(address, simpleFormatMessageWriter);
+                messageWriter.addAddress(address, timeAddressNamedFileWriter);
 
                 Socket _socket = socket;
-                Thread receiver = new Thread(()-> Receiver.create(_socket, smfSender).waitAndThenGetMsg());
+                Thread receiver = new Thread(()-> Receiver.create(_socket, messageWriter).waitAndThenGetMsg());
                 receiver.start();
             }
         } catch(IOException e) {
