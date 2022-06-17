@@ -1,5 +1,8 @@
 package server.message.smf;
 
-public interface SimpleMessageFormat {
-    String createMessage();
+import server.v5.Message;
+
+public interface SimpleMessageFormat extends Message {
+    @Override
+    String create();
 }

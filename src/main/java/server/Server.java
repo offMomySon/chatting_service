@@ -7,25 +7,25 @@ import java.net.Socket;
 import java.time.LocalDateTime;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import server.v4.MessageWriter;
-import server.v4.SimpleFormatMessageWriter;
-import server.v4.TimeAddressNamedFileWriter;
+import server.v5.AddressDirection;
+import server.v5.AddressWriter;
+import server.v5.Usage;
+import static server.v5.TimedAndAddressFileOutputStreamCreator.create;
 
 @Slf4j
 public class Server {
     private static final int MIN_PORT_NUM = 7777;
-
     private final int port;
 
-    private final MessageWriter messageWriter;
+    private final AddressWriter addressWriter;
 
-    public Server(@NonNull MessageWriter messageWriter, int port) {
+    public Server(@NonNull AddressWriter addressWriter, int port) {
+        this.addressWriter = addressWriter;
         this.port = validate(port);
-        this.messageWriter = messageWriter;
     }
 
-    private static int validate(int port){
-        if(port < MIN_PORT_NUM){
+    private static int validate(int port) {
+        if (port < MIN_PORT_NUM) {
             throw new RuntimeException("Abnormal port number.");
         }
         return port;
@@ -34,29 +34,26 @@ public class Server {
     public void start() {
         Socket socket;
         Thread sender = new Thread(
-            () -> Sender.create(System.in, messageWriter).waitAndThenSendMsg()
+            () -> Sender.create(System.in, addressWriter).waitAndThenSendMsg()
         );
         sender.start();
 
-        try( ServerSocket serverSocket = new ServerSocket(port) ) {
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
             log.info("Server start.");
 
-            while(true) {
+            while (true) {
                 socket = serverSocket.accept();
 
                 Address address = new Address(socket.getInetAddress().getHostAddress());
 
-                SimpleFormatMessageWriter simpleFormatMessageWriter = SimpleFormatMessageWriter.create(socket.getOutputStream());
-                TimeAddressNamedFileWriter timeAddressNamedFileWriter = TimeAddressNamedFileWriter.create(LocalDateTime.now(),address);
-
-                messageWriter.addAddress(address, simpleFormatMessageWriter);
-                messageWriter.addAddress(address, timeAddressNamedFileWriter);
+                addressWriter.addAddressDirection(new AddressDirection(address, Usage.SOCKET), socket.getOutputStream());
+                addressWriter.addAddressDirection(new AddressDirection(address, Usage.FILE), create(LocalDateTime.now(), address));
 
                 Socket _socket = socket;
-                Thread receiver = new Thread(()-> Receiver.create(_socket, messageWriter).waitAndThenGetMsg());
+                Thread receiver = new Thread(() -> Receiver.create(_socket, addressWriter).waitAndThenGetMsg());
                 receiver.start();
             }
-        } catch(IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException("Fail connection.", e);
         }
     }

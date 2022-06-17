@@ -5,12 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import server.v4.CmdParserV4;
-import server.v4.MessageWriter;
-import server.v4.message.file.FileMessageV4;
-import server.v4.message.smf.SimpleMessageFormatV4;
-import server.v4.strategy.file.FileWriteStrategy;
-import server.v4.strategy.smf.SmfWriteStrategy;
+import server.v5.AddressWriter;
 import static util.IoUtil.createReader;
 
 /**
@@ -21,13 +16,14 @@ class Sender {
     private static final String STOP_READ = null;
     private final BufferedReader in;
 
-    private final MessageWriter messageWriter;
-    private Sender(@NonNull BufferedReader in, @NonNull MessageWriter messageWriter) {
+    private final AddressWriter addressWriter;
+
+    private Sender(@NonNull BufferedReader in, @NonNull AddressWriter addressWriter) {
         this.in = in;
-        this.messageWriter = messageWriter;
+        this.addressWriter = addressWriter;
     }
 
-    public static Sender create(@NonNull InputStream in, @NonNull MessageWriter messageWriter) {
+    public static Sender create(@NonNull InputStream in, AddressWriter messageWriter) {
         return new Sender(createReader(in), messageWriter);
     }
 
@@ -37,15 +33,15 @@ class Sender {
             while ((cmd = in.readLine()) != STOP_READ) {
                 log.info("console write : {}", cmd);
 
-                CmdParserV4 cmdParserV4 = CmdParserV4.parse(cmd, messageWriter);
-
-                SmfWriteStrategy smfSendStrategy = cmdParserV4.getSmfSendStrategy();
-                SimpleMessageFormatV4 simpleMessageFormatV4 = cmdParserV4.getSimpleMessageFormatV4();
-                smfSendStrategy.write(simpleMessageFormatV4);
-
-                FileWriteStrategy fileWriteStrategy = cmdParserV4.getFileWriteStrategy();
-                FileMessageV4 fileMessage = cmdParserV4.getFileMessage();
-                fileWriteStrategy.write(fileMessage);
+//                CmdParserV4 cmdParserV4 = CmdParserV4.parse(cmd, messageWriter);
+//
+//                SmfWriteStrategy smfSendStrategy = cmdParserV4.getSmfSendStrategy();
+//                SimpleMessageFormatV4 simpleMessageFormatV4 = cmdParserV4.getSimpleMessageFormatV4();
+//                smfSendStrategy.write(simpleMessageFormatV4);
+//
+//                FileWriteStrategy fileWriteStrategy = cmdParserV4.getFileWriteStrategy();
+//                FileMessageV4 fileMessage = cmdParserV4.getFileMessage();
+//                fileWriteStrategy.write(fileMessage);
             }
         } catch (IOException e) {
             throw new RuntimeException("Fail console read.", e);

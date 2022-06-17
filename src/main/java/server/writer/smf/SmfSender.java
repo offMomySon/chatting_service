@@ -22,7 +22,7 @@ public class SmfSender {
     }
 
     public void send(@NonNull SimpleMessageFormat smf, List<Address> addresses){
-        String message = smf.createMessage();
+        String message = smf.create();
 
         addresses.stream()
             .map(destinations::get)
