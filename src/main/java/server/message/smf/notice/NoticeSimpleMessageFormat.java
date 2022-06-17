@@ -2,9 +2,9 @@ package server.message.smf.notice;
 
 import java.text.MessageFormat;
 import lombok.NonNull;
-import server.v4.message.smf.SimpleMessageFormatV4;
+import server.message.smf.SimpleMessageFormat;
 
-public class NoticeSimpleMessageFormat implements SimpleMessageFormatV4 {
+public class NoticeSimpleMessageFormat implements SimpleMessageFormat {
     private final PrefixMessage prefix;
     private final String message;
 
@@ -14,7 +14,7 @@ public class NoticeSimpleMessageFormat implements SimpleMessageFormatV4 {
     }
 
     @Override
-    public String createMessage() {
+    public String create() {
         return MessageFormat.format("1:{0} {1}", prefix.create(), message);
     }
 }

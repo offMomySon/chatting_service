@@ -1,9 +1,9 @@
 package server;
 
-import server.v4.MessageWriter;
+import server.v5.AddressWriter;
 
 public class App {
     public static void main(String args[]) {
-        new Server(new MessageWriter(), 7777).start();
+        new Server(new AddressWriter(), 7777).start();
     }
 }

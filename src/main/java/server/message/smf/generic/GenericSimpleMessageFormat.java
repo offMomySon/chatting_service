@@ -11,7 +11,8 @@ public class GenericSimpleMessageFormat implements SimpleMessageFormat {
         this.message = message;
     }
 
-    public String createMessage() {
+    @Override
+    public String create() {
         return MessageFormat.format("0:{0}", message);
     }
 }
