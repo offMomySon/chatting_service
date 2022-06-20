@@ -5,7 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import server.message.file.FileMessage;
+import server.message.smf.SimpleMessageFormat;
 import server.v5.MessageWriter;
+import server.writer.file.FileWriteStrategy;
+import server.writer.smf.SmfSendStrategy;
 import static util.IoUtil.createReader;
 
 /**
@@ -33,15 +37,14 @@ class Sender {
             while ((cmd = in.readLine()) != STOP_READ) {
                 log.info("console write : {}", cmd);
 
-//                CmdParserV4 cmdParserV4 = CmdParserV4.parse(cmd, messageWriter);
-//
-//                SmfWriteStrategy smfSendStrategy = cmdParserV4.getSmfSendStrategy();
-//                SimpleMessageFormatV4 simpleMessageFormatV4 = cmdParserV4.getSimpleMessageFormatV4();
-//                smfSendStrategy.write(simpleMessageFormatV4);
-//
-//                FileWriteStrategy fileWriteStrategy = cmdParserV4.getFileWriteStrategy();
-//                FileMessageV4 fileMessage = cmdParserV4.getFileMessage();
-//                fileWriteStrategy.write(fileMessage);
+                NewCmdParser cmdParser = NewCmdParser.parse(cmd, messageWriter);
+                FileWriteStrategy fileWriteStrategy = cmdParser.getFileWriteStrategy();
+                FileMessage fileMessage = cmdParser.getFileMessage();
+                fileWriteStrategy.write(fileMessage);
+
+                SmfSendStrategy smfSendStrategy = cmdParser.getSmfSendStrategy();
+                SimpleMessageFormat smfMessage = cmdParser.getSmfMessage();
+                smfSendStrategy.send(smfMessage);
             }
         } catch (IOException e) {
             throw new RuntimeException("Fail console read.", e);

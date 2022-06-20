@@ -26,6 +26,7 @@ import server.writer.smf.SmfAllSendStrategy;
 import server.writer.smf.SmfIpSendStrategy;
 import server.writer.smf.SmfSendStrategy;
 
+@Getter
 public class NewCmdParser {
     private static final Set<String> ALL_ADDRESS = Set.of("*", "ALL");
     private static final String CMD_DELIMITER = " ";
