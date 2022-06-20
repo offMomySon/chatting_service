@@ -9,8 +9,8 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import server.v5.AddressDirection;
 import server.v5.MessageWriter;
+import server.v5.TimedAddressFileOutputStream;
 import server.v5.Usage;
-import static server.v5.TimedAndAddressFileOutputStreamCreator.create;
 
 @Slf4j
 public class Server {
@@ -47,7 +47,7 @@ public class Server {
                 Address address = new Address(socket.getInetAddress().getHostAddress());
 
                 messageWriter.addAddressDirection(new AddressDirection(address, Usage.SOCKET), socket.getOutputStream());
-                messageWriter.addAddressDirection(new AddressDirection(address, Usage.FILE), create(LocalDateTime.now(), address));
+                messageWriter.addAddressDirection(new AddressDirection(address, Usage.FILE), TimedAddressFileOutputStream.from(LocalDateTime.now(), address));
 
                 Socket _socket = socket;
                 Thread receiver = new Thread(() -> Receiver.create(_socket, messageWriter).waitAndThenGetMsg());
