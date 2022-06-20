@@ -25,7 +25,7 @@ public class SmfIpSendStrategy implements SmfSendStrategy{
     }
 
     @Override
-    public void send(SimpleMessageFormat message) {
+    public void send(@NonNull SimpleMessageFormat message) {
         addresses.forEach(addressDirection -> messageWriter.write(addressDirection, message));
     }
 }

@@ -25,7 +25,7 @@ public class FileIpWriteStrategy implements FileWriteStrategy{
     }
 
     @Override
-    public void write(FileMessage message) {
+    public void write(@NonNull FileMessage message) {
         addresses.forEach(addressDirection -> messageWriter.write(addressDirection, message));
     }
 }
