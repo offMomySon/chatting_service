@@ -1,9 +1,11 @@
 package server.v5;
 
 import java.util.Objects;
+import lombok.Getter;
 import lombok.NonNull;
 import server.Address;
 
+@Getter
 public class Destination {
     private final Address address;
     private final Usage usage;

@@ -8,15 +8,20 @@ import java.util.Map;
 import lombok.NonNull;
 import util.IoUtil;
 
+/**
+ * destination 에 연관된 outputstream 에 message 를 write 하는 역할.
+ */
 public class MessageWriter {
-    private final Map<Destination, OutputStream> outputStreamMap = new HashMap<>();
+    private final Map<Destination, BufferedWriter> outputStreamMap = new HashMap<>();
 
     public void addDestination(@NonNull Destination destination, @NonNull OutputStream outputStream){
-        outputStreamMap.put(destination, outputStream);
+        BufferedWriter out = IoUtil.createWriter(outputStream);
+
+        outputStreamMap.put(destination, out);
     }
 
     public void write(@NonNull Destination destination, @NonNull Message message){
-        BufferedWriter out = IoUtil.createWriter(outputStreamMap.get(destination));
+        BufferedWriter out = outputStreamMap.get(destination);
 
         try {
             out.write(message.create());
@@ -26,8 +31,10 @@ public class MessageWriter {
         }
     }
 
-    public void writeAll(@NonNull Message message){
+    public void writeAll(@NonNull Usage usage, @NonNull Message message){
         outputStreamMap.keySet()
+            .stream()
+            .filter(destination -> destination.getUsage() == usage)
             .forEach(out -> write(out, message));
     }
 }
