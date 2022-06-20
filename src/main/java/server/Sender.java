@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import server.v5.AddressWriter;
+import server.v5.MessageWriter;
 import static util.IoUtil.createReader;
 
 /**
@@ -16,14 +16,14 @@ class Sender {
     private static final String STOP_READ = null;
     private final BufferedReader in;
 
-    private final AddressWriter addressWriter;
+    private final MessageWriter messageWriter;
 
-    private Sender(@NonNull BufferedReader in, @NonNull AddressWriter addressWriter) {
+    private Sender(@NonNull BufferedReader in, @NonNull MessageWriter messageWriter) {
         this.in = in;
-        this.addressWriter = addressWriter;
+        this.messageWriter = messageWriter;
     }
 
-    public static Sender create(@NonNull InputStream in, AddressWriter messageWriter) {
+    public static Sender create(@NonNull InputStream in, MessageWriter messageWriter) {
         return new Sender(createReader(in), messageWriter);
     }
 

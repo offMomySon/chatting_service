@@ -8,7 +8,7 @@ import java.util.Map;
 import lombok.NonNull;
 import util.IoUtil;
 
-public class AddressWriter {
+public class MessageWriter {
     private final Map<AddressDirection, OutputStream> outputStreamMap = new HashMap<>();
 
     public void addAddressDirection(@NonNull AddressDirection addressDirection, @NonNull OutputStream outputStream){
