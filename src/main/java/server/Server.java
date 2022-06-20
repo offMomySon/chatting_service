@@ -46,8 +46,8 @@ public class Server {
 
                 Address address = new Address(socket.getInetAddress().getHostAddress());
 
-                messageWriter.addAddressDirection(new Destination(address, Usage.SOCKET), socket.getOutputStream());
-                messageWriter.addAddressDirection(new Destination(address, Usage.FILE), TimedAddressFileOutputStream.from(LocalDateTime.now(), address));
+                messageWriter.addDestination(new Destination(address, Usage.SOCKET), socket.getOutputStream());
+                messageWriter.addDestination(new Destination(address, Usage.FILE), TimedAddressFileOutputStream.from(LocalDateTime.now(), address));
 
                 Socket _socket = socket;
                 Thread receiver = new Thread(() -> Receiver.create(_socket, messageWriter).waitAndThenGetMsg());

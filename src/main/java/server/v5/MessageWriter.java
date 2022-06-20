@@ -11,7 +11,7 @@ import util.IoUtil;
 public class MessageWriter {
     private final Map<Destination, OutputStream> outputStreamMap = new HashMap<>();
 
-    public void addAddressDirection(@NonNull Destination destination, @NonNull OutputStream outputStream){
+    public void addDestination(@NonNull Destination destination, @NonNull OutputStream outputStream){
         outputStreamMap.put(destination, outputStream);
     }
 
