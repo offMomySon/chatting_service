@@ -14,19 +14,19 @@ import server.v5.Message;
 public class FileMessage implements Message {
     private static final DateTimeFormatter MESSAGE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
 
-    private final LocalDateTime time;
+    private final LocalDateTime dateTime;
 
     private final MessageOwner owner;
     private final String message;
 
-    public FileMessage(@NonNull LocalDateTime time, @NonNull MessageOwner owner, @NonNull String message) {
-        this.time = time;
+    public FileMessage(@NonNull LocalDateTime dateTime, @NonNull MessageOwner owner, @NonNull String message) {
+        this.dateTime = dateTime;
         this.owner = owner;
         this.message = message;
     }
 
     @Override
     public String create() {
-        return MessageFormat.format("{0} {1} {2}", MESSAGE_TIME_FORMATTER.format(time), owner.getValue(), message);
+        return MessageFormat.format("{0} {1} {2}", MESSAGE_TIME_FORMATTER.format(dateTime), owner.getValue(), message);
     }
 }
