@@ -4,11 +4,11 @@ import java.util.Objects;
 import lombok.NonNull;
 import server.Address;
 
-public class AddressDirection {
+public class Destination {
     private final Address address;
     private final Usage usage;
 
-    public AddressDirection(@NonNull Address address, @NonNull Usage usage) {
+    public Destination(@NonNull Address address, @NonNull Usage usage) {
         this.address = address;
         this.usage = usage;
     }
@@ -17,7 +17,7 @@ public class AddressDirection {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AddressDirection that = (AddressDirection) o;
+        Destination that = (Destination) o;
         return address.equals(that.address) && usage == that.usage;
     }
 
