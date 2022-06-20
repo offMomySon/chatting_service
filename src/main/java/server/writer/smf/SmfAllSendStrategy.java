@@ -7,15 +7,13 @@ import static server.v5.Usage.SOCKET;
 
 public class SmfAllSendStrategy implements SmfSendStrategy{
     private final MessageWriter messageWriter;
-    private final SimpleMessageFormat message;
 
-    public SmfAllSendStrategy(@NonNull MessageWriter messageWriter, @NonNull SimpleMessageFormat message) {
+    public SmfAllSendStrategy(@NonNull MessageWriter messageWriter) {
         this.messageWriter = messageWriter;
-        this.message = message;
     }
 
     @Override
-    public void send() {
+    public void send(@NonNull SimpleMessageFormat message) {
         messageWriter.writeAll(SOCKET, message);
     }
 }

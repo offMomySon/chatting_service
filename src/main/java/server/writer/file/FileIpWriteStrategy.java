@@ -7,28 +7,25 @@ import server.Address;
 import server.message.file.FileMessage;
 import server.v5.Destination;
 import server.v5.MessageWriter;
+import server.writer.smf.SmfIpSendStrategy;
 import static server.v5.Usage.FILE;
 
 public class FileIpWriteStrategy implements FileWriteStrategy{
-    private final List<Destination> destinations;
-    private final FileMessage message;
+    private final List<Destination> addresses;
     private final MessageWriter messageWriter;
 
-    public FileIpWriteStrategy(@NonNull List<Destination> destinations, @NonNull FileMessage message, @NonNull MessageWriter messageWriter) {
-        this.destinations = destinations;
-        this.message = message;
+    public FileIpWriteStrategy(@NonNull List<Destination> addresses, MessageWriter messageWriter) {
+        this.addresses = addresses;
         this.messageWriter = messageWriter;
     }
-    public static FileIpWriteStrategy from(@NonNull List<Address> addresses, @NonNull FileMessage message, @NonNull MessageWriter messageWriter){
-        List<Destination> destinations = addresses.stream()
-            .map(address -> new Destination(address, FILE))
-            .collect(Collectors.toUnmodifiableList());
+    public static SmfIpSendStrategy from(@NonNull List<Address> addresses, @NonNull MessageWriter messageWriter){
+        List<Destination> destinations = addresses.stream().map(address -> new Destination(address, FILE)).collect(Collectors.toUnmodifiableList());
 
-        return new FileIpWriteStrategy(destinations, message, messageWriter);
+        return new SmfIpSendStrategy(destinations, messageWriter);
     }
 
     @Override
-    public void write() {
-        destinations.forEach(destination -> messageWriter.write(destination, message));
+    public void write(FileMessage message) {
+        addresses.forEach(addressDirection -> messageWriter.write(addressDirection, message));
     }
 }

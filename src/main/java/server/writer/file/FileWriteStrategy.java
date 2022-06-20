@@ -1,5 +1,7 @@
 package server.writer.file;
 
+import server.message.file.FileMessage;
+
 public interface FileWriteStrategy {
-    void write();
+    void write(FileMessage message);
 }

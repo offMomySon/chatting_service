@@ -7,14 +7,12 @@ import static server.v5.Usage.FILE;
 
 public class FileAllWriteStrategy implements FileWriteStrategy{
     private final MessageWriter messageWriter;
-    private final FileMessage message;
-    public FileAllWriteStrategy(@NonNull MessageWriter messageWriter, @NonNull FileMessage message) {
+    public FileAllWriteStrategy(@NonNull MessageWriter messageWriter) {
         this.messageWriter = messageWriter;
-        this.message = message;
     }
 
     @Override
-    public void write() {
+    public void write(@NonNull FileMessage message) {
         messageWriter.writeAll(FILE, message);
     }
 }
