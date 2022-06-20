@@ -1,17 +1,17 @@
 package server.writer.file;
 
 import lombok.NonNull;
+import server.message.file.FileMessage;
+import server.v5.MessageWriter;
 
 public class FileAllWriteStrategy implements FileWriteStrategy{
-    private final FileWriter fileWriter;
-    private final String owner;
-    public FileAllWriteStrategy(@NonNull FileWriter fileWriter, String owner) {
-        this.fileWriter = fileWriter;
-        this.owner = owner;
+    private final MessageWriter messageWriter;
+    public FileAllWriteStrategy(@NonNull MessageWriter messageWriter) {
+        this.messageWriter = messageWriter;
     }
 
     @Override
-    public void write(String message) {
-        fileWriter.writeAll(message, owner);
+    public void write(FileMessage message) {
+        messageWriter.writeAll(message);
     }
 }

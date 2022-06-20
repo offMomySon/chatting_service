@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.net.Socket;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import server.v5.AddressWriter;
+import server.v5.MessageWriter;
 import util.IoUtil;
 
 /**
@@ -19,15 +19,15 @@ public class Receiver {
 
     private final BufferedReader in;
     private final Address address;
-    private final AddressWriter addressWriter;
+    private final MessageWriter messageWriter;
 
-    private Receiver(@NonNull BufferedReader in, @NonNull Address address, @NonNull AddressWriter addressWriter) {
+    private Receiver(@NonNull BufferedReader in, @NonNull Address address, @NonNull MessageWriter messageWriter) {
         this.in = in;
         this.address = address;
-        this.addressWriter = addressWriter;
+        this.messageWriter = messageWriter;
     }
 
-    public static Receiver create(@NonNull Socket socket, @NonNull AddressWriter messageWriter) {
+    public static Receiver create(@NonNull Socket socket, @NonNull MessageWriter messageWriter) {
         try {
             BufferedReader in = IoUtil.createReader(socket.getInputStream());
             Address address = new Address(socket.getInetAddress().getHostAddress());
