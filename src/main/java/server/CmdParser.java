@@ -27,7 +27,7 @@ import server.writer.smf.SmfIpSendStrategy;
 import server.writer.smf.SmfSendStrategy;
 
 @Getter
-public class NewCmdParser {
+public class CmdParser {
     private static final Set<String> ALL_ADDRESS = Set.of("*", "ALL");
     private static final String CMD_DELIMITER = " ";
     private static final String ADDRESS_DELIMITER = ",";
@@ -38,14 +38,14 @@ public class NewCmdParser {
     private final FileMessage fileMessage;
     private final SimpleMessageFormat smfMessage;
 
-    private NewCmdParser(@NonNull FileWriteStrategy fileWriteStrategy, @NonNull SmfSendStrategy smfSendStrategy, @NonNull FileMessage fileMessage, @NonNull SimpleMessageFormat smfMessage) {
+    private CmdParser(@NonNull FileWriteStrategy fileWriteStrategy, @NonNull SmfSendStrategy smfSendStrategy, @NonNull FileMessage fileMessage, @NonNull SimpleMessageFormat smfMessage) {
         this.fileWriteStrategy = fileWriteStrategy;
         this.smfSendStrategy = smfSendStrategy;
         this.fileMessage = fileMessage;
         this.smfMessage = smfMessage;
     }
 
-    public static NewCmdParser parse(@NonNull String sCmd, @NonNull MessageWriter messageWriter){
+    public static CmdParser parse(@NonNull String sCmd, @NonNull MessageWriter messageWriter){
         Queue<String> cmdQueue = new ArrayDeque<>(List.of(sCmd.split(CMD_DELIMITER)));
 
         Cmd cmd = Cmd.from(cmdQueue.poll()).orElseThrow(() -> new RuntimeException("not exist cmd"));
@@ -59,10 +59,10 @@ public class NewCmdParser {
         StrategyCreator strategyCreator = StrategyCreator.create(sAddresses, messageWriter);
         MessageCreator messageCreator = MessageCreator.create(cmd, notice, message);
 
-        return new NewCmdParser(strategyCreator.getFileWriteStrategy(),
-                                strategyCreator.getSmfSendStrategy(),
-                                messageCreator.getFileMessage(),
-                                messageCreator.getSimpleMessageFormat());
+        return new CmdParser(strategyCreator.getFileWriteStrategy(),
+                             strategyCreator.getSmfSendStrategy(),
+                             messageCreator.getFileMessage(),
+                             messageCreator.getSimpleMessageFormat());
     }
 
     @Getter

@@ -37,7 +37,7 @@ class Sender {
             while ((cmd = in.readLine()) != STOP_READ) {
                 log.info("console write : {}", cmd);
 
-                NewCmdParser cmdParser = NewCmdParser.parse(cmd, messageWriter);
+                CmdParser cmdParser = CmdParser.parse(cmd, messageWriter);
                 FileWriteStrategy fileWriteStrategy = cmdParser.getFileWriteStrategy();
                 FileMessage fileMessage = cmdParser.getFileMessage();
                 fileWriteStrategy.write(fileMessage);
