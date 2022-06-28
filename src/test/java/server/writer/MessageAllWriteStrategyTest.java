@@ -1,15 +1,9 @@
 package server.writer;
 
 import common.MessageOwner;
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,11 +17,10 @@ import server.message.file.FileMessage;
 import server.v5.Destination;
 import server.v5.Message;
 import server.v5.MessageWriter;
-import server.v5.Usage;
 import static server.v5.Usage.FILE;
 
-class MessageIpWriteStrategyTest {
-    @DisplayName("지정한 ip 에 대해 message 를 출력합니다.")
+class MessageAllWriteStrategyTest {
+    @DisplayName("모든 ip 에 대해 생성한 message 를 전달해야합니다.")
     @Test
     void test2(){
         //given
@@ -43,11 +36,11 @@ class MessageIpWriteStrategyTest {
         MessageWriter messageWriter = new MessageWriter();
         outputStreamMap.forEach(messageWriter::addDestination);
 
-        MessageIpWriteStrategy messageIpWriteStrategy = new MessageIpWriteStrategy(messageWriter, addresses);
+        MessageAllWriteStrategy messageWriteStrategy = new MessageAllWriteStrategy(messageWriter);
         Message message = new FileMessage(LocalDateTime.now(), MessageOwner.INFO, "this is message.");
 
         //when
-        messageIpWriteStrategy.write(FILE, message);
+        messageWriteStrategy.write(FILE, message);
 
         //then
         for(ByteArrayOutputStream outputStream : outputStreams) {
