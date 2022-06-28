@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,20 +32,16 @@ class MessageIpWriteStrategyTest {
     @Test
     void test2(){
         //given
+        Message message = new FileMessage(LocalDateTime.now(), MessageOwner.INFO, "this is message.");
+
         List<Address> addresses = List.of(new Address("127.0.0.0"), new Address("127.0.0.1"), new Address("127.0.0.2"), new Address("127.0.0.3"));
         List<Destination> destinations = addresses.stream().map(address -> new Destination(address, FILE)).collect(Collectors.toUnmodifiableList());
-
         List<ByteArrayOutputStream> outputStreams = List.of(new ByteArrayOutputStream(), new ByteArrayOutputStream(), new ByteArrayOutputStream(), new ByteArrayOutputStream());
-        Map<Destination, OutputStream> outputStreamMap = new HashMap<>();
-        for (int i = 0; i < destinations.size() ; i++) {
-            outputStreamMap.put(destinations.get(i), outputStreams.get(i));
-        }
 
         MessageWriter messageWriter = new MessageWriter();
-        outputStreamMap.forEach(messageWriter::addDestination);
+        IntStream.range(0, destinations.size()).boxed().forEach(i-> messageWriter.addDestination(destinations.get(i), outputStreams.get(i)));
 
         MessageIpWriteStrategy messageIpWriteStrategy = new MessageIpWriteStrategy(messageWriter, addresses);
-        Message message = new FileMessage(LocalDateTime.now(), MessageOwner.INFO, "this is message.");
 
         //when
         messageIpWriteStrategy.write(FILE, message);
