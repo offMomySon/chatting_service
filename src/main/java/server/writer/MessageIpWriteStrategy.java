@@ -11,19 +11,16 @@ import server.v5.Usage;
 
 public class MessageIpWriteStrategy implements MessageWriteStrategy{
     private final MessageWriter messageWriter;
-    private final List<Address> addresses;
+    private final List<Destination> destinations;
 
-    public MessageIpWriteStrategy(@NonNull MessageWriter messageWriter, @NonNull List<Address> addresses) {
+    public MessageIpWriteStrategy(@NonNull MessageWriter messageWriter, @NonNull List<Destination> destinations) {
         this.messageWriter = messageWriter;
-        this.addresses = addresses;
+        this.destinations = destinations;
     }
 
     @Override
-    public void write(@NonNull Usage usage, @NonNull Message message) {
-        List<Destination> destinations = addresses.stream()
-            .map(address -> new Destination(address, usage))
-            .collect(Collectors.toUnmodifiableList());
-
-        destinations.forEach(destination -> messageWriter.write(destination, message));
+    public void write(@NonNull Message message) {
+        destinations
+            .forEach(destination -> messageWriter.write(destination, message));
     }
 }

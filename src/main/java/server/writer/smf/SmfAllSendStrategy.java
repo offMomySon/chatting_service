@@ -14,6 +14,6 @@ public class SmfAllSendStrategy implements SmfSendStrategy{
 
     @Override
     public void send(@NonNull SimpleMessageFormat message) {
-        messageWriter.writeAll(SOCKET, message);
+        messageWriter.writeAll(message);
     }
 }
