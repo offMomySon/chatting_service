@@ -14,7 +14,7 @@ public class MessageAllWriteStrategy implements MessageWriteStrategy{
     }
 
     @Override
-    public void write(@NonNull Usage usage, @NonNull Message message) {
-        messageWriter.writeAll(usage, message);
+    public void write(@NonNull Message message) {
+        messageWriter.writeAll(message);
     }
 }
