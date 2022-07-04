@@ -13,6 +13,6 @@ public class FileAllWriteStrategy implements FileWriteStrategy{
 
     @Override
     public void write(@NonNull FileMessage message) {
-        messageWriter.writeAll(message);
+        messageWriter.writeAll(message, FILE);
     }
 }

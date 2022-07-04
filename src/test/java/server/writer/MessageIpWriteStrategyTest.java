@@ -22,26 +22,27 @@ import server.message.file.FileMessage;
 import server.v5.Destination;
 import server.v5.Message;
 import server.v5.MessageWriter;
+import server.v5.Usage;
 import util.IoUtil;
 import static server.v5.Usage.FILE;
 
 class MessageIpWriteStrategyTest {
-    @DisplayName("지정한 ip 에 대해 message 를 출력합니다.")
+    @DisplayName("지정한 address 에 대해 message 를 출력합니다.")
     @ParameterizedTest
     @MethodSource("provideSourceAndDestination")
-    void test2(Map<Destination, OutputStream> sourceMap, List<Destination> destinations){
+    void test2(Map<Address, OutputStream> sourceMap, Usage usage, List<Address> addresses){
         //given
         Message message = new FileMessage(LocalDateTime.now(), MessageOwner.INFO, "this is message.");
 
-        MessageWriter messageWriter = MessageWriter.of(sourceMap);
-        MessageIpWriteStrategy messageWriteStrategy = new MessageIpWriteStrategy(messageWriter,destinations);
+        MessageWriter messageWriter = MessageWriter.of(sourceMap, usage);
+        MessageIpWriteStrategy messageWriteStrategy = new MessageIpWriteStrategy(messageWriter,addresses);
 
         //when
-        messageWriteStrategy.write(message);
+        messageWriteStrategy.write(message, usage);
 
         List<String> actualMessage = new LinkedList<>();
-        for(Destination destination : destinations){
-            actualMessage.add(sourceMap.get(destination).toString());
+        for(Address address : addresses){
+            actualMessage.add(sourceMap.get(address).toString());
         }
 
         //then
@@ -51,11 +52,11 @@ class MessageIpWriteStrategyTest {
     }
 
     private static Stream<Arguments> provideSourceAndDestination(){
-        List<Destination> sourceDestination = List.of(
-            new Destination(new Address("127.0.0.0"),FILE),
-            new Destination(new Address("127.0.0.1"),FILE),
-            new Destination(new Address("127.0.0.2"),FILE),
-            new Destination(new Address("127.0.0.3"),FILE)
+        List<Address> sourceDestination = List.of(
+            new Address("127.0.0.0"),
+            new Address("127.0.0.1"),
+            new Address("127.0.0.2"),
+            new Address("127.0.0.3")
         );
         List<OutputStream> sourceOutputStreams = List.of(
             new ByteArrayOutputStream(),
@@ -64,14 +65,14 @@ class MessageIpWriteStrategyTest {
             new ByteArrayOutputStream()
         );
 
-        Map<Destination, OutputStream> sourceMap = new HashMap<>();
+        Map<Address, OutputStream> sourceMap = new HashMap<>();
         IntStream.range(0, sourceDestination.size()).forEach(i-> sourceMap.put(sourceDestination.get(i), sourceOutputStreams.get(i)));
 
-        List<Destination> destinations = List.of(
-            new Destination(new Address("127.0.0.0"),FILE),
-            new Destination(new Address("127.0.0.1"),FILE)
+        List<Address> destinations = List.of(
+            new Address("127.0.0.0"),
+            new Address("127.0.0.1")
         );
 
-        return Stream.of(Arguments.of(sourceMap, destinations));
+        return Stream.of(Arguments.of(sourceMap, FILE, destinations));
     }
 }

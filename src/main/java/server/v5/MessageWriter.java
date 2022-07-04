@@ -3,15 +3,19 @@ package server.v5;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.Buffer;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.NonNull;
+import server.Address;
 import util.IoUtil;
 
 /**
- * destination 에 연관된 outputstream 에 message 를 write 하는 역할.
+ * 역할.
+ * destination 에 message 를 쓰는 역할.
+ *
+ * destination 은 사용처와 주소의 조합으로 출력해야하는 목적지를 가리킨다.
  */
 public class MessageWriter {
     private final Map<Destination, BufferedWriter> outputStreamMap;
@@ -23,13 +27,14 @@ public class MessageWriter {
         this.outputStreamMap = outputStreamMap;
     }
 
-    public static MessageWriter of(@NonNull Map<Destination, OutputStream> outputStreamMap){
-        Map<Destination, BufferedWriter> collect = outputStreamMap
+    public static MessageWriter of(Map<Address, OutputStream> sourceMap, Usage usage) {
+        Map<Destination, BufferedWriter> outputStreamMap = sourceMap
             .entrySet()
             .stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, e -> IoUtil.createWriter(e.getValue())));
+            .map(e -> Map.entry(new Destination(e.getKey(),usage), IoUtil.createWriter(e.getValue())))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        return new MessageWriter(collect);
+        return new MessageWriter(outputStreamMap);
     }
 
     public void addDestination(@NonNull Destination destination, @NonNull OutputStream outputStream){
@@ -49,8 +54,9 @@ public class MessageWriter {
         }
     }
 
-    public void writeAll(@NonNull Message message){
-        outputStreamMap.keySet()
+    public void writeAll(@NonNull Message message, @NonNull Usage usage){
+        outputStreamMap.keySet().stream()
+            .filter(k -> k.getUsage() == usage )
             .forEach(out -> write(out, message));
     }
 }
