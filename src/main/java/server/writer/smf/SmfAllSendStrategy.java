@@ -3,6 +3,7 @@ package server.writer.smf;
 import lombok.NonNull;
 import server.message.smf.SimpleMessageFormat;
 import server.v5.MessageWriter;
+import static server.v5.Usage.FILE;
 import static server.v5.Usage.SOCKET;
 
 public class SmfAllSendStrategy implements SmfSendStrategy{
@@ -14,6 +15,6 @@ public class SmfAllSendStrategy implements SmfSendStrategy{
 
     @Override
     public void send(@NonNull SimpleMessageFormat message) {
-        messageWriter.writeAll(message);
+        messageWriter.writeAll(message, FILE);
     }
 }

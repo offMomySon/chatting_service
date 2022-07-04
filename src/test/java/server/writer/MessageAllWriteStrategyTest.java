@@ -22,21 +22,22 @@ import server.message.file.FileMessage;
 import server.v5.Destination;
 import server.v5.Message;
 import server.v5.MessageWriter;
+import server.v5.Usage;
 import static server.v5.Usage.FILE;
 
 class MessageAllWriteStrategyTest {
     @DisplayName("모든 ip 에 대해 생성한 message 를 전달해야합니다.")
     @ParameterizedTest
     @MethodSource("provideSourceMap")
-    void test2(Map<Destination, OutputStream> sourceMap){
+    void test2(Map<Address, OutputStream> sourceMap, Usage usage){
         //given
         Message message = new FileMessage(LocalDateTime.now(), MessageOwner.INFO, "this is message.");
 
-        MessageWriter messageWriter = MessageWriter.of(sourceMap);
+        MessageWriter messageWriter = MessageWriter.of(sourceMap, usage);
         MessageAllWriteStrategy messageWriteStrategy = new MessageAllWriteStrategy(messageWriter);
 
         //when
-        messageWriteStrategy.write(message);
+        messageWriteStrategy.write(message, usage);
 
         List<String> actualMessage = new LinkedList<>();
         sourceMap.values().forEach( out -> actualMessage.add(out.toString()));
@@ -48,11 +49,11 @@ class MessageAllWriteStrategyTest {
     }
 
     private static Stream<Arguments> provideSourceMap(){
-        List<Destination> sourceDestination = List.of(
-            new Destination(new Address("127.0.0.0"),FILE),
-            new Destination(new Address("127.0.0.1"),FILE),
-            new Destination(new Address("127.0.0.2"),FILE),
-            new Destination(new Address("127.0.0.3"),FILE)
+        List<Address> sourceDestination = List.of(
+            new Address("127.0.0.0"),
+            new Address("127.0.0.1"),
+            new Address("127.0.0.2"),
+            new Address("127.0.0.3")
         );
         List<OutputStream> sourceOutputStreams = List.of(
             new ByteArrayOutputStream(),
@@ -61,9 +62,9 @@ class MessageAllWriteStrategyTest {
             new ByteArrayOutputStream()
         );
 
-        Map<Destination, OutputStream> sourceMap = new HashMap<>();
+        Map<Address, OutputStream> sourceMap = new HashMap<>();
         IntStream.range(0, sourceDestination.size()).forEach(i-> sourceMap.put(sourceDestination.get(i), sourceOutputStreams.get(i)));
 
-        return Stream.of(Arguments.of(sourceMap));
+        return Stream.of(Arguments.of(sourceMap, FILE));
     }
 }
