@@ -23,16 +23,15 @@ public class MessageWriter {
     public MessageWriter(){
         this.outputStreamMap = new HashMap<>();
     }
-    public MessageWriter(@NonNull Map<Destination, BufferedWriter> outputStreamMap) {
+    private MessageWriter(@NonNull Map<Destination, BufferedWriter> outputStreamMap) {
         this.outputStreamMap = outputStreamMap;
     }
 
-    public static MessageWriter of(Map<Address, OutputStream> sourceMap, Usage usage) {
+    public static MessageWriter of(Map<Destination, OutputStream> sourceMap) {
         Map<Destination, BufferedWriter> outputStreamMap = sourceMap
             .entrySet()
             .stream()
-            .map(e -> Map.entry(new Destination(e.getKey(),usage), IoUtil.createWriter(e.getValue())))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            .collect(Collectors.toMap(Map.Entry::getKey, e-> IoUtil.createWriter(e.getValue())));
 
         return new MessageWriter(outputStreamMap);
     }
