@@ -24,7 +24,7 @@ import server.v5.Usage;
 import static server.v5.Usage.FILE;
 
 class MessageAllWriteStrategyTest {
-    @DisplayName("모든 ip 에 대해 생성한 message 를 전달해야합니다.")
+    @DisplayName("모든 destination 으로 message 를 출력합니다.")
     @ParameterizedTest
     @MethodSource("provideSourceMap")
     void test2(Map<Destination, OutputStream> sourceMap, Usage usage){
