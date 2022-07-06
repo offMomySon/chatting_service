@@ -54,7 +54,7 @@ import static server.v5.Usage.FILE;
  *
  */
 class MessageDestinationWriteStrategyTest {
-    @DisplayName("지정한 address 에 대해 message 를 출력합니다.")
+    @DisplayName("지정한 destination 으로 message 를 출력합니다.")
     @ParameterizedTest
     @MethodSource("provideSourceAndDestination")
     void test2(Map<Destination, OutputStream> sourceMap, List<Destination> destinations){
@@ -87,15 +87,8 @@ class MessageDestinationWriteStrategyTest {
             new Destination(new Address("127.0.0.2"), usage),
             new Destination(new Address("127.0.0.3"), usage)
         );
-        List<OutputStream> sourceOutputStreams = List.of(
-            new ByteArrayOutputStream(),
-            new ByteArrayOutputStream(),
-            new ByteArrayOutputStream(),
-            new ByteArrayOutputStream()
-        );
-
         Map<Destination, OutputStream> sourceMap = new HashMap<>();
-        IntStream.range(0, sourceDestination.size()).forEach(i-> sourceMap.put(sourceDestination.get(i), sourceOutputStreams.get(i)));
+        sourceDestination.forEach(destination -> sourceMap.put(destination, new ByteArrayOutputStream()));
 
         List<Destination> destinations = List.of(
             new Destination(new Address("127.0.0.0"), usage),
