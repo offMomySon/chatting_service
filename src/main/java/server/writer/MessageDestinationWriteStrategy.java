@@ -1,10 +1,13 @@
 package server.writer;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.NonNull;
+import server.Address;
 import server.v5.Destination;
 import server.v5.Message;
 import server.v5.MessageWriter;
+import server.v5.Usage;
 
 /**
  * 역할.
@@ -26,6 +29,12 @@ public class MessageDestinationWriteStrategy implements MessageWriteStrategy{
     public MessageDestinationWriteStrategy(@NonNull MessageWriter messageWriter, @NonNull List<Destination> destinations) {
         this.messageWriter = messageWriter;
         this.destinations = destinations;
+    }
+
+    public static MessageDestinationWriteStrategy from(@NonNull MessageWriter messageWriter, @NonNull List<Address> addresses, @NonNull Usage usage){
+        List<Destination> destinations = addresses.stream().map(address -> new Destination(address, usage)).collect(Collectors.toUnmodifiableList());
+
+        return new MessageDestinationWriteStrategy(messageWriter, destinations);
     }
 
     @Override

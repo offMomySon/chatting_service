@@ -18,13 +18,22 @@ import server.message.smf.SimpleMessageFormat;
 import server.message.smf.generic.GenericSimpleMessageFormat;
 import server.message.smf.notice.NoticeInfoSimpleMessageFormat;
 import server.message.smf.notice.NoticeWarnSimpleMessageFormat;
+import server.v5.Destination;
+import server.v5.Message;
 import server.v5.MessageWriter;
+import server.v5.Usage;
+import server.writer.MessageAllWriteStrategy;
+import server.writer.MessageDestinationWriteStrategy;
+import server.writer.MessageWriteStrategy;
 import server.writer.file.FileAllWriteStrategy;
 import server.writer.file.FileIpWriteStrategy;
 import server.writer.file.FileWriteStrategy;
 import server.writer.smf.SmfAllSendStrategy;
 import server.writer.smf.SmfIpSendStrategy;
 import server.writer.smf.SmfSendStrategy;
+import static server.v5.Usage.*;
+import static server.v5.Usage.FILE;
+import static server.v5.Usage.SOCKET;
 
 @Getter
 public class CmdParser {
@@ -32,13 +41,12 @@ public class CmdParser {
     private static final String CMD_DELIMITER = " ";
     private static final String ADDRESS_DELIMITER = ",";
 
+    private final MessageWriteStrategy fileWriteStrategy;
+    private final MessageWriteStrategy smfSendStrategy;
+    private final Message fileMessage;
+    private final Message smfMessage;
 
-    private final FileWriteStrategy fileWriteStrategy;
-    private final SmfSendStrategy smfSendStrategy;
-    private final FileMessage fileMessage;
-    private final SimpleMessageFormat smfMessage;
-
-    private CmdParser(@NonNull FileWriteStrategy fileWriteStrategy, @NonNull SmfSendStrategy smfSendStrategy, @NonNull FileMessage fileMessage, @NonNull SimpleMessageFormat smfMessage) {
+    public CmdParser(@NonNull MessageWriteStrategy fileWriteStrategy, @NonNull MessageWriteStrategy smfSendStrategy, @NonNull Message fileMessage, @NonNull Message smfMessage) {
         this.fileWriteStrategy = fileWriteStrategy;
         this.smfSendStrategy = smfSendStrategy;
         this.fileMessage = fileMessage;
@@ -59,18 +67,18 @@ public class CmdParser {
         StrategyCreator strategyCreator = StrategyCreator.create(sAddresses, messageWriter);
         MessageCreator messageCreator = MessageCreator.create(cmd, notice, message);
 
-        return new CmdParser(strategyCreator.getFileWriteStrategy(),
-                             strategyCreator.getSmfSendStrategy(),
+        return new CmdParser(strategyCreator.getFileMessageWriteStrategy(),
+                             strategyCreator.getSmfMessageWriteStrategy(),
                              messageCreator.getFileMessage(),
                              messageCreator.getSimpleMessageFormat());
     }
 
     @Getter
     private static class MessageCreator{
-        private final FileMessage fileMessage;
-        private final SimpleMessageFormat simpleMessageFormat;
+        private final Message fileMessage;
+        private final Message simpleMessageFormat;
 
-        private MessageCreator(@NonNull FileMessage fileMessage, @NonNull SimpleMessageFormat simpleMessageFormat) {
+        private MessageCreator(@NonNull Message fileMessage, @NonNull Message simpleMessageFormat) {
             this.fileMessage = fileMessage;
             this.simpleMessageFormat = simpleMessageFormat;
         }
@@ -96,22 +104,22 @@ public class CmdParser {
 
     @Getter
     private static class StrategyCreator{
-        private final FileWriteStrategy fileWriteStrategy;
-        private final SmfSendStrategy smfSendStrategy;
+        private final MessageWriteStrategy fileMessageWriteStrategy;
+        private final MessageWriteStrategy smfMessageWriteStrategy;
 
-        private StrategyCreator(@NonNull FileWriteStrategy fileWriteStrategy, @NonNull SmfSendStrategy smfSendStrategy) {
-            this.fileWriteStrategy = fileWriteStrategy;
-            this.smfSendStrategy = smfSendStrategy;
+        public StrategyCreator(@NonNull MessageWriteStrategy fileMessageWriteStrategy, @NonNull MessageWriteStrategy smfMessageWriteStrategy) {
+            this.fileMessageWriteStrategy = fileMessageWriteStrategy;
+            this.smfMessageWriteStrategy = smfMessageWriteStrategy;
         }
 
         public static StrategyCreator create(@NonNull String[] sAddresses, @NonNull MessageWriter messageWriter){
             if(isContainAllAddress(sAddresses)){
-                return new StrategyCreator(new FileAllWriteStrategy(messageWriter), new SmfAllSendStrategy(messageWriter));
+                return new StrategyCreator(new MessageAllWriteStrategy(messageWriter, FILE), new MessageAllWriteStrategy(messageWriter, SOCKET));
             }
 
             List<Address> addresses = Arrays.stream(sAddresses).map(Address::new).collect(Collectors.toUnmodifiableList());
 
-            return new StrategyCreator(FileIpWriteStrategy.from(addresses, messageWriter), SmfIpSendStrategy.from(addresses, messageWriter));
+            return new StrategyCreator(MessageDestinationWriteStrategy.from(messageWriter, addresses, FILE), MessageDestinationWriteStrategy.from(messageWriter, addresses, SOCKET));
         }
 
         private static boolean isContainAllAddress(String[] addresses){
