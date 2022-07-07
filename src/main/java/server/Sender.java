@@ -3,6 +3,7 @@ package server;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import server.v5.MessageWriter;
@@ -16,8 +17,9 @@ import static util.IoUtil.createReader;
 class Sender {
     private static final String STOP_READ = null;
     private final BufferedReader in;
-
     private final MessageWriter messageWriter;
+
+    private String cmd = STOP_READ;
 
     private Sender(@NonNull BufferedReader in, @NonNull MessageWriter messageWriter) {
         this.in = in;
@@ -29,9 +31,8 @@ class Sender {
     }
 
     public void waitAndThenSendMsg() {
-        String cmd;
         try {
-            while ((cmd = in.readLine()) != STOP_READ) {
+            while (!Objects.equals(cmd = in.readLine(), STOP_READ)) {
                 log.info("console write : {}", cmd);
 
                 CmdParser cmdParser = CmdParser.parse(cmd, messageWriter);

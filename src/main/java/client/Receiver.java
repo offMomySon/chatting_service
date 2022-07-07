@@ -4,16 +4,19 @@ import client.writer.CompositedWriter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Objects;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import static util.IoUtil.createReader;
 
 @Slf4j
 class Receiver {
-    private static final String END_CONNECTION = null;
+    private static final int END_CONNECTION = 0;
 
     private final BufferedReader in;
+    private final char[] buffer = new char[8192];
+
+    private String smfMessage;
+    private int readCount = END_CONNECTION;
 
     private Receiver(@NonNull BufferedReader in) {
         this.in = in;
@@ -24,9 +27,10 @@ class Receiver {
     }
 
     public void waitAndThenGetMsg() {
-        String smfMessage = END_CONNECTION;
         try {
-            while (!Objects.equals(smfMessage = in.readLine(), END_CONNECTION)) {
+            while ((readCount = in.read(buffer)) != END_CONNECTION) {
+                smfMessage = String.valueOf(buffer,0, readCount);
+
                 log.info("From server : {}", smfMessage);
 
                 SmfDecoder smfDecoder = SmfDecoder.decode(smfMessage);

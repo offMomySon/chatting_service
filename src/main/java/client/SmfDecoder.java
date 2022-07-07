@@ -23,7 +23,7 @@ import static common.command.Cmd.NOTICE;
 
 @Getter
 public class SmfDecoder {
-    private static final String DELIMITER = " :";
+    private static final String DELIMITER = " |:";
 
     private final CompositedWriter writer;
 
