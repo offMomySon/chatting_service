@@ -5,6 +5,10 @@ import lombok.Getter;
 import lombok.NonNull;
 import server.Address;
 
+/**
+ * 역할.
+ * outputStream 을 가리키기 위한, 데이터 성격의 역할.
+ */
 @Getter
 public class Destination {
     private final Address address;
