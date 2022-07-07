@@ -20,13 +20,17 @@ import static common.MessageOwner.INFO;
  */
 @Slf4j
 public class Receiver {
-    private static final String END_CONNECTION = null;
+    private static final int END_CONNECTION = 0;
     private static final String EXIT_CMD = "/exit";
     private static final String END_MSG = "서버와의 연결이 종료됬습니다.";
 
     private final BufferedReader in;
     private final Address address;
     private final MessageWriter messageWriter;
+    private final char[] buffer = new char[8192];
+
+    private int readCount = 0;
+    private String message;
 
     private Receiver(@NonNull BufferedReader in, @NonNull Address address, @NonNull MessageWriter messageWriter) {
         this.in = in;
@@ -46,17 +50,21 @@ public class Receiver {
     }
 
     public void waitAndThenGetMsg() {
-        String message = END_CONNECTION;
         try {
-            while (!Objects.equals(message = in.readLine(), END_CONNECTION)) {
-                log.info("From client : {}", message);
+            while ((readCount = in.read(buffer)) != END_CONNECTION) {
+                message = String.valueOf(buffer, 0, readCount);
+
+                log.info("From client : `{}`", message);
 
                 if (Objects.equals(message, EXIT_CMD)) {
                     FileMessage fileMessage = new FileMessage(LocalDateTime.now(), INFO, message);
                     messageWriter.write(new Destination(address, Usage.FILE), fileMessage);
 
-                    NoticeInfoSimpleMessageFormat smfMessage = new NoticeInfoSimpleMessageFormat(message);
+                    NoticeInfoSimpleMessageFormat smfMessage = new NoticeInfoSimpleMessageFormat(END_MSG);
                     messageWriter.write(new Destination(address, Usage.SOCKET), smfMessage);
+
+                    messageWriter.removeDestination(new Destination(address, Usage.FILE));
+                    messageWriter.removeDestination(new Destination(address, Usage.SOCKET));
                     break;
                 }
 

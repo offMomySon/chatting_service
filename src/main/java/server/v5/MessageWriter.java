@@ -42,6 +42,10 @@ public class MessageWriter {
         outputStreamMap.put(destination, out);
     }
 
+    public void removeDestination(@NonNull Destination destination){
+        outputStreamMap.remove(destination);
+    }
+
     public void write(@NonNull Destination destination, @NonNull Message message){
         BufferedWriter out = outputStreamMap.get(destination);
 

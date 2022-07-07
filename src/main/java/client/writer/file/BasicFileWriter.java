@@ -31,6 +31,7 @@ public class BasicFileWriter implements FileWriter {
 
     public void write(@NonNull FileMessage fileMessage) {
         String messageLine = createMessageLine(fileMessage);
+        System.out.println(messageLine);
 
         writer.write(messageLine);
     }

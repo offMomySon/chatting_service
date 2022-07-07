@@ -6,16 +6,19 @@ import client.writer.file.FileOwnerWriter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import util.IoUtil;
 
 @Slf4j
 class Sender {
+    private static final String STOP_READ = null;
     private final BufferedReader reader;
-
     private final MessageSender messageSender;
     private final FileOwnerWriter fileOwnerWriter;
+
+    private String message = STOP_READ;
 
     private Sender(@NonNull BufferedReader reader, @NonNull MessageSender messageSender, @NonNull FileOwnerWriter fileOwnerWriter) {
         this.reader = reader;
@@ -28,15 +31,14 @@ class Sender {
     }
 
     public void waitAndThenSendMsg() {
-        String msg;
         try {
-            while((msg = reader.readLine()) != null){
-                log.info("console write : {}", msg);
+            while(!Objects.equals(message = reader.readLine(), STOP_READ)){
+                log.info("console write : {}", message);
 
-                FileMessage fileMessage = new FileMessage(msg);
+                FileMessage fileMessage = new FileMessage(message);
                 fileOwnerWriter.write(fileMessage);
 
-                messageSender.send(msg);
+                messageSender.send(message);
             }
         } catch(IOException e) {
             throw new RuntimeException("Fail message send.", e);
