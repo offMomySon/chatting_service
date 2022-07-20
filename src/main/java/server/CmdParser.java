@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
-import server.message.file.FileMessage;
+import server.message.file.LogMessage;
 import server.message.smf.generic.GenericSimpleMessageFormat;
 import server.message.smf.notice.NoticeInfoSimpleMessageFormat;
 import server.message.smf.notice.NoticeWarnSimpleMessageFormat;
@@ -75,16 +75,16 @@ public class CmdParser {
 
         public static MessageCreator create(@NonNull Cmd cmd, Notice notice, @NonNull String message){
             if(cmd == Cmd.SEND){
-                return new MessageCreator(new FileMessage(LocalDateTime.now(), MessageOwner.SERVER, message),
+                return new MessageCreator(LogMessage.of(LocalDateTime.now(), MessageOwner.SERVER, message),
                                           new GenericSimpleMessageFormat(message));
             }
 
             if(notice == Notice.INFO) {
-                return new MessageCreator(new FileMessage(LocalDateTime.now(), MessageOwner.INFO, message),
+                return new MessageCreator(LogMessage.of(LocalDateTime.now(), MessageOwner.INFO, message),
                                           new NoticeInfoSimpleMessageFormat(message));
             }
             if(notice == Notice.WARN) {
-                return new MessageCreator(new FileMessage(LocalDateTime.now(), MessageOwner.WARN, message),
+                return new MessageCreator(LogMessage.of(LocalDateTime.now(), MessageOwner.WARN, message),
                                           new NoticeWarnSimpleMessageFormat(message));
             }
 

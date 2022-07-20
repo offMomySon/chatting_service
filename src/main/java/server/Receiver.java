@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import server.message.file.FileMessage;
+import server.message.file.LogMessage;
 import server.message.smf.notice.NoticeInfoSimpleMessageFormat;
 import server.v5.Destination;
 import server.v5.MessageWriter;
@@ -57,8 +57,8 @@ public class Receiver {
                 log.info("From client : `{}`", message);
 
                 if (Objects.equals(message, EXIT_CMD)) {
-                    FileMessage fileMessage = new FileMessage(LocalDateTime.now(), INFO, message);
-                    messageWriter.write(new Destination(address, Usage.FILE), fileMessage);
+                    LogMessage logMessage = LogMessage.of(LocalDateTime.now(), INFO, message);
+                    messageWriter.write(new Destination(address, Usage.FILE), logMessage);
 
                     NoticeInfoSimpleMessageFormat smfMessage = new NoticeInfoSimpleMessageFormat(END_MSG);
                     messageWriter.write(new Destination(address, Usage.SOCKET), smfMessage);
@@ -68,8 +68,8 @@ public class Receiver {
                     break;
                 }
 
-                FileMessage fileMessage = new FileMessage(LocalDateTime.now(), INFO, message);
-                messageWriter.write(new Destination(address, Usage.FILE), fileMessage);
+                LogMessage logMessage = LogMessage.of(LocalDateTime.now(), INFO, message);
+                messageWriter.write(new Destination(address, Usage.FILE), logMessage);
             }
         } catch (IOException e){
             throw new RuntimeException("Fail to receive msg.", e);

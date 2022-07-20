@@ -16,7 +16,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import server.Address;
-import server.message.file.FileMessage;
+import server.message.file.LogMessage;
 import server.v5.Destination;
 import server.v5.Message;
 import server.v5.MessageWriter;
@@ -29,7 +29,7 @@ class MessageAllWriteStrategyTest {
     @MethodSource("provideSourceMap")
     void test2(Map<Destination, OutputStream> sourceMap, Usage usage){
         //given
-        Message message = new FileMessage(LocalDateTime.now(), MessageOwner.INFO, "this is message.");
+        Message message = LogMessage.of(LocalDateTime.now(), MessageOwner.INFO, "this is message.");
 
         MessageWriter messageWriter = MessageWriter.of(sourceMap);
         MessageAllWriteStrategy messageWriteStrategy = new MessageAllWriteStrategy(messageWriter, usage);

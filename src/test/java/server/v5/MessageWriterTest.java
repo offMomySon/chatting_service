@@ -14,7 +14,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import server.Address;
-import server.message.file.FileMessage;
+import server.message.file.LogMessage;
 import static common.MessageOwner.*;
 import static common.MessageOwner.SERVER;
 import static server.v5.Usage.FILE;
@@ -26,7 +26,7 @@ class MessageWriterTest {
     @MethodSource("provideSourceMapAndDestinations")
     void test(Map<Destination, OutputStream> sourceMap, List<Destination> destinations){
         //given
-        Message message = new FileMessage(LocalDateTime.now(), SERVER, "this is test message.");
+        Message message = LogMessage.of(LocalDateTime.now(), SERVER, "this is test message.");
         MessageWriter messageWriter = MessageWriter.of(sourceMap);
 
         //when
@@ -50,7 +50,7 @@ class MessageWriterTest {
     @MethodSource("provideSourceMapAndUsage")
     void test1(Map<Destination, OutputStream> sourceMap, Usage usage){
         //given
-        Message message = new FileMessage(LocalDateTime.now(), INFO, "this is test message.");
+        Message message = LogMessage.of(LocalDateTime.now(), INFO, "this is test message.");
         MessageWriter messageWriter = MessageWriter.of(sourceMap);
 
         //when
