@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +15,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import server.Address;
-import server.message.file.FileMessage;
+import server.message.file.LogMessage;
 import server.v5.Destination;
 import server.v5.Message;
 import server.v5.MessageWriter;
@@ -59,7 +58,7 @@ class MessageDestinationWriteStrategyTest {
     @MethodSource("provideSourceAndDestination")
     void test2(Map<Destination, OutputStream> sourceMap, List<Destination> destinations){
         //given
-        Message message = new FileMessage(LocalDateTime.now(), MessageOwner.INFO, "this is message.");
+        Message message = LogMessage.of(LocalDateTime.now(), MessageOwner.INFO, "this is message.");
 
         MessageWriter messageWriter = MessageWriter.of(sourceMap);
         MessageDestinationWriteStrategy messageWriteStrategy = new MessageDestinationWriteStrategy(messageWriter, destinations);
