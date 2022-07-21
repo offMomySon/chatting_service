@@ -7,13 +7,14 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import server.message.file.LogInfoMessage;
 import server.message.file.LogMessage;
 import server.message.smf.notice.NoticeInfoSimpleMessageFormat;
 import server.v5.Destination;
 import server.v5.MessageWriter;
 import server.v5.Usage;
 import util.IoUtil;
-import static common.MessageOwner.INFO;
+import static common.Subject.INFO;
 
 /**
  * client 로 부터 메세지를 수신하는 역할.
@@ -57,7 +58,7 @@ public class Receiver {
                 log.info("From client : `{}`", message);
 
                 if (Objects.equals(message, EXIT_CMD)) {
-                    LogMessage logMessage = LogMessage.of(LocalDateTime.now(), INFO, message);
+                    LogMessage logMessage = LogInfoMessage.of(LocalDateTime.now(), message);
                     messageWriter.write(new Destination(address, Usage.FILE), logMessage);
 
                     NoticeInfoSimpleMessageFormat smfMessage = new NoticeInfoSimpleMessageFormat(END_MSG);
@@ -68,7 +69,7 @@ public class Receiver {
                     break;
                 }
 
-                LogMessage logMessage = LogMessage.of(LocalDateTime.now(), INFO, message);
+                LogMessage logMessage = LogInfoMessage.of(LocalDateTime.now(), message);
                 messageWriter.write(new Destination(address, Usage.FILE), logMessage);
             }
         } catch (IOException e){

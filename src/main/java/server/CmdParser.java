@@ -1,6 +1,6 @@
 package server;
 
-import common.MessageOwner;
+import common.Subject;
 import common.command.Cmd;
 import common.command.Notice;
 import java.time.LocalDateTime;
@@ -13,7 +13,10 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
+import server.message.file.LogInfoMessage;
 import server.message.file.LogMessage;
+import server.message.file.LogServerMessage;
+import server.message.file.LogWarnMessage;
 import server.message.smf.generic.GenericSimpleMessageFormat;
 import server.message.smf.notice.NoticeInfoSimpleMessageFormat;
 import server.message.smf.notice.NoticeWarnSimpleMessageFormat;
@@ -75,17 +78,14 @@ public class CmdParser {
 
         public static MessageCreator create(@NonNull Cmd cmd, Notice notice, @NonNull String message){
             if(cmd == Cmd.SEND){
-                return new MessageCreator(LogMessage.of(LocalDateTime.now(), MessageOwner.SERVER, message),
-                                          new GenericSimpleMessageFormat(message));
+                return new MessageCreator(LogServerMessage.of(LocalDateTime.now(), message), new GenericSimpleMessageFormat(message));
             }
 
             if(notice == Notice.INFO) {
-                return new MessageCreator(LogMessage.of(LocalDateTime.now(), MessageOwner.INFO, message),
-                                          new NoticeInfoSimpleMessageFormat(message));
+                return new MessageCreator(LogInfoMessage.of(LocalDateTime.now(), message), new NoticeInfoSimpleMessageFormat(message));
             }
             if(notice == Notice.WARN) {
-                return new MessageCreator(LogMessage.of(LocalDateTime.now(), MessageOwner.WARN, message),
-                                          new NoticeWarnSimpleMessageFormat(message));
+                return new MessageCreator(LogWarnMessage.of(LocalDateTime.now(), message), new NoticeWarnSimpleMessageFormat(message));
             }
 
             throw new RuntimeException("not exist cmd");
