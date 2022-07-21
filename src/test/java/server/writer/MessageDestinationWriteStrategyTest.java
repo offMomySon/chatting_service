@@ -1,6 +1,6 @@
 package server.writer;
 
-import common.MessageOwner;
+import common.Subject;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
@@ -15,6 +15,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import server.Address;
+import server.message.file.LogInfoMessage;
 import server.message.file.LogMessage;
 import server.v5.Destination;
 import server.v5.Message;
@@ -58,7 +59,7 @@ class MessageDestinationWriteStrategyTest {
     @MethodSource("provideSourceAndDestination")
     void test2(Map<Destination, OutputStream> sourceMap, List<Destination> destinations){
         //given
-        Message message = LogMessage.of(LocalDateTime.now(), MessageOwner.INFO, "this is message.");
+        Message message = LogInfoMessage.of(LocalDateTime.now(), "this is message.");
 
         MessageWriter messageWriter = MessageWriter.of(sourceMap);
         MessageDestinationWriteStrategy messageWriteStrategy = new MessageDestinationWriteStrategy(messageWriter, destinations);

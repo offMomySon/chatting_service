@@ -1,15 +1,15 @@
 package client.writer.file;
 
 import client.message.file.FileMessage;
-import common.MessageOwner;
+import common.Subject;
 import java.text.MessageFormat;
 import lombok.NonNull;
 
 public class FileOwnerWriter implements FileWriter {
-    private final MessageOwner owner;
+    private final Subject owner;
     private final BasicFileWriter basicFileWriter;
 
-    public FileOwnerWriter(@NonNull MessageOwner owner, @NonNull BasicFileWriter basicFileWriter) {
+    public FileOwnerWriter(@NonNull Subject owner, @NonNull BasicFileWriter basicFileWriter) {
         this.owner = owner;
         this.basicFileWriter = basicFileWriter;
     }

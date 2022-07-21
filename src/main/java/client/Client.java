@@ -10,7 +10,7 @@ import java.net.Socket;
 import java.time.LocalDateTime;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import static common.MessageOwner.CLIENT;
+import static common.Subject.CLIENT;
 
 @Slf4j
 public class Client {

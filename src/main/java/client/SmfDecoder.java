@@ -16,9 +16,9 @@ import java.util.Deque;
 import java.util.List;
 import lombok.Getter;
 import org.apache.commons.lang3.math.NumberUtils;
-import static common.MessageOwner.INFO;
-import static common.MessageOwner.SERVER;
-import static common.MessageOwner.WARN;
+import static common.Subject.INFO;
+import static common.Subject.SERVER;
+import static common.Subject.WARN;
 import static common.command.Cmd.NOTICE;
 
 @Getter
