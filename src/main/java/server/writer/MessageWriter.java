@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.NonNull;
@@ -69,13 +70,35 @@ public class MessageWriter {
         }
     }
 
+    /**
+     * 역할.
+     * 가지고있는 destination 에서 조건으로 필터링한 destination 들에 대해 write 를 수행한다.
+     *
+     * 사용성.
+     * 조건은 predicate 로 받기 때문에, 외부에서 조건을 부여의 책임이 생긴다.
+     * 외부에서 어떤것을 필터링하는지 알기 어렵다. ( destination 이 사용자측 문맥에 드러나지 않기 때문에 )
+     */
     public void write(@NonNull Message message, @NonNull Predicate<Destination> destinationPredicate){
         List<Destination> destinations = outputStreamMap.keySet().stream()
             .filter(destinationPredicate)
             .collect(Collectors.toUnmodifiableList());
 
-        destinations.stream()
-            .filter(outputStreamMap::containsKey)
+        destinations
             .forEach(destination -> write(message, destination));
+    }
+
+    /**
+     * 역할.
+     * function 에 따라 새롭게 생성된 destinations 에 write 를 수행하는 역할.
+     *
+     * 사용성.
+     * Destinations 객체로 어떤것을 필터링하는지 외부에 명시가 가능해졌다.
+     * 또한 destination 필터링 책임, destinations 변환책임 을 외부에 부여하였다.
+     */
+    public void write(@NonNull Message message, @NonNull Function<Destinations, Destinations> destinationsFunction){
+        Destinations findDestinations = destinationsFunction.apply(new Destinations(outputStreamMap.keySet()));
+
+        findDestinations
+            .forEach(destination -> write(message,destination) );
     }
 }
