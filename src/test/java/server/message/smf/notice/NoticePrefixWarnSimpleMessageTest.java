@@ -1,11 +1,9 @@
 package server.message.smf.notice;
 
-import common.command.Notice;
 import server.message.smf.SimpleMessage;
-import static common.command.Notice.WARN;
-import static org.junit.jupiter.api.Assertions.*;
+import static common.command.NoticePrefix.WARN;
 
-class NoticeWarnSimpleMessageTest extends NoticeSimpleMessageTest{
+class NoticePrefixWarnSimpleMessageTest extends NoticePrefixSimpleMessageTest {
 
     @Override
     protected SimpleMessage createLogMessage(String message) {
@@ -14,6 +12,6 @@ class NoticeWarnSimpleMessageTest extends NoticeSimpleMessageTest{
 
     @Override
     protected String getPrefix() {
-        return WARN.getPrefix();
+        return WARN.getValue();
     }
 }

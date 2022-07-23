@@ -1,8 +1,7 @@
 package server;
 
 import common.command.Cmd;
-import common.command.Notice;
-import java.time.LocalDateTime;
+import common.command.NoticePrefix;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.List;
@@ -48,15 +47,15 @@ public class CmdParser {
         Queue<String> cmdQueue = new ArrayDeque<>(List.of(sCmd.split(CMD_DELIMITER)));
 
         Cmd cmd = Cmd.from(cmdQueue.poll()).orElseThrow(() -> new RuntimeException("not exist cmd"));
-        Notice notice = null;
+        NoticePrefix noticePrefix = null;
         if(Cmd.NOTICE == cmd){
-            notice = Notice.from(cmdQueue.poll()).orElseThrow(()-> new RuntimeException("not exist notice"));
+            noticePrefix = NoticePrefix.from(cmdQueue.poll()).orElseThrow(()-> new RuntimeException("not exist notice"));
         }
         String[] sAddresses = cmdQueue.poll().split(ADDRESS_DELIMITER);
         String message = cmdQueue.poll();
 
         StrategyCreator strategyCreator = StrategyCreator.create(sAddresses, messageWriter);
-        MessageCreator messageCreator = MessageCreator.create(cmd, notice, message);
+        MessageCreator messageCreator = MessageCreator.create(cmd, noticePrefix, message);
 
         return new CmdParser(strategyCreator.getFileMessageWriteStrategy(),
                              strategyCreator.getSmfMessageWriteStrategy(),
@@ -74,15 +73,15 @@ public class CmdParser {
             this.simpleMessageFormat = simpleMessageFormat;
         }
 
-        public static MessageCreator create(@NonNull Cmd cmd, Notice notice, @NonNull String message){
+        public static MessageCreator create(@NonNull Cmd cmd, NoticePrefix noticePrefix, @NonNull String message){
             if(cmd == Cmd.SEND){
                 return new MessageCreator(LogServerMessage.ofCurrent(message), new GenericSimpleMessage(message));
             }
 
-            if(notice == Notice.INFO) {
+            if(noticePrefix == NoticePrefix.INFO) {
                 return new MessageCreator(LogInfoMessage.ofCurrent(message), new NoticeInfoSimpleMessage(message));
             }
-            if(notice == Notice.WARN) {
+            if(noticePrefix == NoticePrefix.WARN) {
                 return new MessageCreator(LogWarnMessage.ofCurrent(message), new NoticeWarnSimpleMessage(message));
             }
 

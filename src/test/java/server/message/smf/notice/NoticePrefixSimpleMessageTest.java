@@ -9,7 +9,7 @@ import server.message.smf.SimpleMessageTest;
 import server.message.smf.generic.GenericSimpleMessage;
 import static org.junit.jupiter.api.Assertions.*;
 
-public abstract class NoticeSimpleMessageTest extends SimpleMessageTest {
+public abstract class NoticePrefixSimpleMessageTest extends SimpleMessageTest {
 
     @DisplayName("메세지에 notice message 에 prefix 메세지가 포함되어야 합니다.")
     @ParameterizedTest
