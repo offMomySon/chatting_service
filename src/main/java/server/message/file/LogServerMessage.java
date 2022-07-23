@@ -1,9 +1,13 @@
 package server.message.file;
 
-import common.Subject;
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
+import static common.Subject.INFO;
+import static common.Subject.SERVER;
+import static common.Subject.WARN;
 
 /**
  * 역할.
@@ -20,18 +24,18 @@ import org.apache.commons.lang3.StringUtils;
  * 2) 유지보수 측면? - 포멧 변경이 발생. -> 특정 클래스 수정 <-> LogMessage static method 수정.(class 로 분할해야할 수도) ( 비등? )
  */
 public class LogServerMessage extends LogMessage{
+    private static final DateTimeFormatter MESSAGE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+
     private LogServerMessage(@NonNull String value) {
-        super(value);
+        super(validate(value));
     }
 
-    public static LogServerMessage of(@NonNull LocalDateTime dateTime, @NonNull String message){
-        if(StringUtils.isBlank(message)){
-            throw new RuntimeException("message is blank.");
-        }
-        if(StringUtils.isEmpty(message)){
-            throw new RuntimeException("message is empty.");
-        }
+    private static LogServerMessage of(LocalDateTime dateTime, String message){
+        String formedMessage = MessageFormat.format("{0} {1}", MESSAGE_TIME_FORMATTER.format(dateTime), SERVER.with(validate(message)));
+        return new LogServerMessage(formedMessage);
+    }
 
-        return new LogServerMessage(Subject.SERVER.with(dateTime, message));
+    public static LogServerMessage ofCurrent(String message){
+        return of(LocalDateTime.now(), message);
     }
 }

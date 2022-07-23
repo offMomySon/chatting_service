@@ -1,6 +1,5 @@
 package server;
 
-import common.Subject;
 import common.command.Cmd;
 import common.command.Notice;
 import java.time.LocalDateTime;
@@ -14,12 +13,11 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import server.message.file.LogInfoMessage;
-import server.message.file.LogMessage;
 import server.message.file.LogServerMessage;
 import server.message.file.LogWarnMessage;
-import server.message.smf.generic.GenericSimpleMessageFormat;
-import server.message.smf.notice.NoticeInfoSimpleMessageFormat;
-import server.message.smf.notice.NoticeWarnSimpleMessageFormat;
+import server.message.smf.generic.GenericSimpleMessage;
+import server.message.smf.notice.NoticeInfoSimpleMessage;
+import server.message.smf.notice.NoticeWarnSimpleMessage;
 import server.v5.Message;
 import server.v5.MessageWriter;
 import server.writer.MessageAllWriteStrategy;
@@ -78,14 +76,14 @@ public class CmdParser {
 
         public static MessageCreator create(@NonNull Cmd cmd, Notice notice, @NonNull String message){
             if(cmd == Cmd.SEND){
-                return new MessageCreator(LogServerMessage.of(LocalDateTime.now(), message), new GenericSimpleMessageFormat(message));
+                return new MessageCreator(LogServerMessage.ofCurrent(message), new GenericSimpleMessage(message));
             }
 
             if(notice == Notice.INFO) {
-                return new MessageCreator(LogInfoMessage.of(LocalDateTime.now(), message), new NoticeInfoSimpleMessageFormat(message));
+                return new MessageCreator(LogInfoMessage.ofCurrent(message), new NoticeInfoSimpleMessage(message));
             }
             if(notice == Notice.WARN) {
-                return new MessageCreator(LogWarnMessage.of(LocalDateTime.now(), message), new NoticeWarnSimpleMessageFormat(message));
+                return new MessageCreator(LogWarnMessage.ofCurrent(message), new NoticeWarnSimpleMessage(message));
             }
 
             throw new RuntimeException("not exist cmd");

@@ -18,7 +18,7 @@ class SubjectTest {
     void test1(String message){
         //given
         //when
-        Throwable actual = Assertions.catchThrowable(()->createRandomSubject().with(LocalDateTime.now(), message) );
+        Throwable actual = Assertions.catchThrowable(()->createRandomSubject().with(message));
 
         //then
         Assertions.assertThat(actual)
@@ -31,11 +31,11 @@ class SubjectTest {
     void test(Subject subject){
         //given
         //when
-        String actual = subject.with(LocalDateTime.now(), "message");
+        String actual = subject.with("message");
 
         //then
         Assertions.assertThat(actual)
-            .contains(subject.getValue());
+            .contains(subject.getPrefix());
     }
 
     private static Subject createRandomSubject(){

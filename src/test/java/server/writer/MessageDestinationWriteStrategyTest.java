@@ -59,7 +59,7 @@ class MessageDestinationWriteStrategyTest {
     @MethodSource("provideSourceAndDestination")
     void test2(Map<Destination, OutputStream> sourceMap, List<Destination> destinations){
         //given
-        Message message = LogInfoMessage.of(LocalDateTime.now(), "this is message.");
+        Message message = LogInfoMessage.ofCurrent("this is message.");
 
         MessageWriter messageWriter = MessageWriter.of(sourceMap);
         MessageDestinationWriteStrategy messageWriteStrategy = new MessageDestinationWriteStrategy(messageWriter, destinations);

@@ -1,23 +1,25 @@
 package server.message.file;
 
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import static common.Subject.CLIENT;
+import static common.Subject.INFO;
 
 public class LogClientMessage extends LogMessage{
-    private LogClientMessage(@NonNull String value) {
-        super(value);
+    private static final DateTimeFormatter MESSAGE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+    private LogClientMessage(String value) {
+        super(validate(value));
     }
 
-    public static LogClientMessage of(LocalDateTime dateTime, String message){
-        if(StringUtils.isBlank(message)){
-            throw new RuntimeException("message is blank.");
-        }
-        if(StringUtils.isEmpty(message)){
-            throw new RuntimeException("message is empty.");
-        }
+    private static LogClientMessage of( LocalDateTime dateTime, String message){
+        String formedMessage = MessageFormat.format("{0} {1}", MESSAGE_TIME_FORMATTER.format(dateTime), CLIENT.with(validate(message)));
+        return new LogClientMessage(formedMessage);
+    }
 
-        return new LogClientMessage(CLIENT.with(dateTime, message));
+    public static LogClientMessage ofCurrent(String message){
+        return of(LocalDateTime.now(), message);
     }
 }

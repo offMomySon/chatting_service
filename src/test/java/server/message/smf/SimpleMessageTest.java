@@ -1,8 +1,7 @@
-package server.message.file;
+package server.message.smf;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -15,9 +14,10 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
+import server.message.file.LogMessage;
 import static java.time.LocalDateTime.now;
 
-abstract class LogMessageTest {
+public abstract class SimpleMessageTest {
 
     @DisplayName("message 가 null, empty, blank 이면 exception 이 발생합니다.")
     @ParameterizedTest
@@ -26,7 +26,7 @@ abstract class LogMessageTest {
     void test1(String message){
         //given
         //when
-        Throwable actual = Assertions.catchThrowable(()-> createLogMessage(now(), message));
+        Throwable actual = Assertions.catchThrowable(()-> createLogMessage(message));
 
         //then
         Assertions.assertThat(actual)
@@ -39,56 +39,38 @@ abstract class LogMessageTest {
     void test2(String message){
         //given
         //when
-        Throwable actual = Assertions.catchThrowable(()->createLogMessage(now(), message));
+        Throwable actual = Assertions.catchThrowable(()->createLogMessage(message));
 
         //then
         Assertions.assertThat(actual)
             .doesNotThrowAnyException();
     }
 
-    @DisplayName("특정 타임 포멧을 가진 메세지를 생성합니다.")
+    @DisplayName("특정 code 를 포함한 메세지를 생성합니다.")
     @ParameterizedTest
     @MethodSource(value = "provideRandomMessage")
     void test3(String message){
         //given
-        DateTimeFormatter MESSAGE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
-
-        LocalDateTime now = LocalDateTime.now();
-        LogMessage logMessage = createLogMessage(now,message);
+        SimpleMessage simpleMessage = createLogMessage(message);
 
         //when
-        String actual = logMessage.create();
+        String actual = simpleMessage.create();
 
         //then
         Assertions.assertThat(actual)
-            .contains(MESSAGE_TIME_FORMATTER.format(now));
+            .contains(getCode());
     }
 
-    @DisplayName("특정 prefix 를 포함한 메세지를 생성합니다.")
-    @ParameterizedTest
-    @MethodSource(value = "provideRandomMessage")
-    void test4(String message){
-        //given
-        LogMessage logMessage = createLogMessage(LocalDateTime.now(), message);
-
-        //when
-        String actual = logMessage.create();
-
-        //then
-        Assertions.assertThat(actual)
-            .contains(getPrefix());
-    }
-
-    private static Stream<Arguments> provideRandomMessage(){
+    protected static Stream<Arguments> provideRandomMessage(){
         List<String> messages = IntStream.range(0, 10)
-            .mapToObj(i-> RandomStringUtils.randomAlphanumeric(1,20))
+            .mapToObj(i-> RandomStringUtils.randomAlphanumeric(1, 20))
             .collect(Collectors.toList());
 
         return messages.stream()
             .map(Arguments::of);
     }
 
-    protected abstract LogMessage createLogMessage(LocalDateTime dateTime, String message);
+    protected abstract SimpleMessage createLogMessage(String message);
 
-    protected abstract String getPrefix();
+    protected abstract String getCode();
 }

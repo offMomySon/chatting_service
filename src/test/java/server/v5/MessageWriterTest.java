@@ -28,7 +28,7 @@ class MessageWriterTest {
     @MethodSource("provideSourceMapAndDestinations")
     void test(Map<Destination, OutputStream> sourceMap, List<Destination> destinations){
         //given
-        Message message = LogServerMessage.of(LocalDateTime.now(), "this is test message.");
+        Message message = LogServerMessage.ofCurrent("this is test message.");
         MessageWriter messageWriter = MessageWriter.of(sourceMap);
 
         //when
@@ -52,7 +52,7 @@ class MessageWriterTest {
     @MethodSource("provideSourceMapAndUsage")
     void test1(Map<Destination, OutputStream> sourceMap, Usage usage){
         //given
-        Message message = LogInfoMessage.of(LocalDateTime.now(), "this is test message.");
+        Message message = LogInfoMessage.ofCurrent("this is test message.");
         MessageWriter messageWriter = MessageWriter.of(sourceMap);
 
         //when
