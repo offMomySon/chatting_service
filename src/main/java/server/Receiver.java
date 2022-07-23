@@ -9,12 +9,11 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import server.message.file.LogInfoMessage;
 import server.message.file.LogMessage;
-import server.message.smf.notice.NoticeInfoSimpleMessageFormat;
+import server.message.smf.notice.NoticeInfoSimpleMessage;
 import server.v5.Destination;
 import server.v5.MessageWriter;
 import server.v5.Usage;
 import util.IoUtil;
-import static common.Subject.INFO;
 
 /**
  * client 로 부터 메세지를 수신하는 역할.
@@ -58,10 +57,10 @@ public class Receiver {
                 log.info("From client : `{}`", message);
 
                 if (Objects.equals(message, EXIT_CMD)) {
-                    LogMessage logMessage = LogInfoMessage.of(LocalDateTime.now(), message);
+                    LogMessage logMessage = LogInfoMessage.ofCurrent(message);
                     messageWriter.write(new Destination(address, Usage.FILE), logMessage);
 
-                    NoticeInfoSimpleMessageFormat smfMessage = new NoticeInfoSimpleMessageFormat(END_MSG);
+                    NoticeInfoSimpleMessage smfMessage = new NoticeInfoSimpleMessage(END_MSG);
                     messageWriter.write(new Destination(address, Usage.SOCKET), smfMessage);
 
                     messageWriter.removeDestination(new Destination(address, Usage.FILE));
@@ -69,7 +68,7 @@ public class Receiver {
                     break;
                 }
 
-                LogMessage logMessage = LogInfoMessage.of(LocalDateTime.now(), message);
+                LogMessage logMessage = LogInfoMessage.ofCurrent(message);
                 messageWriter.write(new Destination(address, Usage.FILE), logMessage);
             }
         } catch (IOException e){

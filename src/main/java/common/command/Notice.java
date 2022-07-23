@@ -1,5 +1,6 @@
 package common.command;
 
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Optional;
 import lombok.Getter;
@@ -15,6 +16,9 @@ public enum Notice {
         this.prefix = prefix;
     }
 
+    public String with(String message){
+        return MessageFormat.format("{0} {1}", prefix, message);
+    }
     public static Optional<Notice> from(String sNotice) {
         return Arrays.stream(values())
             .filter(notice -> StringUtils.equalsIgnoreCase(notice.name(), sNotice))

@@ -30,7 +30,7 @@ class MessageAllWriteStrategyTest {
     @MethodSource("provideSourceMap")
     void test2(Map<Destination, OutputStream> sourceMap, Usage usage){
         //given
-        Message message = LogInfoMessage.of(LocalDateTime.now(), "this is message.");
+        Message message = LogInfoMessage.ofCurrent("this is message.");
 
         MessageWriter messageWriter = MessageWriter.of(sourceMap);
         MessageAllWriteStrategy messageWriteStrategy = new MessageAllWriteStrategy(messageWriter, usage);

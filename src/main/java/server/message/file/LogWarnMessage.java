@@ -1,23 +1,25 @@
 package server.message.file;
 
-import common.Subject;
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
+import static common.Subject.SERVER;
+import static common.Subject.WARN;
 
 public class LogWarnMessage extends LogMessage{
+    private static final DateTimeFormatter MESSAGE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
     private LogWarnMessage(@NonNull String value) {
-        super(value);
+        super(validate(value));
     }
 
-    public static LogWarnMessage of(@NonNull LocalDateTime dateTime, @NonNull String message){
-        if(StringUtils.isBlank(message)){
-            throw new RuntimeException("message is blank.");
-        }
-        if(StringUtils.isEmpty(message)){
-            throw new RuntimeException("message is empty.");
-        }
+    private static LogWarnMessage of(LocalDateTime dateTime, String message){
+        String formedMessage = MessageFormat.format("{0} {1}", MESSAGE_TIME_FORMATTER.format(dateTime), WARN.with(validate(message)));
+        return new LogWarnMessage(formedMessage);
+    }
 
-        return new LogWarnMessage(Subject.WARN.with(dateTime, message));
+    public static LogWarnMessage ofCurrent(String message){
+        return of(LocalDateTime.now(), message);
     }
 }

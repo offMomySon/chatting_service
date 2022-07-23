@@ -2,7 +2,6 @@ package common;
 
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import lombok.Getter;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
@@ -11,15 +10,14 @@ import org.apache.commons.lang3.StringUtils;
 public enum Subject {
     SERVER("[서버]"), CLIENT("[클라]"), INFO("[INFO]"), WARN("[WARN]");
 
-    private static final String MESSAGE_FORMAT = "{0} {1} {2}";
-    private static final DateTimeFormatter MESSAGE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
-    private final String value;
+    private static final String MESSAGE_FORMAT = "{0} {1}";
+    private final String prefix;
 
-    Subject(String value) {
-        this.value = value;
+    Subject(String prefix) {
+        this.prefix = prefix;
     }
 
-    public String with(@NonNull LocalDateTime dateTime, @NonNull String message) {
+    public String with(@NonNull String message) {
         if(StringUtils.isBlank(message)){
             throw new RuntimeException("message is blank.");
         }
@@ -27,7 +25,7 @@ public enum Subject {
             throw new RuntimeException("message is empty.");
         }
 
-        return MessageFormat.format(MESSAGE_FORMAT, MESSAGE_TIME_FORMATTER.format(dateTime),value, message);
+        return MessageFormat.format(MESSAGE_FORMAT, prefix, message);
     }
 
 }
