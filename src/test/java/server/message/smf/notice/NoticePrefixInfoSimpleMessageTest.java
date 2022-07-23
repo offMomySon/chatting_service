@@ -1,10 +1,9 @@
 package server.message.smf.notice;
 
-import common.command.Notice;
 import server.message.smf.SimpleMessage;
-import static common.command.Notice.INFO;
+import static common.command.NoticePrefix.INFO;
 
-class NoticeInfoSimpleMessageTest extends NoticeSimpleMessageTest{
+class NoticePrefixInfoSimpleMessageTest extends NoticePrefixSimpleMessageTest {
 
     @Override
     protected SimpleMessage createLogMessage(String message) {
@@ -13,6 +12,6 @@ class NoticeInfoSimpleMessageTest extends NoticeSimpleMessageTest{
 
     @Override
     protected String getPrefix() {
-        return INFO.getPrefix();
+        return INFO.getValue();
     }
 }

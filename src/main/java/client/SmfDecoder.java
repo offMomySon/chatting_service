@@ -9,7 +9,7 @@ import client.writer.file.BasicFileWriter;
 import client.writer.file.FileOwnerWriter;
 import client.writer.file.FileWriteHmm;
 import common.command.Cmd;
-import common.command.Notice;
+import common.command.NoticePrefix;
 import java.time.LocalDateTime;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -54,19 +54,19 @@ public class SmfDecoder {
         }
 
         if (cmd == NOTICE){
-            Notice notice = Notice.fromPrefix(prefix).orElseThrow(()-> new RuntimeException("일치하는 notice 가 없습니다."));
+            NoticePrefix noticePrefix = NoticePrefix.fromPrefix(prefix).orElseThrow(()-> new RuntimeException("일치하는 notice 가 없습니다."));
             FileMessage fileMessage = new FileMessage(message);
             BasicFileWriter basicFileWriter = BasicFileWriter.create(LocalDateTime.now());
             ConsoleWriteHmm consoleWriteHmm = new ConsoleWriteHmm(new ConsoleWriter(), new ConsoleMessage(message));
 
-            if(notice == Notice.INFO){
+            if(noticePrefix == NoticePrefix.INFO){
                 FileWriteHmm fileWriteHmm = new FileWriteHmm(new FileOwnerWriter(INFO, basicFileWriter), fileMessage);
 
                 CompositedWriter writer = new CompositedWriter(List.of(fileWriteHmm, consoleWriteHmm));
                 return new SmfDecoder(writer);
             }
 
-            if(notice == Notice.WARN){
+            if(noticePrefix == NoticePrefix.WARN){
                 FileWriteHmm fileWriteHmm = new FileWriteHmm(new FileOwnerWriter(WARN, basicFileWriter), fileMessage);
 
                 CompositedWriter writer = new CompositedWriter(List.of(fileWriteHmm, consoleWriteHmm));

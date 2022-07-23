@@ -1,8 +1,7 @@
 package server.message.smf.notice;
 
-import common.command.Notice;
 import lombok.NonNull;
-import static common.command.Notice.INFO;
+import static common.command.NoticePrefix.INFO;
 
 public class NoticeInfoSimpleMessage extends NoticeSimpleMessage {
     public NoticeInfoSimpleMessage(@NonNull String message) {
