@@ -6,7 +6,6 @@ import lombok.NonNull;
 import server.Address;
 import server.v5.Destination;
 import server.v5.Message;
-import server.v5.MessageWriter;
 import server.v5.Usage;
 
 /**

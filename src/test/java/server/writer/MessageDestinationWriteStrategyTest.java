@@ -1,9 +1,7 @@
 package server.writer;
 
-import common.Subject;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,10 +14,8 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import server.Address;
 import server.message.file.LogInfoMessage;
-import server.message.file.LogMessage;
 import server.v5.Destination;
 import server.v5.Message;
-import server.v5.MessageWriter;
 import server.v5.Usage;
 import static server.v5.Usage.FILE;
 

@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.util.Objects;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import server.v5.MessageWriter;
+import server.writer.MessageWriter;
 import server.writer.MessageWriteStrategy;
 import static util.IoUtil.createReader;
 

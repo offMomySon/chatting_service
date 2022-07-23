@@ -18,7 +18,7 @@ import server.message.smf.generic.GenericSimpleMessage;
 import server.message.smf.notice.NoticeInfoSimpleMessage;
 import server.message.smf.notice.NoticeWarnSimpleMessage;
 import server.v5.Message;
-import server.v5.MessageWriter;
+import server.writer.MessageWriter;
 import server.writer.MessageAllWriteStrategy;
 import server.writer.MessageDestinationWriteStrategy;
 import server.writer.MessageWriteStrategy;

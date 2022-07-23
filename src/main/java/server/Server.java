@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import server.v5.Destination;
-import server.v5.MessageWriter;
+import server.writer.MessageWriter;
 import server.v5.TimedAddressFileOutputStream;
 import server.v5.Usage;
 
