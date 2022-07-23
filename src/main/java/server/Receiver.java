@@ -57,10 +57,10 @@ public class Receiver {
 
                 if (Objects.equals(message, EXIT_CMD)) {
                     LogMessage logMessage = LogInfoMessage.ofCurrent(message);
-                    messageWriter.write(new Destination(address, Usage.FILE), logMessage);
+                    messageWriter.write(logMessage, new Destination(address, Usage.FILE));
 
                     NoticeInfoSimpleMessage smfMessage = new NoticeInfoSimpleMessage(END_MSG);
-                    messageWriter.write(new Destination(address, Usage.SOCKET), smfMessage);
+                    messageWriter.write(smfMessage, new Destination(address, Usage.SOCKET));
 
                     messageWriter.removeDestination(new Destination(address, Usage.FILE));
                     messageWriter.removeDestination(new Destination(address, Usage.SOCKET));
@@ -68,7 +68,7 @@ public class Receiver {
                 }
 
                 LogMessage logMessage = LogInfoMessage.ofCurrent(message);
-                messageWriter.write(new Destination(address, Usage.FILE), logMessage);
+                messageWriter.write(logMessage, new Destination(address, Usage.FILE));
             }
         } catch (IOException e){
             throw new RuntimeException("Fail to receive msg.", e);
