@@ -30,7 +30,7 @@ class MessageWriterTest {
 
         //when
         for(Destination destination: destinations){
-            messageWriter.write(destination, message);
+            messageWriter.write(message, destination);
         }
 
         List<String> actualMessage = new LinkedList<>();
@@ -53,7 +53,7 @@ class MessageWriterTest {
         MessageWriter messageWriter = MessageWriter.of(sourceMap);
 
         //when
-        messageWriter.writeAll(message, usage);
+        messageWriter.write(message, d-> d.getUsage() == usage);
 
         List<String> actualMessage = new LinkedList<>();
         for(OutputStream outputStream : sourceMap.values()){

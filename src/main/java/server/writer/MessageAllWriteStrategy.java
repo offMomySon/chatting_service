@@ -22,6 +22,6 @@ public class MessageAllWriteStrategy implements MessageWriteStrategy{
 
     @Override
     public void write(@NonNull Message message) {
-        messageWriter.writeAll(message, usage);
+        messageWriter.write(message, d-> d.getUsage() == usage);
     }
 }

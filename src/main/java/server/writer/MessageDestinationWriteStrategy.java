@@ -38,6 +38,6 @@ public class MessageDestinationWriteStrategy implements MessageWriteStrategy{
 
     @Override
     public void write(@NonNull Message message) {
-        destinations.forEach(destination -> messageWriter.write(destination, message));
+        destinations.forEach(destination -> messageWriter.write(message, destination));
     }
 }
