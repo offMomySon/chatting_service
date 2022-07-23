@@ -13,10 +13,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import server.Address;
+import server.message.Message;
 import server.message.file.LogInfoMessage;
 import server.message.file.LogServerMessage;
+import server.writer.Destination;
 import server.writer.MessageWriter;
-import static server.v5.Usage.FILE;
+import server.writer.Usage;
+import static server.writer.Usage.FILE;
 
 class MessageWriterTest {
 

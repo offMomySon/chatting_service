@@ -9,9 +9,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.NonNull;
-import server.v5.Destination;
-import server.v5.Message;
-import server.v5.Usage;
+import server.message.Message;
 import util.IoUtil;
 
 /**

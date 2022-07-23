@@ -14,10 +14,8 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import server.Address;
 import server.message.file.LogInfoMessage;
-import server.v5.Destination;
-import server.v5.Message;
-import server.v5.Usage;
-import static server.v5.Usage.FILE;
+import server.message.Message;
+import static server.writer.Usage.FILE;
 
 /**
  * 1)

@@ -1,4 +1,4 @@
-package server.v5;
+package server.message;
 
 public interface Message {
     String create();

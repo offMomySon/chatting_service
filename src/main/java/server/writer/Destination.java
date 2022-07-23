@@ -1,4 +1,4 @@
-package server.v5;
+package server.writer;
 
 import java.util.Objects;
 import lombok.Getter;
