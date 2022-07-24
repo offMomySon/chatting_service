@@ -17,6 +17,7 @@ import server.message.Message;
 import server.message.file.LogInfoMessage;
 import server.message.file.LogServerMessage;
 import server.writer.Destination;
+import server.writer.Destinations2;
 import server.writer.MessageWriter;
 import server.writer.Usage;
 import static server.writer.Usage.FILE;
@@ -56,7 +57,7 @@ class MessageWriterTest {
         MessageWriter messageWriter = MessageWriter.of(sourceMap);
 
         //when
-        messageWriter.write(message, d-> d.getUsage() == usage);
+        messageWriter.write2(message, new Destinations2.Builder().filtered(destination -> destination.getUsage() == usage).build());
 
         List<String> actualMessage = new LinkedList<>();
         for(OutputStream outputStream : sourceMap.values()){
