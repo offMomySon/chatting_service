@@ -11,6 +11,7 @@ import server.message.Message;
 public class MessageAllWriteStrategy implements MessageWriteStrategy{
     private final MessageWriter messageWriter;
 
+
     private final Usage usage;
 
 
@@ -21,6 +22,6 @@ public class MessageAllWriteStrategy implements MessageWriteStrategy{
 
     @Override
     public void write(@NonNull Message message) {
-        messageWriter.write(message, d-> d.getUsage() == usage);
+        messageWriter.write2(message, new Destinations2.Builder().filtered(destination -> destination.getUsage() == usage).build());
     }
 }

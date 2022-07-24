@@ -4,10 +4,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.NonNull;
 import server.message.Message;
@@ -78,14 +75,14 @@ public class MessageWriter {
      * 조건은 predicate 로 받기 때문에, 외부에서 조건을 부여의 책임이 생긴다.
      * 외부에서 어떤것을 필터링하는지 알기 어렵다. ( destination 이 사용자측 문맥에 드러나지 않기 때문에 )
      */
-    public void write(@NonNull Message message, @NonNull Predicate<Destination> destinationPredicate){
-        List<Destination> destinations = outputStreamMap.keySet().stream()
-            .filter(destinationPredicate)
-            .collect(Collectors.toUnmodifiableList());
-
-        destinations
-            .forEach(destination -> write(message, destination));
-    }
+//    public void write(@NonNull Message message, @NonNull Predicate<Destination> destinationPredicate){
+//        List<Destination> destinations = outputStreamMap.keySet().stream()
+//            .filter(destinationPredicate)
+//            .collect(Collectors.toUnmodifiableList());
+//
+//        destinations
+//            .forEach(destination -> write(message, destination));
+//    }
 
     /**
      * 역할.
@@ -95,10 +92,15 @@ public class MessageWriter {
      * Destinations 객체로 어떤것을 필터링하는지 외부에 명시가 가능해졌다.
      * 또한 destination 필터링 책임, destinations 변환책임 을 외부에 부여하였다.
      */
-    public void write(@NonNull Message message, @NonNull Function<Destinations, Destinations> destinationsFunction){
-        Destinations findDestinations = destinationsFunction.apply(new Destinations(outputStreamMap.keySet()));
+//    public void write(@NonNull Message message, @NonNull Function<Destinations, Destinations> destinationsFunction){
+//        Destinations findDestinations = destinationsFunction.apply(new Destinations(outputStreamMap.keySet()));
+//
+//        findDestinations
+//            .forEach(destination -> write(message,destination) );
+//    }
 
-        findDestinations
-            .forEach(destination -> write(message,destination) );
+    public void write2(@NonNull Message message, @NonNull Destinations2 destinations2){
+        destinations2
+            .forEach(outputStreamMap.keySet(), destination -> write(message,destination));
     }
 }
